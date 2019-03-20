@@ -1,4 +1,6 @@
-﻿namespace DTscope_dome1._0
+﻿using System.Windows.Forms;
+
+namespace DTscope_dome1._0
 {
     partial class Form1
     {
@@ -32,7 +34,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.Curve1 = new HslCommunication.Controls.UserCurve();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-            this.line1 = new System.Windows.Forms.Label();
             this.sentry2_connect = new System.Windows.Forms.Button();
             this.sentry1_connect = new System.Windows.Forms.Button();
             this.infantry1_connect = new System.Windows.Forms.Button();
@@ -47,32 +48,41 @@
             this.other3_connect = new System.Windows.Forms.Button();
             this.refresh_online = new System.Windows.Forms.Button();
             this.Connection_rate = new HslCommunication.Controls.UserVerticalProgress();
-            this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.channelListBox1 = new System.Windows.Forms.CheckedListBox();
             this.save = new System.Windows.Forms.Button();
             this.clear = new System.Windows.Forms.Button();
             this.test_button = new System.Windows.Forms.Button();
             this.CurveOptions_panel = new System.Windows.Forms.Panel();
-            this.test_connect = new System.Windows.Forms.Button();
+            this.revnum_label = new System.Windows.Forms.Label();
             this.test_rev = new System.Windows.Forms.Button();
             this.rev_text = new System.Windows.Forms.Label();
+            this.test_connect = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.btn_connect_panel = new System.Windows.Forms.Panel();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage_chart = new System.Windows.Forms.TabPage();
+            this.tabPage_debug = new System.Windows.Forms.TabPage();
+            this.network_communication_labal = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             this.CurveOptions_panel.SuspendLayout();
             this.btn_connect_panel.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tabPage_chart.SuspendLayout();
+            this.tabPage_debug.SuspendLayout();
             this.SuspendLayout();
             // 
             // Curve1
             // 
-            this.Curve1.BackColor = System.Drawing.Color.Transparent;
-            this.Curve1.Location = new System.Drawing.Point(-15, 182);
+            this.Curve1.BackColor = System.Drawing.Color.Black;
+            this.Curve1.Location = new System.Drawing.Point(6, 188);
             this.Curve1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Curve1.Name = "Curve1";
             this.Curve1.Size = new System.Drawing.Size(900, 370);
@@ -83,14 +93,6 @@
             this.notifyIcon1.Text = "notifyIcon1";
             this.notifyIcon1.Visible = true;
             this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
-            // 
-            // line1
-            // 
-            this.line1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.line1.Location = new System.Drawing.Point(30, 139);
-            this.line1.Name = "line1";
-            this.line1.Size = new System.Drawing.Size(866, 2);
-            this.line1.TabIndex = 2;
             // 
             // sentry2_connect
             // 
@@ -277,14 +279,6 @@
             this.Connection_rate.UseAnimation = true;
             this.Connection_rate.Value = 10;
             // 
-            // label1
-            // 
-            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label1.Location = new System.Drawing.Point(30, 19);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(810, 2);
-            this.label1.TabIndex = 17;
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -343,6 +337,7 @@
             // CurveOptions_panel
             // 
             this.CurveOptions_panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            this.CurveOptions_panel.Controls.Add(this.revnum_label);
             this.CurveOptions_panel.Controls.Add(this.channelListBox1);
             this.CurveOptions_panel.Controls.Add(this.test_rev);
             this.CurveOptions_panel.Controls.Add(this.rev_text);
@@ -350,20 +345,21 @@
             this.CurveOptions_panel.Controls.Add(this.clear);
             this.CurveOptions_panel.Controls.Add(this.save);
             this.CurveOptions_panel.Controls.Add(this.test_button);
-            this.CurveOptions_panel.Location = new System.Drawing.Point(875, 193);
+            this.CurveOptions_panel.Location = new System.Drawing.Point(913, 188);
             this.CurveOptions_panel.Name = "CurveOptions_panel";
-            this.CurveOptions_panel.Size = new System.Drawing.Size(273, 337);
+            this.CurveOptions_panel.Size = new System.Drawing.Size(273, 370);
             this.CurveOptions_panel.TabIndex = 23;
             // 
-            // test_connect
+            // revnum_label
             // 
-            this.test_connect.Location = new System.Drawing.Point(17, 260);
-            this.test_connect.Name = "test_connect";
-            this.test_connect.Size = new System.Drawing.Size(75, 23);
-            this.test_connect.TabIndex = 24;
-            this.test_connect.Text = "测试连接";
-            this.test_connect.UseVisualStyleBackColor = true;
-            this.test_connect.Click += new System.EventHandler(this.test_connect_Click);
+            this.revnum_label.AutoSize = true;
+            this.revnum_label.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
+            this.revnum_label.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(140)))), ((int)(((byte)(140)))));
+            this.revnum_label.Location = new System.Drawing.Point(146, 231);
+            this.revnum_label.Name = "revnum_label";
+            this.revnum_label.Size = new System.Drawing.Size(55, 15);
+            this.revnum_label.TabIndex = 27;
+            this.revnum_label.Text = "label7";
             // 
             // test_rev
             // 
@@ -384,6 +380,16 @@
             this.rev_text.TabIndex = 26;
             this.rev_text.Text = "label3";
             // 
+            // test_connect
+            // 
+            this.test_connect.Location = new System.Drawing.Point(17, 260);
+            this.test_connect.Name = "test_connect";
+            this.test_connect.Size = new System.Drawing.Size(75, 23);
+            this.test_connect.TabIndex = 24;
+            this.test_connect.Text = "测试连接";
+            this.test_connect.UseVisualStyleBackColor = true;
+            this.test_connect.Click += new System.EventHandler(this.test_connect_Click);
+            // 
             // timer1
             // 
             this.timer1.Enabled = true;
@@ -392,6 +398,7 @@
             // btn_connect_panel
             // 
             this.btn_connect_panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(55)))));
+            this.btn_connect_panel.Controls.Add(this.label6);
             this.btn_connect_panel.Controls.Add(this.label5);
             this.btn_connect_panel.Controls.Add(this.label4);
             this.btn_connect_panel.Controls.Add(this.label3);
@@ -400,10 +407,69 @@
             this.btn_connect_panel.Controls.Add(this.label2);
             this.btn_connect_panel.Controls.Add(this.Connection_rate);
             this.btn_connect_panel.Controls.Add(this.refresh_online);
-            this.btn_connect_panel.Location = new System.Drawing.Point(0, 0);
+            this.btn_connect_panel.Location = new System.Drawing.Point(6, 6);
             this.btn_connect_panel.Name = "btn_connect_panel";
             this.btn_connect_panel.Size = new System.Drawing.Size(1200, 175);
             this.btn_connect_panel.TabIndex = 27;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(140)))), ((int)(((byte)(140)))));
+            this.label6.Location = new System.Drawing.Point(942, 149);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(128, 16);
+            this.label6.TabIndex = 24;
+            this.label6.Text = "更多功能待添加中";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(140)))), ((int)(((byte)(140)))));
+            this.label5.Location = new System.Drawing.Point(1046, 91);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(47, 16);
+            this.label5.TabIndex = 23;
+            this.label5.Text = "YuXin";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("华文新魏", 5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(150)))));
+            this.label4.Location = new System.Drawing.Point(943, 76);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(150, 9);
+            this.label4.TabIndex = 22;
+            this.label4.Text = "North China University of Technology";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("华文新魏", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(150)))));
+            this.label3.Location = new System.Drawing.Point(942, 35);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(151, 34);
+            this.label3.TabIndex = 21;
+            this.label3.Text = "ROBOMASTER\r\nDreamTeam 控制组";
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Font = new System.Drawing.Font("Rage Italic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.linkLabel1.LinkArea = new System.Windows.Forms.LinkArea(0, 38);
+            this.linkLabel1.LinkColor = System.Drawing.Color.DarkCyan;
+            this.linkLabel1.Location = new System.Drawing.Point(940, 121);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(160, 31);
+            this.linkLabel1.TabIndex = 20;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "Click to access github";
+            this.linkLabel1.UseCompatibleTextRendering = true;
             // 
             // groupBox1
             // 
@@ -429,74 +495,86 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "on-line state";
             // 
-            // linkLabel1
+            // tabControl1
             // 
-            this.linkLabel1.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Font = new System.Drawing.Font("Rage Italic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.linkLabel1.LinkArea = new System.Windows.Forms.LinkArea(0, 38);
-            this.linkLabel1.LinkColor = System.Drawing.Color.DarkCyan;
-            this.linkLabel1.Location = new System.Drawing.Point(940, 121);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(160, 31);
-            this.linkLabel1.TabIndex = 20;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "Click to access github";
-            this.linkLabel1.UseCompatibleTextRendering = true;
+            this.tabControl1.Controls.Add(this.tabPage_chart);
+            this.tabControl1.Controls.Add(this.tabPage_debug);
+            this.tabControl1.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
+            this.tabControl1.Location = new System.Drawing.Point(-5, -1);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(1173, 647);
+            this.tabControl1.TabIndex = 0;
+            this.tabControl1.TabStop = false;
+            this.tabControl1.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl1_DrawItem);
+            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
-            // label3
+            // tabPage_chart
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("华文新魏", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(150)))));
-            this.label3.Location = new System.Drawing.Point(942, 35);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(151, 34);
-            this.label3.TabIndex = 21;
-            this.label3.Text = "ROBOMASTER\r\nDreamTeam 控制组";
+            this.tabPage_chart.BackColor = System.Drawing.Color.DimGray;
+            this.tabPage_chart.Controls.Add(this.Curve1);
+            this.tabPage_chart.Controls.Add(this.btn_connect_panel);
+            this.tabPage_chart.Controls.Add(this.CurveOptions_panel);
+            this.tabPage_chart.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_chart.Name = "tabPage_chart";
+            this.tabPage_chart.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_chart.Size = new System.Drawing.Size(1165, 618);
+            this.tabPage_chart.TabIndex = 0;
+            this.tabPage_chart.Text = "chart";
             // 
-            // label4
+            // tabPage_debug
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("华文新魏", 5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(150)))));
-            this.label4.Location = new System.Drawing.Point(943, 76);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(150, 9);
-            this.label4.TabIndex = 22;
-            this.label4.Text = "North China University of Technology";
+            this.tabPage_debug.BackColor = System.Drawing.Color.DimGray;
+            this.tabPage_debug.Controls.Add(this.label7);
+            this.tabPage_debug.Controls.Add(this.network_communication_labal);
+            this.tabPage_debug.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_debug.Name = "tabPage_debug";
+            this.tabPage_debug.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_debug.Size = new System.Drawing.Size(1165, 618);
+            this.tabPage_debug.TabIndex = 1;
+            this.tabPage_debug.Text = "debug";
             // 
-            // label5
+            // network_communication_labal
             // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(140)))), ((int)(((byte)(140)))));
-            this.label5.Location = new System.Drawing.Point(1046, 91);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(47, 16);
-            this.label5.TabIndex = 23;
-            this.label5.Text = "YuXin";
+            this.network_communication_labal.BackColor = System.Drawing.Color.Black;
+            this.network_communication_labal.ForeColor = System.Drawing.SystemColors.AppWorkspace;
+            this.network_communication_labal.Location = new System.Drawing.Point(23, 47);
+            this.network_communication_labal.Name = "network_communication_labal";
+            this.network_communication_labal.Size = new System.Drawing.Size(414, 225);
+            this.network_communication_labal.TabIndex = 0;
+            this.network_communication_labal.Text = ".init";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(20, 32);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(67, 15);
+            this.label7.TabIndex = 1;
+            this.label7.Text = "通信内容";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.ClientSize = new System.Drawing.Size(1115, 687);
-            this.Controls.Add(this.btn_connect_panel);
-            this.Controls.Add(this.CurveOptions_panel);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.line1);
-            this.Controls.Add(this.Curve1);
+            this.ClientSize = new System.Drawing.Size(1168, 639);
+            this.Controls.Add(this.tabControl1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "DT-scope";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.CurveOptions_panel.ResumeLayout(false);
+            this.CurveOptions_panel.PerformLayout();
             this.btn_connect_panel.ResumeLayout(false);
             this.btn_connect_panel.PerformLayout();
             this.groupBox1.ResumeLayout(false);
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage_chart.ResumeLayout(false);
+            this.tabPage_debug.ResumeLayout(false);
+            this.tabPage_debug.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -505,7 +583,6 @@
 
         private HslCommunication.Controls.UserCurve Curve1;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
-        private System.Windows.Forms.Label line1;
         private System.Windows.Forms.Button sentry2_connect;
         private System.Windows.Forms.Button sentry1_connect;
         private System.Windows.Forms.Button infantry1_connect;
@@ -520,7 +597,6 @@
         private System.Windows.Forms.Button other3_connect;
         private System.Windows.Forms.Button refresh_online;
         private HslCommunication.Controls.UserVerticalProgress Connection_rate;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckedListBox channelListBox1;
         private System.Windows.Forms.Button save;
@@ -537,6 +613,13 @@
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label revnum_label;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage_chart;
+        private System.Windows.Forms.TabPage tabPage_debug;
+        private Label label7;
+        private Label network_communication_labal;
     }
 }
 
