@@ -69,8 +69,13 @@ namespace DTscope_dome1._0
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage_chart = new System.Windows.Forms.TabPage();
             this.tabPage_debug = new System.Windows.Forms.TabPage();
-            this.network_communication_labal = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.network_communication_labal = new System.Windows.Forms.Label();
+            this.button_test_string = new System.Windows.Forms.Button();
             this.CurveOptions_panel.SuspendLayout();
             this.btn_connect_panel.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -337,6 +342,7 @@ namespace DTscope_dome1._0
             // CurveOptions_panel
             // 
             this.CurveOptions_panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            this.CurveOptions_panel.Controls.Add(this.button_test_string);
             this.CurveOptions_panel.Controls.Add(this.revnum_label);
             this.CurveOptions_panel.Controls.Add(this.channelListBox1);
             this.CurveOptions_panel.Controls.Add(this.test_rev);
@@ -525,6 +531,10 @@ namespace DTscope_dome1._0
             // tabPage_debug
             // 
             this.tabPage_debug.BackColor = System.Drawing.Color.DimGray;
+            this.tabPage_debug.Controls.Add(this.button1);
+            this.tabPage_debug.Controls.Add(this.textBox1);
+            this.tabPage_debug.Controls.Add(this.label8);
+            this.tabPage_debug.Controls.Add(this.label1);
             this.tabPage_debug.Controls.Add(this.label7);
             this.tabPage_debug.Controls.Add(this.network_communication_labal);
             this.tabPage_debug.Location = new System.Drawing.Point(4, 25);
@@ -534,15 +544,40 @@ namespace DTscope_dome1._0
             this.tabPage_debug.TabIndex = 1;
             this.tabPage_debug.Text = "debug";
             // 
-            // network_communication_labal
+            // button1
             // 
-            this.network_communication_labal.BackColor = System.Drawing.Color.Black;
-            this.network_communication_labal.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.network_communication_labal.Location = new System.Drawing.Point(23, 47);
-            this.network_communication_labal.Name = "network_communication_labal";
-            this.network_communication_labal.Size = new System.Drawing.Size(414, 225);
-            this.network_communication_labal.TabIndex = 0;
-            this.network_communication_labal.Text = ".init";
+            this.button1.Location = new System.Drawing.Point(1036, 480);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(56, 50);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "发送";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(553, 480);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(477, 50);
+            this.textBox1.TabIndex = 4;
+            // 
+            // label8
+            // 
+            this.label8.BackColor = System.Drawing.Color.Black;
+            this.label8.Location = new System.Drawing.Point(550, 47);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(542, 429);
+            this.label8.TabIndex = 3;
+            this.label8.Text = "label8";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(550, 32);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(67, 15);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "发送内容";
             // 
             // label7
             // 
@@ -553,12 +588,32 @@ namespace DTscope_dome1._0
             this.label7.TabIndex = 1;
             this.label7.Text = "通信内容";
             // 
+            // network_communication_labal
+            // 
+            this.network_communication_labal.BackColor = System.Drawing.Color.Black;
+            this.network_communication_labal.ForeColor = System.Drawing.SystemColors.AppWorkspace;
+            this.network_communication_labal.Location = new System.Drawing.Point(23, 47);
+            this.network_communication_labal.Name = "network_communication_labal";
+            this.network_communication_labal.Size = new System.Drawing.Size(495, 483);
+            this.network_communication_labal.TabIndex = 0;
+            this.network_communication_labal.Text = ".init";
+            // 
+            // button_test_string
+            // 
+            this.button_test_string.Location = new System.Drawing.Point(153, 76);
+            this.button_test_string.Name = "button_test_string";
+            this.button_test_string.Size = new System.Drawing.Size(96, 23);
+            this.button_test_string.TabIndex = 28;
+            this.button_test_string.Text = "测试string";
+            this.button_test_string.UseVisualStyleBackColor = true;
+            this.button_test_string.Click += new System.EventHandler(this.button_test_string_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.ClientSize = new System.Drawing.Size(1168, 639);
+            this.ClientSize = new System.Drawing.Size(1168, 590);
             this.Controls.Add(this.tabControl1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -620,6 +675,11 @@ namespace DTscope_dome1._0
         private System.Windows.Forms.TabPage tabPage_debug;
         private Label label7;
         private Label network_communication_labal;
+        private TextBox textBox1;
+        private Label label8;
+        private Label label1;
+        private Button button1;
+        private Button button_test_string;
     }
 }
 

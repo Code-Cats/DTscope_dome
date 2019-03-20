@@ -13,8 +13,57 @@ using System.Windows.Forms;
 
 namespace DTscope_dome1._0
 {
+    public enum ROBOT_Type
+    {
+        Sentry1,
+        Sentry2,
+        Infantry1,
+        Infantry2,
+        Hero1,
+        Hero2,
+        Engineer1,
+        Engineer2,
+        Uav,
+        Other1,
+        Other2,
+        Other3,
+        ROBOT_Type_num
+    }
+
+    public enum ROBOT_State
+    {
+        Off_line,   //放在第一个是默认类型-不在线
+        On_line_free,
+        On_line_busy,
+        ROBOT_State_num
+    }
+
+    public enum ROBOT_Connect_State
+    {
+        Off_line,   //放在第一个是默认类型-不在线
+        On_line_free,
+        On_line_busy,
+        Wait_Reply,
+        Wait_OSPF,
+        ConnectOK,
+        ROBOT_Connect_State_num
+    }
+
+    public struct ROBOT_Info  //自定义的数据类型。用来描述员工的信息。 
+    {
+        public string NO;
+        public string Name;
+        public ROBOT_State on_line_state;   //在线状态
+        public string Nation;
+        public bool Sex;
+        public IPEndPoint TarIpep;  //目标IP
+    }
+
     public partial class Form1 : Form
     {
+        
+        static ROBOT_Info[] RobotInfo = new ROBOT_Info[(int)ROBOT_Type.ROBOT_Type_num]; //初始化10个机器信息结构体
+        
         public Form1()
         {
             InitializeComponent();
@@ -22,7 +71,7 @@ namespace DTscope_dome1._0
 
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)  //右侧通知栏
         {
-
+           
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -82,32 +131,34 @@ namespace DTscope_dome1._0
        
         static UdpClient UdpDedicatedSend = new UdpClient(1814);//设置本地端口1812发专线
         static UdpClient UdpDedicatedRev = new UdpClient(1815);//设置本地端口1813收专线
-         
-        //static IPEndPoint UDP_So = new IPEndPoint(IPAddress.Parse("192.168.1.25"),9999);  //监听端口9999 IPAddress.Any
+
+        
         private void test_connect_Click(object sender, EventArgs e)
         {
-            Thread thrSend = new Thread(SendMessage_DiscoveryRobot);
-            thrSend.Start();
+            Thread thrSend = new Thread(SendMessage_DiscoveryRobot);    //发送线程
+            thrSend.Start("#RM-DT=TEST#END");
         }
 
         /// <summary>
         /// 发送信息
         /// </summary>
         ///<param name="obj">
-        private static void SendMessage_DiscoveryRobot()
+        private static void SendMessage_DiscoveryRobot(object obj)
         {
             try
             {
-                string message = "#RM-DT=DCY_ROBOT#END";
+                string message = (string)obj;
+                //string message = "#RM-DT=DCY_ROBOT#END";
                 byte[] sendbytes = Encoding.Default.GetBytes(message);
                 IPEndPoint remoteIpep = new IPEndPoint(IPAddress.Parse("192.168.1.255"), 1813); // 发送到的IP地址和端口号
                 UdpBroadcastSend.Send(sendbytes, sendbytes.Length, remoteIpep);
-                UdpBroadcastSend.Close();
+                //UdpBroadcastSend.Close();
             }
             catch
             {
                 //提示：直接在按钮上提示或者新建label
             }
+            //thrSend.Abort();
 
         }
 
@@ -125,8 +176,10 @@ namespace DTscope_dome1._0
                     byte[] bytRecv = UdpBroadcastRev.Receive(ref revIpep);
                     string message = Encoding.Default.GetString(bytRecv, 0, bytRecv.Length);
                     //rev_msg = rev_msg.Insert(-1, message);//(int)rev_msg.LongCount()
+                    Discover_Message_Deal(message);
                     rev_msg = rev_msg.Insert(rev_msg.LastIndexOf('.'), message+"\r\n");
                     // ShowMessage(txtRecvMssg, string.Format("{0}[{1}]", remoteIpep, message));
+                    
                 }
                 catch (Exception ex)
                 {
@@ -135,7 +188,43 @@ namespace DTscope_dome1._0
                 }
             }
         }
-        static string rev_msg=".init";
+        static string rev_msg=".init";  //对话框的内容储存
+
+        static void Discover_Message_Deal(string rev_msg)  //局域网自动发现函数
+        {
+            //可以用两种方式检测1、string函数查找帧头帧尾 2、每个字节状态机分析
+            if(rev_msg.IndexOf("#RM-DT")!=-1&& rev_msg.IndexOf("#END") != -1)   //该函数会从0开始索引，第一个元素位置是0//如果属于DT-scope数据包
+            {
+                string[] temp1;
+                string[] temp_type;
+                temp1 = rev_msg.Split('=');//分割字符串 不包含该字符
+                temp_type = temp1[1].Split(':');
+                switch(temp_type[0])
+                {
+                    case "DCY_ROBOT":   //其他设备的问询
+                        {
+
+                            break;
+                        }
+                    case "REP_DCY": //设备的回复
+                        {
+
+                            break;
+                        }
+                    case "RCNET":   //设备握手的回复
+                        {
+
+                            break;
+                        }
+                    default:
+                        {
+                            break;
+                        }
+                }
+                //rev_msg.Contains("#RM-DT=DCY_ROBOT:");
+            }
+        }
+
 
         private void test_rev_Click(object sender, EventArgs e)
         {
@@ -244,6 +333,13 @@ namespace DTscope_dome1._0
             else
             { SetWindowLong(c.Handle, GWL_STYLE, WS_DISABLED + GetWindowLong(c.Handle, GWL_STYLE)); }
         }//
+
+        private void button_test_string_Click(object sender, EventArgs e)
+        {
+            string test_str = "#RM";
+            test_str.IndexOf("#");
+            button_test_string.Text = test_str.IndexOf("#").ToString();//从0开始
+        }
 
         //////////////////////////////////////////////////////////////////////////////////
 
