@@ -152,7 +152,7 @@ namespace DTscope_dome1._0
                     {
                         button.BackColor = Color.FromArgb(65, 65, 65); //灰色 disconnect
                         button.ForeColor = Color.FromArgb(140, 140, 140); //160 160 160
-                                                                          // button.Enabled = false;
+                        //button.Enabled = false;
                         //SetControlEnabled(button, false);
                         //button.Text = button.Text.Split('\n')[0]+ "\noff-line";//fuck this!线程中连按钮文本都不能改变？？？？服  了 
                         Connection_rate.Value = 10;
@@ -256,7 +256,7 @@ namespace DTscope_dome1._0
         private void test_connect_Click(object sender, EventArgs e)
         {
             Thread thrSend = new Thread(SendMessage_DiscoveryRobot);    //发送线程
-            thrSend.Start("#RM-DT=TEST#END");
+            thrSend.Start("#RM-DT=TEST:#END");
         }
 
         /// <summary>
@@ -331,6 +331,10 @@ namespace DTscope_dome1._0
                     case "REP_DCY": //设备的回复
                         {
                             Discover_Message_Deal(temp_data);
+                            break;
+                        }
+                    case "TEST":
+                        {
                             break;
                         }
                     default:
