@@ -123,6 +123,39 @@
   <metadata name="timer1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>157, 17</value>
   </metadata>
+  <data name="textBox1.Text" xml:space="preserve">
+    <value>#RM-DT=CNET:TAR=&lt;type&gt;;TIP=&lt;tar_ip+1&gt;;CIP=&lt;ip&gt;;CPT=&lt;port&gt;#END
+#RM-DT=CNET:TAR=&lt;type&gt;;TIP=&lt;tar_ip+1&gt;;CIP=&lt;ip&gt;;CPT=&lt;port&gt;#END
+#RM-DT=CNET:TAR=&lt;type&gt;;TIP=&lt;tar_ip+1&gt;;CIP=&lt;ip&gt;;CPT=&lt;port&gt;#END
+#RM-DT=CNET:TAR=&lt;type&gt;;TIP=&lt;tar_ip+1&gt;;CIP=&lt;ip&gt;;CPT=&lt;port&gt;#END
+#RM-DT=CNET:TAR=&lt;type&gt;;TIP=&lt;tar_ip+1&gt;;CIP=&lt;ip&gt;;CPT=&lt;port&gt;#END
+#RM-DT=CNET:TAR=&lt;type&gt;;TIP=&lt;tar_ip+1&gt;;CIP=&lt;ip&gt;;CPT=&lt;port&gt;#END</value>
+  </data>
+  <data name="label9.Text" xml:space="preserve">
+    <value># DTscope_dome
+
+设计：	1812用于问询robot广播
+	1813用于接收robot广播
+	1814用于专有tx-robot
+	1815用于专有rx-robot
+
+robot:	1812用于握手广播
+	1814用于专有通讯
+
+问询协议：&lt;广播&gt;
+Send:#RM-DT=DCY_ROBOT:#END
+Rev:#RM-DT=REP_DCY:IM=&lt;type&gt;;STA=&lt;state&gt;#END
+握手协议：&lt;点播&gt;
+Send:#RM-DT=CNET:TAR=&lt;type&gt;;TIP=&lt;tar_ip+1&gt;;CIP=&lt;ip&gt;;CPT=&lt;port&gt;#END
+rev:#RM-DT=RCNET:TIP=&lt;tip+1&gt;;CIP=&lt;ip&gt;;CPT=&lt;port&gt;#END
+wait 1s&lt;等待切换到透传&gt;
+rev:#RM-DT=RCNET:OK#END
+Send:#RM-DT=CNET:OK#END
+
+已连接的HOST被问询:&lt;广播&gt;
+Rev:#RM-DT=DCY_ROBOT:#END
+Send:#RM-DT=REP_DCY:IM=&lt;type&gt;;STA=&lt;state&gt;#END	//state=已连接</value>
+  </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>37</value>
   </metadata>

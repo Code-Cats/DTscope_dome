@@ -120,14 +120,14 @@ namespace DTscope_dome1._0
             }
         }
 
-        private void channelListBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void channelListBox1_SelectedIndexChanged(object sender, EventArgs e)   //通道选择发生改变
         {
 
         }
 
         //创建UdpClient对象
         static UdpClient UdpBroadcastSend = new UdpClient(1812);//设置本地端口1812发广播
-        static UdpClient UdpBroadcastRev = new UdpClient(1813);//设置本地端口1813收广播
+        static UdpClient UdpBroadcastRev;// = new UdpClient(1813);//设置本地端口1813收广播
        
         static UdpClient UdpDedicatedSend = new UdpClient(1814);//设置本地端口1812发专线
         static UdpClient UdpDedicatedRev = new UdpClient(1815);//设置本地端口1813收专线
@@ -225,15 +225,37 @@ namespace DTscope_dome1._0
             }
         }
 
+        /// <summary>
+        /// 开关：在监听UDP报文阶段为true，否则为false
+        /// </summary>
+        bool IsUdpcRecvStart = false;
 
-        private void test_rev_Click(object sender, EventArgs e)
+        /// <summary>
+        /// 线程：不断监听UDP报文
+        /// </summary>
+        Thread thrRecv;
+
+        /// <summary>
+        /// 按钮：是否监听UDP报文
+        /// </summary>
+        private void test_rev_Click(object sender, EventArgs e) //广播接收
         {
-            /// <summary>
-            /// 线程：不断监听UDP报文
-            /// </summary>
-            Thread thrRecv;
-            thrRecv = new Thread(ReceiveMessage_DiscoveryRobot);
-            thrRecv.Start();
+            if(!IsUdpcRecvStart)
+            {
+                UdpBroadcastRev = new UdpClient(1813);
+                thrRecv = new Thread(ReceiveMessage_DiscoveryRobot);
+                thrRecv.Start();
+                IsUdpcRecvStart = true;
+                test_rev.Text = "连接成功";
+            }
+            else
+            {
+                thrRecv.Abort();
+                UdpBroadcastRev.Close();
+                IsUdpcRecvStart = false;
+                test_rev.Text = "已关闭";
+            }
+            
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -243,7 +265,7 @@ namespace DTscope_dome1._0
         }
 
 
-        private void tabControl1_DrawItem(object sender, DrawItemEventArgs e)
+        private void tabControl_Main_DrawItem(object sender, DrawItemEventArgs e)   //重绘tabControl更改颜色
         {
             TabControl tc = sender as TabControl;
             Font font = new Font("微软雅黑", 10F);
@@ -258,17 +280,25 @@ namespace DTscope_dome1._0
             e.Graphics.FillRectangle(tabPageBlack, rec1);
             Rectangle rec2 = tc.GetTabRect(1);
             e.Graphics.FillRectangle(tabPageBlack, rec2);
+            Rectangle rec3 = tc.GetTabRect(2);
+            e.Graphics.FillRectangle(tabPageBlack, rec3);
+            Rectangle rec4 = tc.GetTabRect(3);
+            e.Graphics.FillRectangle(tabPageBlack, rec4);
 
             //填充背景色
-            Rectangle rec3 = tc.ClientRectangle;
-            e.Graphics.FillRectangle(backgroundBlack, rec3);
+            Rectangle rec_background = tc.ClientRectangle;
+            e.Graphics.FillRectangle(backgroundBlack, rec_background);
 
             //填写选项卡名称
             e.Graphics.DrawString("chart", font, bruFont, rec1, stringFormat);
             e.Graphics.DrawString("debug", font, bruFont, rec2, stringFormat);
+            e.Graphics.DrawString("config", font, bruFont, rec3, stringFormat);
+            e.Graphics.DrawString("help", font, bruFont, rec4, stringFormat);
 
             tabPage_debug.BackColor = System.Drawing.Color.DimGray;
             tabPage_chart.BackColor = System.Drawing.Color.DimGray;
+            tabPage_config.BackColor = System.Drawing.Color.DimGray;
+            tabPage_help.BackColor = System.Drawing.Color.DimGray;
 
             ////获取TabControl主控件的工作区域
             //Rectangle rec = tabControl2.ClientRectangle;
@@ -299,7 +329,7 @@ namespace DTscope_dome1._0
             //}
         }
 
-        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        private void tabControl_Main_SelectedIndexChanged(object sender, EventArgs e)
         {
             //tabControl1.TabPages[tabControl1.SelectedIndex].Focus();
             //this.tabControl1.SelectedTab.BackColor = System.Drawing.Color.Transparent;
@@ -311,7 +341,7 @@ namespace DTscope_dome1._0
         /// 关闭程序，强制退出
         /// </summary>
         ///<param name="sender">
-        ///<param name="e">
+        ///<param name="e"></param>
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             Environment.Exit(0);
@@ -334,12 +364,27 @@ namespace DTscope_dome1._0
             { SetWindowLong(c.Handle, GWL_STYLE, WS_DISABLED + GetWindowLong(c.Handle, GWL_STYLE)); }
         }//
 
-        private void button_test_string_Click(object sender, EventArgs e)
+        private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            string test_str = "#RM";
-            test_str.IndexOf("#");
-            button_test_string.Text = test_str.IndexOf("#").ToString();//从0开始
+
         }
+
+
+        private void checkedListBox_debug_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (e.CurrentValue == CheckState.Checked) return;//取消选中就不用进行以下操作
+            for (int i = 0; i < ((CheckedListBox)sender).Items.Count; i++)
+            {
+                ((CheckedListBox)sender).SetItemChecked(i, false);//将所有选项设为不选中
+            }
+            e.NewValue = CheckState.Checked;//刷新
+        }
+
+        private void checkedListBox_dubug_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
 
         //////////////////////////////////////////////////////////////////////////////////
 

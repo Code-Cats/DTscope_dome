@@ -66,22 +66,28 @@ namespace DTscope_dome1._0
             this.label3 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabControl_Main = new System.Windows.Forms.TabControl();
             this.tabPage_chart = new System.Windows.Forms.TabPage();
             this.tabPage_debug = new System.Windows.Forms.TabPage();
+            this.checkedListBox_dubug = new System.Windows.Forms.CheckedListBox();
+            this.textBox2 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.network_communication_labal = new System.Windows.Forms.Label();
-            this.button_test_string = new System.Windows.Forms.Button();
+            this.tabPage_config = new System.Windows.Forms.TabPage();
+            this.label8 = new System.Windows.Forms.Label();
+            this.tabPage_help = new System.Windows.Forms.TabPage();
+            this.label9 = new System.Windows.Forms.Label();
             this.CurveOptions_panel.SuspendLayout();
             this.btn_connect_panel.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.tabControl1.SuspendLayout();
+            this.tabControl_Main.SuspendLayout();
             this.tabPage_chart.SuspendLayout();
             this.tabPage_debug.SuspendLayout();
+            this.tabPage_config.SuspendLayout();
+            this.tabPage_help.SuspendLayout();
             this.SuspendLayout();
             // 
             // Curve1
@@ -299,6 +305,7 @@ namespace DTscope_dome1._0
             // 
             this.channelListBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.channelListBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.channelListBox1.CheckOnClick = true;
             this.channelListBox1.FormattingEnabled = true;
             this.channelListBox1.Items.AddRange(new object[] {
             "ch1",
@@ -342,7 +349,6 @@ namespace DTscope_dome1._0
             // CurveOptions_panel
             // 
             this.CurveOptions_panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            this.CurveOptions_panel.Controls.Add(this.button_test_string);
             this.CurveOptions_panel.Controls.Add(this.revnum_label);
             this.CurveOptions_panel.Controls.Add(this.channelListBox1);
             this.CurveOptions_panel.Controls.Add(this.test_rev);
@@ -361,7 +367,7 @@ namespace DTscope_dome1._0
             this.revnum_label.AutoSize = true;
             this.revnum_label.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
             this.revnum_label.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(140)))), ((int)(((byte)(140)))));
-            this.revnum_label.Location = new System.Drawing.Point(146, 231);
+            this.revnum_label.Location = new System.Drawing.Point(146, 240);
             this.revnum_label.Name = "revnum_label";
             this.revnum_label.Size = new System.Drawing.Size(55, 15);
             this.revnum_label.TabIndex = 27;
@@ -423,7 +429,7 @@ namespace DTscope_dome1._0
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(140)))), ((int)(((byte)(140)))));
-            this.label6.Location = new System.Drawing.Point(942, 149);
+            this.label6.Location = new System.Drawing.Point(957, 149);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(128, 16);
             this.label6.TabIndex = 24;
@@ -434,7 +440,7 @@ namespace DTscope_dome1._0
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(140)))), ((int)(((byte)(140)))));
-            this.label5.Location = new System.Drawing.Point(1046, 91);
+            this.label5.Location = new System.Drawing.Point(1061, 91);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(47, 16);
             this.label5.TabIndex = 23;
@@ -445,7 +451,7 @@ namespace DTscope_dome1._0
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("华文新魏", 5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(150)))));
-            this.label4.Location = new System.Drawing.Point(943, 76);
+            this.label4.Location = new System.Drawing.Point(958, 76);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(150, 9);
             this.label4.TabIndex = 22;
@@ -456,7 +462,7 @@ namespace DTscope_dome1._0
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("华文新魏", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(150)))));
-            this.label3.Location = new System.Drawing.Point(942, 35);
+            this.label3.Location = new System.Drawing.Point(957, 35);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(151, 34);
             this.label3.TabIndex = 21;
@@ -469,7 +475,7 @@ namespace DTscope_dome1._0
             this.linkLabel1.Font = new System.Drawing.Font("Rage Italic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.linkLabel1.LinkArea = new System.Windows.Forms.LinkArea(0, 38);
             this.linkLabel1.LinkColor = System.Drawing.Color.DarkCyan;
-            this.linkLabel1.Location = new System.Drawing.Point(940, 121);
+            this.linkLabel1.Location = new System.Drawing.Point(955, 121);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(160, 31);
             this.linkLabel1.TabIndex = 20;
@@ -501,19 +507,21 @@ namespace DTscope_dome1._0
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "on-line state";
             // 
-            // tabControl1
+            // tabControl_Main
             // 
-            this.tabControl1.Controls.Add(this.tabPage_chart);
-            this.tabControl1.Controls.Add(this.tabPage_debug);
-            this.tabControl1.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
-            this.tabControl1.Location = new System.Drawing.Point(-5, -1);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1173, 647);
-            this.tabControl1.TabIndex = 0;
-            this.tabControl1.TabStop = false;
-            this.tabControl1.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl1_DrawItem);
-            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
+            this.tabControl_Main.Controls.Add(this.tabPage_chart);
+            this.tabControl_Main.Controls.Add(this.tabPage_debug);
+            this.tabControl_Main.Controls.Add(this.tabPage_config);
+            this.tabControl_Main.Controls.Add(this.tabPage_help);
+            this.tabControl_Main.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
+            this.tabControl_Main.Location = new System.Drawing.Point(-5, -1);
+            this.tabControl_Main.Name = "tabControl_Main";
+            this.tabControl_Main.SelectedIndex = 0;
+            this.tabControl_Main.Size = new System.Drawing.Size(1173, 647);
+            this.tabControl_Main.TabIndex = 0;
+            this.tabControl_Main.TabStop = false;
+            this.tabControl_Main.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl_Main_DrawItem);
+            this.tabControl_Main.SelectedIndexChanged += new System.EventHandler(this.tabControl_Main_SelectedIndexChanged);
             // 
             // tabPage_chart
             // 
@@ -531,9 +539,10 @@ namespace DTscope_dome1._0
             // tabPage_debug
             // 
             this.tabPage_debug.BackColor = System.Drawing.Color.DimGray;
+            this.tabPage_debug.Controls.Add(this.checkedListBox_dubug);
+            this.tabPage_debug.Controls.Add(this.textBox2);
             this.tabPage_debug.Controls.Add(this.button1);
             this.tabPage_debug.Controls.Add(this.textBox1);
-            this.tabPage_debug.Controls.Add(this.label8);
             this.tabPage_debug.Controls.Add(this.label1);
             this.tabPage_debug.Controls.Add(this.label7);
             this.tabPage_debug.Controls.Add(this.network_communication_labal);
@@ -544,9 +553,42 @@ namespace DTscope_dome1._0
             this.tabPage_debug.TabIndex = 1;
             this.tabPage_debug.Text = "debug";
             // 
+            // checkedListBox_dubug
+            // 
+            this.checkedListBox_dubug.BackColor = System.Drawing.Color.DimGray;
+            this.checkedListBox_dubug.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.checkedListBox_dubug.CheckOnClick = true;
+            this.checkedListBox_dubug.Font = new System.Drawing.Font("微软雅黑 Light", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkedListBox_dubug.FormattingEnabled = true;
+            this.checkedListBox_dubug.Items.AddRange(new object[] {
+            "广播",
+            "点播"});
+            this.checkedListBox_dubug.Location = new System.Drawing.Point(1092, 514);
+            this.checkedListBox_dubug.Name = "checkedListBox_dubug";
+            this.checkedListBox_dubug.Size = new System.Drawing.Size(56, 40);
+            this.checkedListBox_dubug.TabIndex = 7;
+            this.checkedListBox_dubug.TabStop = false;
+            this.checkedListBox_dubug.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.checkedListBox_debug_ItemCheck);
+            this.checkedListBox_dubug.SelectedIndexChanged += new System.EventHandler(this.checkedListBox_dubug_SelectedIndexChanged);
+            // 
+            // textBox2
+            // 
+            this.textBox2.BackColor = System.Drawing.Color.Black;
+            this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox2.ForeColor = System.Drawing.Color.DarkGray;
+            this.textBox2.Location = new System.Drawing.Point(523, 21);
+            this.textBox2.Multiline = true;
+            this.textBox2.Name = "textBox2";
+            this.textBox2.ReadOnly = true;
+            this.textBox2.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBox2.Size = new System.Drawing.Size(610, 483);
+            this.textBox2.TabIndex = 6;
+            this.textBox2.Text = ".init";
+            // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(1036, 480);
+            this.button1.Font = new System.Drawing.Font("等线", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button1.Location = new System.Drawing.Point(1030, 507);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(56, 50);
             this.button1.TabIndex = 5;
@@ -555,81 +597,117 @@ namespace DTscope_dome1._0
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(553, 480);
+            this.textBox1.Location = new System.Drawing.Point(523, 507);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(477, 50);
+            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBox1.Size = new System.Drawing.Size(501, 50);
             this.textBox1.TabIndex = 4;
-            // 
-            // label8
-            // 
-            this.label8.BackColor = System.Drawing.Color.Black;
-            this.label8.Location = new System.Drawing.Point(550, 47);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(542, 429);
-            this.label8.TabIndex = 3;
-            this.label8.Text = "label8";
+            this.textBox1.Text = resources.GetString("textBox1.Text");
+            this.textBox1.WordWrap = false;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(550, 32);
+            this.label1.Font = new System.Drawing.Font("微软雅黑 Light", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label1.Location = new System.Drawing.Point(523, 1);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(67, 15);
+            this.label1.Size = new System.Drawing.Size(69, 20);
             this.label1.TabIndex = 2;
-            this.label1.Text = "发送内容";
+            this.label1.Text = "单播通信";
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(20, 32);
+            this.label7.Font = new System.Drawing.Font("微软雅黑 Light", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label7.Location = new System.Drawing.Point(13, 1);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(67, 15);
+            this.label7.Size = new System.Drawing.Size(69, 20);
             this.label7.TabIndex = 1;
-            this.label7.Text = "通信内容";
+            this.label7.Text = "广播通信";
             // 
             // network_communication_labal
             // 
             this.network_communication_labal.BackColor = System.Drawing.Color.Black;
-            this.network_communication_labal.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.network_communication_labal.Location = new System.Drawing.Point(23, 47);
+            this.network_communication_labal.ForeColor = System.Drawing.Color.DarkGray;
+            this.network_communication_labal.Location = new System.Drawing.Point(13, 21);
             this.network_communication_labal.Name = "network_communication_labal";
-            this.network_communication_labal.Size = new System.Drawing.Size(495, 483);
+            this.network_communication_labal.Size = new System.Drawing.Size(504, 536);
             this.network_communication_labal.TabIndex = 0;
             this.network_communication_labal.Text = ".init";
             // 
-            // button_test_string
+            // tabPage_config
             // 
-            this.button_test_string.Location = new System.Drawing.Point(153, 76);
-            this.button_test_string.Name = "button_test_string";
-            this.button_test_string.Size = new System.Drawing.Size(96, 23);
-            this.button_test_string.TabIndex = 28;
-            this.button_test_string.Text = "测试string";
-            this.button_test_string.UseVisualStyleBackColor = true;
-            this.button_test_string.Click += new System.EventHandler(this.button_test_string_Click);
+            this.tabPage_config.BackColor = System.Drawing.Color.DimGray;
+            this.tabPage_config.Controls.Add(this.label8);
+            this.tabPage_config.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_config.Name = "tabPage_config";
+            this.tabPage_config.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_config.Size = new System.Drawing.Size(1165, 618);
+            this.tabPage_config.TabIndex = 2;
+            this.tabPage_config.Text = "config";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("华文新魏", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(150)))));
+            this.label8.Location = new System.Drawing.Point(299, 230);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(524, 51);
+            this.label8.TabIndex = 23;
+            this.label8.Text = "remain to be improved";
+            // 
+            // tabPage_help
+            // 
+            this.tabPage_help.BackColor = System.Drawing.Color.DimGray;
+            this.tabPage_help.Controls.Add(this.label9);
+            this.tabPage_help.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_help.Name = "tabPage_help";
+            this.tabPage_help.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_help.Size = new System.Drawing.Size(1165, 618);
+            this.tabPage_help.TabIndex = 3;
+            this.tabPage_help.Text = "help";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("华文新魏", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(150)))));
+            this.label9.Location = new System.Drawing.Point(33, 40);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(651, 391);
+            this.label9.TabIndex = 24;
+            this.label9.Text = resources.GetString("label9.Text");
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.ClientSize = new System.Drawing.Size(1168, 590);
-            this.Controls.Add(this.tabControl1);
+            this.ClientSize = new System.Drawing.Size(1164, 590);
+            this.Controls.Add(this.tabControl_Main);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "DT-scope";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.CurveOptions_panel.ResumeLayout(false);
             this.CurveOptions_panel.PerformLayout();
             this.btn_connect_panel.ResumeLayout(false);
             this.btn_connect_panel.PerformLayout();
             this.groupBox1.ResumeLayout(false);
-            this.tabControl1.ResumeLayout(false);
+            this.tabControl_Main.ResumeLayout(false);
             this.tabPage_chart.ResumeLayout(false);
             this.tabPage_debug.ResumeLayout(false);
             this.tabPage_debug.PerformLayout();
+            this.tabPage_config.ResumeLayout(false);
+            this.tabPage_config.PerformLayout();
+            this.tabPage_help.ResumeLayout(false);
+            this.tabPage_help.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -670,16 +748,20 @@ namespace DTscope_dome1._0
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label revnum_label;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl tabControl_Main;
         private System.Windows.Forms.TabPage tabPage_chart;
         private System.Windows.Forms.TabPage tabPage_debug;
         private Label label7;
         private Label network_communication_labal;
         private TextBox textBox1;
-        private Label label8;
         private Label label1;
         private Button button1;
-        private Button button_test_string;
+        private TextBox textBox2;
+        private CheckedListBox checkedListBox_dubug;
+        private TabPage tabPage_config;
+        private Label label8;
+        private TabPage tabPage_help;
+        private Label label9;
     }
 }
 
