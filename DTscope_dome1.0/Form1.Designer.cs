@@ -80,6 +80,7 @@ namespace DTscope_dome1._0
             this.label8 = new System.Windows.Forms.Label();
             this.tabPage_help = new System.Windows.Forms.TabPage();
             this.label9 = new System.Windows.Forms.Label();
+            this.label_version = new System.Windows.Forms.Label();
             this.CurveOptions_panel.SuspendLayout();
             this.btn_connect_panel.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -398,7 +399,7 @@ namespace DTscope_dome1._0
             this.test_connect.Name = "test_connect";
             this.test_connect.Size = new System.Drawing.Size(75, 23);
             this.test_connect.TabIndex = 24;
-            this.test_connect.Text = "测试连接";
+            this.test_connect.Text = "测试发送";
             this.test_connect.UseVisualStyleBackColor = true;
             this.test_connect.Click += new System.EventHandler(this.test_connect_Click);
             // 
@@ -410,6 +411,7 @@ namespace DTscope_dome1._0
             // btn_connect_panel
             // 
             this.btn_connect_panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(55)))));
+            this.btn_connect_panel.Controls.Add(this.label_version);
             this.btn_connect_panel.Controls.Add(this.label6);
             this.btn_connect_panel.Controls.Add(this.label5);
             this.btn_connect_panel.Controls.Add(this.label4);
@@ -429,7 +431,7 @@ namespace DTscope_dome1._0
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(140)))), ((int)(((byte)(140)))));
-            this.label6.Location = new System.Drawing.Point(957, 149);
+            this.label6.Location = new System.Drawing.Point(935, 149);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(128, 16);
             this.label6.TabIndex = 24;
@@ -440,7 +442,7 @@ namespace DTscope_dome1._0
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(140)))), ((int)(((byte)(140)))));
-            this.label5.Location = new System.Drawing.Point(1061, 91);
+            this.label5.Location = new System.Drawing.Point(1039, 91);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(47, 16);
             this.label5.TabIndex = 23;
@@ -451,7 +453,7 @@ namespace DTscope_dome1._0
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("华文新魏", 5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(150)))));
-            this.label4.Location = new System.Drawing.Point(958, 76);
+            this.label4.Location = new System.Drawing.Point(936, 76);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(150, 9);
             this.label4.TabIndex = 22;
@@ -462,7 +464,7 @@ namespace DTscope_dome1._0
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("华文新魏", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(150)))));
-            this.label3.Location = new System.Drawing.Point(957, 35);
+            this.label3.Location = new System.Drawing.Point(935, 35);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(151, 34);
             this.label3.TabIndex = 21;
@@ -475,7 +477,7 @@ namespace DTscope_dome1._0
             this.linkLabel1.Font = new System.Drawing.Font("Rage Italic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.linkLabel1.LinkArea = new System.Windows.Forms.LinkArea(0, 38);
             this.linkLabel1.LinkColor = System.Drawing.Color.DarkCyan;
-            this.linkLabel1.Location = new System.Drawing.Point(955, 121);
+            this.linkLabel1.Location = new System.Drawing.Point(933, 121);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(160, 31);
             this.linkLabel1.TabIndex = 20;
@@ -681,6 +683,16 @@ namespace DTscope_dome1._0
             this.label9.TabIndex = 24;
             this.label9.Text = resources.GetString("label9.Text");
             // 
+            // label_version
+            // 
+            this.label_version.Font = new System.Drawing.Font("微软雅黑", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_version.ForeColor = System.Drawing.SystemColors.ButtonShadow;
+            this.label_version.Location = new System.Drawing.Point(1095, 0);
+            this.label_version.Name = "label_version";
+            this.label_version.Size = new System.Drawing.Size(68, 52);
+            this.label_version.TabIndex = 25;
+            this.label_version.Text = "Versions:1.0\r\nsingle connection";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
@@ -762,6 +774,7 @@ namespace DTscope_dome1._0
         private Label label8;
         private TabPage tabPage_help;
         private Label label9;
+        private Label label_version;
     }
 }
 

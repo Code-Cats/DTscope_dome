@@ -7,12 +7,16 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DTscope_dome1._0
 {
+    /// <summary>
+    /// 所有设备名称的枚举，相当于宏
+    /// </summary>
     public enum ROBOT_Type
     {
         Sentry1,
@@ -30,40 +34,82 @@ namespace DTscope_dome1._0
         ROBOT_Type_num
     }
 
+    /// <summary>
+    /// 表示机器当前在线状态
+    /// </summary>
     public enum ROBOT_State
     {
         Off_line,   //放在第一个是默认类型-不在线
         On_line_free,
         On_line_busy,
+        On_line_connectOK,    //在线且已连接
         ROBOT_State_num
     }
 
-    public enum ROBOT_Connect_State
+    /// <summary>
+    /// 表示软件当前对单个机器连接状态
+    /// </summary>
+    public enum ROBOT_Connect_State //
     {
-        Off_line,   //放在第一个是默认类型-不在线
-        On_line_free,
-        On_line_busy,
-        Wait_Reply,
-        Wait_OSPF,
+        Unconnected,   //放在第一个是默认类型-未连接
+        Wait_Reply_connect,    //等待握手回复
+        Wait_OSPF,  //等待透传
         ConnectOK,
         ROBOT_Connect_State_num
     }
 
     public struct ROBOT_Info  //自定义的数据类型。用来描述员工的信息。 
     {
-        public string NO;
-        public string Name;
-        public ROBOT_State on_line_state;   //在线状态
-        public string Nation;
-        public bool Sex;
+        public string Type_Name;
+        public ROBOT_State On_line_state;   //在线状态
+        public bool IsNot_RM;   //是否非RM
         public IPEndPoint TarIpep;  //目标IP
     }
 
     public partial class Form1 : Form
     {
-        
+        /// <summary>
+        /// 构造一个字典:将设备描述名称转换为对应结构体数组index
+        /// </summary>
+        static Dictionary<string, ROBOT_Type>  RobotName_index_Dic =new Dictionary<string, ROBOT_Type>
+            {
+                {"SENTRY1",ROBOT_Type.Sentry1 },
+                {"SENTRY2",ROBOT_Type.Sentry2 },
+                {"INFANTRY1",ROBOT_Type.Infantry1 },
+                {"INFANTRY2",ROBOT_Type.Infantry2 },
+                {"HERO1",ROBOT_Type.Hero1 },
+                {"HERO2",ROBOT_Type.Hero2 },
+                {"ENGINEER1",ROBOT_Type.Engineer1 },
+                {"ENGINEER2",ROBOT_Type.Engineer2 },
+                {"UAV",ROBOT_Type.Uav },
+                {"OTHER1",ROBOT_Type.Other1 },
+                {"OTHER2",ROBOT_Type.Other2 },
+                {"OTHER3",ROBOT_Type.Other3 },
+            };
+
+        /// <summary>
+        /// 构造一个字典:将机器对应结构体的index转换为对应按钮句柄
+        /// </summary>
+        //static Dictionary<ROBOT_Type, System.Windows.Forms.Button> RobotIndex_button_Dic = new Dictionary<ROBOT_Type, System.Windows.Forms.Button>
+        //    {
+        //        {ROBOT_Type.Sentry1,new Button(sentry1_connect)  },
+        //        {ROBOT_Type.Sentry2 },
+        //        {ROBOT_Type.Infantry1 },
+        //        {"Infantry2",ROBOT_Type.Infantry2 },
+        //        {"Hero1",ROBOT_Type.Hero1 },
+        //        {"Hero2",ROBOT_Type.Hero2 },
+        //        {"Engineer1",ROBOT_Type.Engineer1 },
+        //        {"Engineer2",ROBOT_Type.Engineer2 },
+        //        {"Uav",ROBOT_Type.Uav },
+        //        {"Other1",ROBOT_Type.Other1 },
+        //        {"Other2",ROBOT_Type.Other2 },
+        //        {"Other3",ROBOT_Type.Other3 },
+        //    };
+
+
         static ROBOT_Info[] RobotInfo = new ROBOT_Info[(int)ROBOT_Type.ROBOT_Type_num]; //初始化10个机器信息结构体
-        
+        ROBOT_Connect_State Robot_Connect_State = new ROBOT_Connect_State();    //机器连接状态，此软件版本为单连接版
+
         public Form1()
         {
             InitializeComponent();
@@ -80,43 +126,117 @@ namespace DTscope_dome1._0
 
            // userCurve1.BringToFront();
         }
-       
-        static bool button_flag = false;
+
+        ROBOT_State button_state = new ROBOT_State();
         private void test_button_Click(object sender, EventArgs e)
         {
-            button_flag = !button_flag;
-            button_set(sentry1_connect);
-            button_set(sentry2_connect);
-            button_set(infantry1_connect);
-            button_set(infantry2_connect);
-            button_set(hero1_connect);
-            button_set(hero2_connect);
-            button_set(engineer1_connect);
-            button_set(engineer2_connect);
+            button_state++;
+            if (button_state == ROBOT_State.ROBOT_State_num) button_state = 0;
+            test_button.Text = button_state.ToString();
+            button_set(sentry1_connect, button_state);
+            button_set(sentry2_connect, button_state);
+            button_set(infantry1_connect, button_state);
+            button_set(infantry2_connect, button_state);
+            button_set(hero1_connect, button_state);
+            button_set(hero2_connect, button_state);
+            button_set(engineer1_connect, button_state);
+            button_set(engineer2_connect, button_state);
         }
 
-        private void button_set(System.Windows.Forms.Button button)
+        private void button_set(System.Windows.Forms.Button button , ROBOT_State button_state)
         {
             //button.Name.Length//可以通过长度、字符串识别来识别传入的按钮属于什么684835
-            if(button_flag)
+            switch (button_state)
             {
-
-                button.BackColor = Color.FromArgb(2, 131, 201);
-                button.ForeColor = Color.FromArgb(243, 249, 252);//46 58 132
-                //button.Enabled = true;
-                SetControlEnabled(button, true);
-                button.Text=button.Text.Replace("off-line", "click_connect");//= " 哨兵1   connect ";
-                Connection_rate.Value = 50;
+                case ROBOT_State.Off_line:
+                    {
+                        button.BackColor = Color.FromArgb(65, 65, 65); //灰色 disconnect
+                        button.ForeColor = Color.FromArgb(140, 140, 140); //160 160 160
+                                                                          // button.Enabled = false;
+                        //SetControlEnabled(button, false);
+                        //button.Text = button.Text.Split('\n')[0]+ "\noff-line";//fuck this!线程中连按钮文本都不能改变？？？？服  了 
+                        Connection_rate.Value = 10;
+                        break;
+                    }
+                case ROBOT_State.On_line_busy:
+                    {
+                        button.BackColor = Color.FromArgb(20, 140, 210); //灰色 disconnect
+                        button.ForeColor = Color.FromArgb(200, 200, 200); //160 160 160 字体颜色
+                                                                          // button.Enabled = false;
+                        //SetControlEnabled(button, false);//转移到定时器里了
+                        
+                        //button.Text = button.Text.Split('\n')[0] + "\nhas_occupied";//fuck this!线程中连按钮文本都不能改变？？？？服  了
+                        
+                        Connection_rate.Value = 10;
+                        break;
+                    }
+                case ROBOT_State.On_line_connectOK:
+                    {
+                        button.BackColor = Color.FromArgb(2, 131, 201);
+                        button.ForeColor = Color.FromArgb(243, 249, 252);//46 58 132
+                                                                         // button.Enabled = false;
+                        //SetControlEnabled(button, false); //转移到定时器里去了
+                        
+                        //button.Text = button.Text.Split('\n')[0] + "\nconnect_OK";//fuck this!线程中连按钮文本都不能改变？？？？服  了
+                        /////////////////////////button.Text = button.Text.Replace("click_connect", "off-line");
+                        Connection_rate.Value = 10;
+                        break;
+                    }
+                case ROBOT_State.On_line_free:
+                    {
+                        button.BackColor = Color.FromArgb(2, 131, 201);
+                        button.ForeColor = Color.FromArgb(243, 249, 252);//46 58 132
+                                                                         //button.Enabled = true;
+                        //SetControlEnabled(button, true);//它被线程调用会发生死循环异常2019.3.21 所以转移到定时器里去了
+                        //button.Text = button.Text.Replace("off-line", "click_connect");//= " 哨兵1   connect ";
+                        //button.Text = button.Text.Split('\n')[0] + "\nclick_connect"; //fuck this!线程中连按钮文本都不能改变？？？？服  了
+                        Connection_rate.Value = 50;
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
             }
-            else
+        }
+
+        /// <summary>
+        /// 微笑，这个函数存在的原因是网上魔改的buttonEnabled函数无法在线程中使用，只能在定时器定时刷新
+        /// </summary>
+        /// <param name="button"></param>
+        /// <param name="button_state"></param>
+        private void button_Enabled_Set(System.Windows.Forms.Button button, ROBOT_State button_state)
+        {
+            switch (button_state)
             {
-                button.BackColor = Color.FromArgb(65, 65, 65); //灰色 disconnect
-                button.ForeColor = Color.FromArgb(140, 140, 140); //160 160 160
-               // button.Enabled = false;
-                SetControlEnabled(button,false);
-                //button.Text = "哨兵1\r\noff-line ";
-                button.Text = button.Text.Replace("click_connect", "off-line");
-                Connection_rate.Value = 10;
+                case ROBOT_State.Off_line:
+                    {
+                        SetControlEnabled(button, false);
+                        button.Text = button.Text.Split('\n')[0] + "\noff-line";
+                        break;
+                    }
+                case ROBOT_State.On_line_busy:
+                    {
+                        SetControlEnabled(button, false);
+                        button.Text = button.Text.Split('\n')[0] + "\nhas_occupied";
+                        break;
+                    }
+                case ROBOT_State.On_line_connectOK:
+                    {
+                        SetControlEnabled(button, false);
+                        button.Text = button.Text.Split('\n')[0] + "\nconnect_OK";
+                        break;
+                    }
+                case ROBOT_State.On_line_free:
+                    {
+                        SetControlEnabled(button, true);//它被线程调用会发生死循环异常2019.3.21
+                        button.Text = button.Text.Split('\n')[0] + "\nclick_connect";
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
             }
         }
 
@@ -143,7 +263,7 @@ namespace DTscope_dome1._0
         /// 发送信息
         /// </summary>
         ///<param name="obj">
-        private static void SendMessage_DiscoveryRobot(object obj)
+        private void SendMessage_DiscoveryRobot(object obj)
         {
             try
             {
@@ -163,10 +283,10 @@ namespace DTscope_dome1._0
         }
 
         /// <summary>
-        /// 接收数据
+        /// 接收数据线程函数
         /// </summary>
         ///<param name="obj">
-        private static void ReceiveMessage_DiscoveryRobot(object obj)
+        private void ReceiveMessage_DiscoveryRobot(object obj)
         {
             IPEndPoint revIpep = new IPEndPoint(IPAddress.Any, 0);    //这个没看出来干什么用 直接填0吧
             while (true)
@@ -176,7 +296,8 @@ namespace DTscope_dome1._0
                     byte[] bytRecv = UdpBroadcastRev.Receive(ref revIpep);
                     string message = Encoding.Default.GetString(bytRecv, 0, bytRecv.Length);
                     //rev_msg = rev_msg.Insert(-1, message);//(int)rev_msg.LongCount()
-                    Discover_Message_Deal(message);
+                    Broadcast_Message_Deal(message);
+                    
                     rev_msg = rev_msg.Insert(rev_msg.LastIndexOf('.'), message+"\r\n");
                     // ShowMessage(txtRecvMssg, string.Format("{0}[{1}]", remoteIpep, message));
                     
@@ -190,16 +311,17 @@ namespace DTscope_dome1._0
         }
         static string rev_msg=".init";  //对话框的内容储存
 
-        static void Discover_Message_Deal(string rev_msg)  //局域网自动发现函数
+        void Broadcast_Message_Deal(string rev_msg)//广播信息接收处理
         {
             //可以用两种方式检测1、string函数查找帧头帧尾 2、每个字节状态机分析
-            if(rev_msg.IndexOf("#RM-DT")!=-1&& rev_msg.IndexOf("#END") != -1)   //该函数会从0开始索引，第一个元素位置是0//如果属于DT-scope数据包
+            if (rev_msg.IndexOf("#RM-DT") != -1 && rev_msg.IndexOf("#END") != -1)   //该函数会从0开始索引，第一个元素位置是0//如果属于DT-scope数据包
             {
-                string[] temp1;
-                string[] temp_type;
-                temp1 = rev_msg.Split('=');//分割字符串 不包含该字符
-                temp_type = temp1[1].Split(':');
-                switch(temp_type[0])
+                string temp_type;
+                string temp_data;
+                rev_msg = Regex.Split(rev_msg, "#RM-DT=", RegexOptions.IgnoreCase)[1];   //#RM-DT=将原字符串分为null 和 REP_DCY……
+                temp_type = rev_msg.Split(':')[0];//分割字符串 不包含该字符
+                temp_data = rev_msg.Split(':')[1];//分割字符串 不包含该字符
+                switch (temp_type)   //广播信息的分发，下面的处理函数将只关注数据内容，不关注帧头或校验
                 {
                     case "DCY_ROBOT":   //其他设备的问询
                         {
@@ -208,12 +330,7 @@ namespace DTscope_dome1._0
                         }
                     case "REP_DCY": //设备的回复
                         {
-
-                            break;
-                        }
-                    case "RCNET":   //设备握手的回复
-                        {
-
+                            Discover_Message_Deal(temp_data);
                             break;
                         }
                     default:
@@ -222,6 +339,197 @@ namespace DTscope_dome1._0
                         }
                 }
                 //rev_msg.Contains("#RM-DT=DCY_ROBOT:");
+            }
+        }
+
+        /// <summary>
+        /// 局域网自动发现函数：只处理discover reply信息
+        /// </summary>
+        void Discover_Message_Deal(string rev_msg)
+        {
+            int im_index, sta_index, type_index = 0;
+            string[] temp_robot_data = rev_msg.Split(new char[2] { '=', ';' }); //分割字符串 不包含该字符
+            im_index = temp_robot_data.ToList().IndexOf("IM") + 1;
+            sta_index = temp_robot_data.ToList().IndexOf("STA") + 1;
+            type_index= temp_robot_data.ToList().IndexOf("TYPE") + 1;
+            //temp_type = temp1[1].Split(':');
+            if(im_index==0||sta_index==0)   //没有状态标识或名称标识，丢弃
+            {
+                return;
+            }
+            else
+            {
+                if(type_index==0)   //若设备没有描述自己IS_RM?，则默认IS RM
+                {////////////////////////////////////RobotName_index_Dic
+                    ROBOT_Type temp_robot_Typeindex;    //获取该设备命名描述对应的结构体ID存入的变量
+                    if (RobotName_index_Dic.TryGetValue(temp_robot_data[im_index], out temp_robot_Typeindex))   //尝试获取该设备命名描述对应的结构体ID，若有则进if
+                    {
+                        //int temp_robot_index = (int)(RobotName_index_Dic[]);   //获取该设备命名描述对应的结构体ID
+                        int temp_on_line_state = 0;
+                        if (int.TryParse(temp_robot_data[sta_index], out temp_on_line_state))    //将在线状态<string>转换为一个整形值并检查是否成功
+                        {
+                            RobotInfo[(int)temp_robot_Typeindex].On_line_state = (ROBOT_State)temp_on_line_state;    //若成功了就赋值
+                            Update_buttons_callback(RobotInfo[(int)temp_robot_Typeindex], temp_robot_Typeindex);  //调用函数进行按钮刷新
+                        }
+                    }
+                    else    ////尝试获取该设备命名描述对应的结构体ID，若无则说明对方没有按照规则发送，直接丢弃信息
+                    {
+
+                    }
+                }
+                else    //以后在这里加其他设备类型(和RM类同一级别类)
+                {
+
+                }
+                
+            }
+        }
+
+        /// <summary>
+        /// 按钮状态刷新函数：传入参数为对应按钮结构体，按钮在结构体中对应ID
+        /// </summary>
+        void Update_buttons_callback(ROBOT_Info robotinfo,ROBOT_Type robot_index)
+        {
+            switch(robot_index)
+            {
+                case ROBOT_Type.Sentry1:
+                    {
+                        button_set(sentry1_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Sentry2:
+                    {
+                        button_set(sentry2_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Infantry1:
+                    {
+                        button_set(infantry1_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Infantry2:
+                    {
+                        button_set(infantry2_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Hero1:
+                    {
+                        button_set(hero1_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Hero2:
+                    {
+                        button_set(hero2_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Engineer1:
+                    {
+                        button_set(engineer1_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Engineer2:
+                    {
+                        button_set(engineer2_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Uav:
+                    {
+                        button_set(uav_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Other1:
+                    {
+                        button_set(other1_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Other2:
+                    {
+                        button_set(other2_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Other3:
+                    {
+                        button_set(other3_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
+            }
+        }
+
+        /// <summary>
+        /// 按钮使能状态刷新函数：传入参数为对应按钮结构体，按钮在结构体中对应ID，该函数可以在值刷新时才调用
+        /// </summary>
+        private void Update_buttonsEnabled(ROBOT_Info robotinfo, ROBOT_Type robot_index) 
+        {
+            switch (robot_index)
+            {
+                case ROBOT_Type.Sentry1:
+                    {
+                        button_Enabled_Set(sentry1_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Sentry2:
+                    {
+                        button_Enabled_Set(sentry2_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Infantry1:
+                    {
+                        button_Enabled_Set(infantry1_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Infantry2:
+                    {
+                        button_Enabled_Set(infantry2_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Hero1:
+                    {
+                        button_Enabled_Set(hero1_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Hero2:
+                    {
+                        button_Enabled_Set(hero2_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Engineer1:
+                    {
+                        button_Enabled_Set(engineer1_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Engineer2:
+                    {
+                        button_Enabled_Set(engineer2_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Uav:
+                    {
+                        button_Enabled_Set(uav_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Other1:
+                    {
+                        button_Enabled_Set(other1_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Other2:
+                    {
+                        button_Enabled_Set(other2_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                case ROBOT_Type.Other3:
+                    {
+                        button_Enabled_Set(other3_connect, robotinfo.On_line_state);
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
             }
         }
 
@@ -261,7 +569,13 @@ namespace DTscope_dome1._0
         private void timer1_Tick(object sender, EventArgs e)
         {
             rev_text.Text = rev_msg;
+            for(int i=0;i<(int)ROBOT_Type.ROBOT_Type_num;i++)
+            {
+                Update_buttonsEnabled(RobotInfo[i], (ROBOT_Type)i);
+            }
+            
             network_communication_labal.Text = rev_msg;
+
         }
 
 
@@ -356,12 +670,12 @@ namespace DTscope_dome1._0
         public const int GWL_STYLE = -16;
         public const int WS_DISABLED = 0x8000000;
 
-        public static void SetControlEnabled(Control c, bool enabled)
+        public void SetControlEnabled(Control c, bool enabled)  //该函数被线程调用会发生死循环
         {
             if (enabled)
             { SetWindowLong(c.Handle, GWL_STYLE, (~WS_DISABLED) & GetWindowLong(c.Handle, GWL_STYLE)); }
             else
-            { SetWindowLong(c.Handle, GWL_STYLE, WS_DISABLED + GetWindowLong(c.Handle, GWL_STYLE)); }
+            { SetWindowLong(c.Handle, GWL_STYLE, WS_DISABLED | GetWindowLong(c.Handle, GWL_STYLE)); }
         }//
 
         private void textBox1_TextChanged(object sender, EventArgs e)
