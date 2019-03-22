@@ -65,7 +65,7 @@ namespace DTscope_dome1._0
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.linkLabel_github = new System.Windows.Forms.LinkLabel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tabControl_Main = new System.Windows.Forms.TabControl();
             this.tabPage_chart = new System.Windows.Forms.TabPage();
@@ -418,7 +418,7 @@ namespace DTscope_dome1._0
             this.btn_connect_panel.Controls.Add(this.label5);
             this.btn_connect_panel.Controls.Add(this.label4);
             this.btn_connect_panel.Controls.Add(this.label3);
-            this.btn_connect_panel.Controls.Add(this.linkLabel1);
+            this.btn_connect_panel.Controls.Add(this.linkLabel_github);
             this.btn_connect_panel.Controls.Add(this.groupBox1);
             this.btn_connect_panel.Controls.Add(this.label2);
             this.btn_connect_panel.Controls.Add(this.Connection_rate);
@@ -482,20 +482,21 @@ namespace DTscope_dome1._0
             this.label3.TabIndex = 21;
             this.label3.Text = "ROBOMASTER\r\nDreamTeam 控制组";
             // 
-            // linkLabel1
+            // linkLabel_github
             // 
-            this.linkLabel1.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Font = new System.Drawing.Font("Rage Italic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.linkLabel1.LinkArea = new System.Windows.Forms.LinkArea(0, 38);
-            this.linkLabel1.LinkColor = System.Drawing.Color.DarkCyan;
-            this.linkLabel1.Location = new System.Drawing.Point(933, 121);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(160, 31);
-            this.linkLabel1.TabIndex = 20;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "Click to access github";
-            this.linkLabel1.UseCompatibleTextRendering = true;
+            this.linkLabel_github.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.linkLabel_github.AutoSize = true;
+            this.linkLabel_github.Font = new System.Drawing.Font("Rage Italic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.linkLabel_github.LinkArea = new System.Windows.Forms.LinkArea(0, 38);
+            this.linkLabel_github.LinkColor = System.Drawing.Color.DarkCyan;
+            this.linkLabel_github.Location = new System.Drawing.Point(933, 121);
+            this.linkLabel_github.Name = "linkLabel_github";
+            this.linkLabel_github.Size = new System.Drawing.Size(160, 31);
+            this.linkLabel_github.TabIndex = 20;
+            this.linkLabel_github.TabStop = true;
+            this.linkLabel_github.Text = "Click to access github";
+            this.linkLabel_github.UseCompatibleTextRendering = true;
+            this.linkLabel_github.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_github_LinkClicked);
             // 
             // groupBox1
             // 
@@ -763,7 +764,7 @@ namespace DTscope_dome1._0
         private System.Windows.Forms.Panel btn_connect_panel;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.LinkLabel linkLabel_github;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;

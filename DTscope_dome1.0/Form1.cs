@@ -810,6 +810,23 @@ namespace DTscope_dome1._0
             time_10ms_count++;
         }
 
+        /// <summary>
+        /// 访问超链接
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void linkLabel_github_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start("chrome.exe", "https://github.com/yx19981001");    //优先使用chrome浏览器打开
+            }
+            catch
+            {
+                System.Diagnostics.Process.Start("https://github.com/yx19981001");  //默认浏览器打开
+            }
+        }
+
 
         //////////////////////////////////////////////////////////////////////////////////
 
