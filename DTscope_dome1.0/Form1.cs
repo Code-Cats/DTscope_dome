@@ -314,13 +314,23 @@ namespace DTscope_dome1._0
         void Broadcast_Message_Deal(string rev_msg)//广播信息接收处理
         {
             //可以用两种方式检测1、string函数查找帧头帧尾 2、每个字节状态机分析
-            if (rev_msg.IndexOf("#RM-DT") != -1 && rev_msg.IndexOf("#END") != -1)   //该函数会从0开始索引，第一个元素位置是0//如果属于DT-scope数据包
-            {
+            if (rev_msg.IndexOf("#RM-DT=") != -1 && rev_msg.IndexOf("#END") != -1)   //该函数会从0开始索引，第一个元素位置是0//如果属于DT-scope数据包
+            {   //进入到该if说明#RM-DT=存在
                 string temp_type;
                 string temp_data;
                 rev_msg = Regex.Split(rev_msg, "#RM-DT=", RegexOptions.IgnoreCase)[1];   //#RM-DT=将原字符串分为null 和 REP_DCY……
-                temp_type = rev_msg.Split(':')[0];//分割字符串 不包含该字符
-                temp_data = rev_msg.Split(':')[1];//分割字符串 不包含该字符
+                string[] temp_string_split = rev_msg.Split(':');
+
+                if(temp_string_split.Length==2) //防止数组越界，数组越界在线程中不会产生错误，会直接终止线程
+                {
+                    temp_type = rev_msg.Split(':')[0];//分割字符串 不包含该字符
+                    temp_data = rev_msg.Split(':')[1];//分割字符串 不包含该字符
+                }
+                else
+                {
+                    return;
+                }
+
                 switch (temp_type)   //广播信息的分发，下面的处理函数将只关注数据内容，不关注帧头或校验
                 {
                     case "DCY_ROBOT":   //其他设备的问询
@@ -370,8 +380,8 @@ namespace DTscope_dome1._0
                     {
                         //int temp_robot_index = (int)(RobotName_index_Dic[]);   //获取该设备命名描述对应的结构体ID
                         int temp_on_line_state = 0;
-                        if (int.TryParse(temp_robot_data[sta_index], out temp_on_line_state))    //将在线状态<string>转换为一个整形值并检查是否成功
-                        {
+                        if (int.TryParse(temp_robot_data[sta_index], out temp_on_line_state)&& temp_on_line_state!=3)    //将在线状态<string>转换为一个整形值并检查是否成功 //限制3，不允许设备通过广播连接成功
+                        {//！！！！！！！！！！！！！！！！！！这里有个问题，当对方传递STA超过限定值，会发生意想不到的情况2019.3.22，应该加上安全限定//该问题无需解决，因为枚举值允许放入定义范围外的int值，且后面都是当作int的，swicth会直接丢弃3.22
                             RobotInfo[(int)temp_robot_Typeindex].On_line_state = (ROBOT_State)temp_on_line_state;    //若成功了就赋值
                             Update_buttons_callback(RobotInfo[(int)temp_robot_Typeindex], temp_robot_Typeindex);  //调用函数进行按钮刷新
                         }
