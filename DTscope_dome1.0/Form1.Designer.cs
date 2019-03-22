@@ -58,8 +58,9 @@ namespace DTscope_dome1._0
             this.test_rev = new System.Windows.Forms.Button();
             this.rev_text = new System.Windows.Forms.Label();
             this.test_connect = new System.Windows.Forms.Button();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.timer_UI = new System.Windows.Forms.Timer(this.components);
             this.btn_connect_panel = new System.Windows.Forms.Panel();
+            this.label_version = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -80,7 +81,7 @@ namespace DTscope_dome1._0
             this.label8 = new System.Windows.Forms.Label();
             this.tabPage_help = new System.Windows.Forms.TabPage();
             this.label9 = new System.Windows.Forms.Label();
-            this.label_version = new System.Windows.Forms.Label();
+            this.timer_count = new System.Windows.Forms.Timer(this.components);
             this.CurveOptions_panel.SuspendLayout();
             this.btn_connect_panel.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -403,10 +404,11 @@ namespace DTscope_dome1._0
             this.test_connect.UseVisualStyleBackColor = true;
             this.test_connect.Click += new System.EventHandler(this.test_connect_Click);
             // 
-            // timer1
+            // timer_UI
             // 
-            this.timer1.Enabled = true;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            this.timer_UI.Enabled = true;
+            this.timer_UI.Interval = 50;
+            this.timer_UI.Tick += new System.EventHandler(this.timer_UI_Tick);
             // 
             // btn_connect_panel
             // 
@@ -425,6 +427,16 @@ namespace DTscope_dome1._0
             this.btn_connect_panel.Name = "btn_connect_panel";
             this.btn_connect_panel.Size = new System.Drawing.Size(1200, 175);
             this.btn_connect_panel.TabIndex = 27;
+            // 
+            // label_version
+            // 
+            this.label_version.Font = new System.Drawing.Font("微软雅黑", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_version.ForeColor = System.Drawing.SystemColors.ButtonShadow;
+            this.label_version.Location = new System.Drawing.Point(1095, 0);
+            this.label_version.Name = "label_version";
+            this.label_version.Size = new System.Drawing.Size(68, 52);
+            this.label_version.TabIndex = 25;
+            this.label_version.Text = "Versions:1.0\r\nsingle connection";
             // 
             // label6
             // 
@@ -683,15 +695,11 @@ namespace DTscope_dome1._0
             this.label9.TabIndex = 24;
             this.label9.Text = resources.GetString("label9.Text");
             // 
-            // label_version
+            // timer_count
             // 
-            this.label_version.Font = new System.Drawing.Font("微软雅黑", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label_version.ForeColor = System.Drawing.SystemColors.ButtonShadow;
-            this.label_version.Location = new System.Drawing.Point(1095, 0);
-            this.label_version.Name = "label_version";
-            this.label_version.Size = new System.Drawing.Size(68, 52);
-            this.label_version.TabIndex = 25;
-            this.label_version.Text = "Versions:1.0\r\nsingle connection";
+            this.timer_count.Enabled = true;
+            this.timer_count.Interval = 10;
+            this.timer_count.Tick += new System.EventHandler(this.timer_count_Tick);
             // 
             // Form1
             // 
@@ -751,7 +759,7 @@ namespace DTscope_dome1._0
         private System.Windows.Forms.Button test_connect;
         private System.Windows.Forms.Button test_rev;
         private System.Windows.Forms.Label rev_text;
-        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Timer timer_UI;
         private System.Windows.Forms.Panel btn_connect_panel;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label3;
@@ -775,6 +783,7 @@ namespace DTscope_dome1._0
         private TabPage tabPage_help;
         private Label label9;
         private Label label_version;
+        private Timer timer_count;
     }
 }
 

@@ -61,7 +61,14 @@ namespace DTscope_dome1._0
     public struct ROBOT_Info  //自定义的数据类型。用来描述员工的信息。 
     {
         public string Type_Name;
+        /// <summary>
+        /// 在线状态
+        /// </summary>
         public ROBOT_State On_line_state;   //在线状态
+        /// <summary>
+        /// 上一次在线状态 仅在状态更新时-即UDP数据回传时更新上一次
+        /// </summary>
+        public ROBOT_State On_line_state_last;   //上一次在线状态  //仅在状态更新时-即UDP数据回传时更新上一次
         public bool IsNot_RM;   //是否非RM
         public IPEndPoint TarIpep;  //目标IP
     }
@@ -110,6 +117,7 @@ namespace DTscope_dome1._0
         static ROBOT_Info[] RobotInfo = new ROBOT_Info[(int)ROBOT_Type.ROBOT_Type_num]; //初始化10个机器信息结构体
         ROBOT_Connect_State Robot_Connect_State = new ROBOT_Connect_State();    //机器连接状态，此软件版本为单连接版
 
+
         public Form1()
         {
             InitializeComponent();
@@ -122,11 +130,17 @@ namespace DTscope_dome1._0
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            Thread thrDiscovery = new Thread(Automatic_LAN_discovery);    //局域网发现线程，开机默认开启
+            thrDiscovery.Start();
+
             //this.Focus();
 
-           // userCurve1.BringToFront();
+            // userCurve1.BringToFront();
         }
 
+        /// <summary>
+        /// 测试用的buttonstate
+        /// </summary>
         ROBOT_State button_state = new ROBOT_State();
         private void test_button_Click(object sender, EventArgs e)
         {
@@ -141,6 +155,8 @@ namespace DTscope_dome1._0
             button_set(hero2_connect, button_state);
             button_set(engineer1_connect, button_state);
             button_set(engineer2_connect, button_state);
+            button_Enabled_Text_Set(sentry1_connect, button_state);
+            button_Enabled_Text_Set(sentry2_connect, button_state);
         }
 
         private void button_set(System.Windows.Forms.Button button , ROBOT_State button_state)
@@ -205,7 +221,7 @@ namespace DTscope_dome1._0
         /// </summary>
         /// <param name="button"></param>
         /// <param name="button_state"></param>
-        private void button_Enabled_Set(System.Windows.Forms.Button button, ROBOT_State button_state)
+        private void button_Enabled_Text_Set(System.Windows.Forms.Button button, ROBOT_State button_state)
         {
             switch (button_state)
             {
@@ -246,10 +262,21 @@ namespace DTscope_dome1._0
         }
 
         //创建UdpClient对象
+        /// <summary>
+        /// 设置本地端口1812发广播
+        /// </summary>
         static UdpClient UdpBroadcastSend = new UdpClient(1812);//设置本地端口1812发广播
+        /// <summary>
+        /// 设置本地端口1813收广播
+        /// </summary>
         static UdpClient UdpBroadcastRev;// = new UdpClient(1813);//设置本地端口1813收广播
-       
+        /// <summary>
+        /// 设置本地端口1812发专线
+        /// </summary>
         static UdpClient UdpDedicatedSend = new UdpClient(1814);//设置本地端口1812发专线
+        /// <summary>
+        /// 设置本地端口1813收专线
+        /// </summary>
         static UdpClient UdpDedicatedRev = new UdpClient(1815);//设置本地端口1813收专线
 
         
@@ -257,6 +284,53 @@ namespace DTscope_dome1._0
         {
             Thread thrSend = new Thread(SendMessage_DiscoveryRobot);    //发送线程
             thrSend.Start("#RM-DT=TEST:#END");
+        }
+
+        /// <summary>
+        /// 时间计数，在定时器中运行;单位：10ms
+        /// </summary>
+        int time_10ms_count = 0;
+        /// <summary>
+        /// 使UDP监听只在最开始开启一次
+        /// </summary>
+        bool LAN_discovery_start_flag = false;
+        /// <summary>
+        /// 上一次局域网问询的时间，避免同一时间大量问询
+        /// </summary>
+        int last_LAN_discovery_time = 0;
+        /// <summary>
+        /// 局域网发现每次随机间隔，防止所有主机同步发送
+        /// </summary>
+        Random LAN_discovery_interval_rd = new Random();
+        /// <summary>
+        /// 局域网机器自动启动发现函数，Form加载时自动运行
+        /// </summary>
+        /// <param name="obj"></param>
+        private void Automatic_LAN_discovery(object obj)
+        {
+            if (LAN_discovery_start_flag==false)   //初始化时默认为false，所以会默认连接
+            {
+                UdpBroadcastRev = new UdpClient(1813);
+                thrRecv = new Thread(ReceiveMessage_DiscoveryRobot);
+                thrRecv.Start();
+                IsUdpcRecvStart = true;
+                LAN_discovery_start_flag = true;
+                //test_rev.Text = "连接成功";
+            }
+            else
+            {
+            }
+            int temp_random = 0;
+            while(true)
+            {
+                if((time_10ms_count-last_LAN_discovery_time)>= temp_random)//随机数产生放在if里会导致一个BUG，在100ms-101ms时不断刷新导致刷到101ms从而看起来每次都是101ms
+                {
+                    Thread thrSend = new Thread(SendMessage_DiscoveryRobot);    //发送线程
+                    thrSend.Start("#RM-DT=DCY_ROBOT:#END");
+                    last_LAN_discovery_time = time_10ms_count;
+                    temp_random = LAN_discovery_interval_rd.Next(100, 200);
+                }
+            }
         }
 
         /// <summary>
@@ -310,8 +384,11 @@ namespace DTscope_dome1._0
             }
         }
         static string rev_msg=".init";  //对话框的内容储存
-
-        void Broadcast_Message_Deal(string rev_msg)//广播信息接收处理
+        /// <summary>
+        /// 广播信息接收处理总函数
+        /// </summary>
+        /// <param name="rev_msg"></param>
+        void Broadcast_Message_Deal(string rev_msg)
         {
             //可以用两种方式检测1、string函数查找帧头帧尾 2、每个字节状态机分析
             if (rev_msg.IndexOf("#RM-DT=") != -1 && rev_msg.IndexOf("#END") != -1)   //该函数会从0开始索引，第一个元素位置是0//如果属于DT-scope数据包
@@ -335,7 +412,7 @@ namespace DTscope_dome1._0
                 {
                     case "DCY_ROBOT":   //其他设备的问询
                         {
-
+                            last_LAN_discovery_time = time_10ms_count;
                             break;
                         }
                     case "REP_DCY": //设备的回复
@@ -382,6 +459,7 @@ namespace DTscope_dome1._0
                         int temp_on_line_state = 0;
                         if (int.TryParse(temp_robot_data[sta_index], out temp_on_line_state)&& temp_on_line_state!=3)    //将在线状态<string>转换为一个整形值并检查是否成功 //限制3，不允许设备通过广播连接成功
                         {//！！！！！！！！！！！！！！！！！！这里有个问题，当对方传递STA超过限定值，会发生意想不到的情况2019.3.22，应该加上安全限定//该问题无需解决，因为枚举值允许放入定义范围外的int值，且后面都是当作int的，swicth会直接丢弃3.22
+                            RobotInfo[(int)temp_robot_Typeindex].On_line_state_last = RobotInfo[(int)temp_robot_Typeindex].On_line_state;//更新上一次值
                             RobotInfo[(int)temp_robot_Typeindex].On_line_state = (ROBOT_State)temp_on_line_state;    //若成功了就赋值
                             Update_buttons_callback(RobotInfo[(int)temp_robot_Typeindex], temp_robot_Typeindex);  //调用函数进行按钮刷新
                         }
@@ -476,68 +554,68 @@ namespace DTscope_dome1._0
         /// <summary>
         /// 按钮使能状态刷新函数：传入参数为对应按钮结构体，按钮在结构体中对应ID，该函数可以在值刷新时才调用
         /// </summary>
-        private void Update_buttonsEnabled(ROBOT_Info robotinfo, ROBOT_Type robot_index) 
+        private void Update_buttonsEnabled_andText(ROBOT_Info robotinfo, ROBOT_Type robot_index) 
         {
             switch (robot_index)
             {
                 case ROBOT_Type.Sentry1:
                     {
-                        button_Enabled_Set(sentry1_connect, robotinfo.On_line_state);
+                        button_Enabled_Text_Set(sentry1_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Sentry2:
                     {
-                        button_Enabled_Set(sentry2_connect, robotinfo.On_line_state);
+                        button_Enabled_Text_Set(sentry2_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Infantry1:
                     {
-                        button_Enabled_Set(infantry1_connect, robotinfo.On_line_state);
+                        button_Enabled_Text_Set(infantry1_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Infantry2:
                     {
-                        button_Enabled_Set(infantry2_connect, robotinfo.On_line_state);
+                        button_Enabled_Text_Set(infantry2_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Hero1:
                     {
-                        button_Enabled_Set(hero1_connect, robotinfo.On_line_state);
+                        button_Enabled_Text_Set(hero1_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Hero2:
                     {
-                        button_Enabled_Set(hero2_connect, robotinfo.On_line_state);
+                        button_Enabled_Text_Set(hero2_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Engineer1:
                     {
-                        button_Enabled_Set(engineer1_connect, robotinfo.On_line_state);
+                        button_Enabled_Text_Set(engineer1_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Engineer2:
                     {
-                        button_Enabled_Set(engineer2_connect, robotinfo.On_line_state);
+                        button_Enabled_Text_Set(engineer2_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Uav:
                     {
-                        button_Enabled_Set(uav_connect, robotinfo.On_line_state);
+                        button_Enabled_Text_Set(uav_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Other1:
                     {
-                        button_Enabled_Set(other1_connect, robotinfo.On_line_state);
+                        button_Enabled_Text_Set(other1_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Other2:
                     {
-                        button_Enabled_Set(other2_connect, robotinfo.On_line_state);
+                        button_Enabled_Text_Set(other2_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Other3:
                     {
-                        button_Enabled_Set(other3_connect, robotinfo.On_line_state);
+                        button_Enabled_Text_Set(other3_connect, robotinfo.On_line_state);
                         break;
                     }
                 default:
@@ -580,24 +658,33 @@ namespace DTscope_dome1._0
             
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+        /// <summary>
+        /// UI定时器：更新按键及显示文本信息
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void timer_UI_Tick(object sender, EventArgs e)
         {
             rev_text.Text = rev_msg;
             for(int i=0;i<(int)ROBOT_Type.ROBOT_Type_num;i++)
             {
-                Update_buttonsEnabled(RobotInfo[i], (ROBOT_Type)i);
+                Update_buttonsEnabled_andText(RobotInfo[i], (ROBOT_Type)i);
             }
             
             network_communication_labal.Text = rev_msg;
 
         }
 
-
+        /// <summary>
+        /// 重绘tabControl更改颜色和背景
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void tabControl_Main_DrawItem(object sender, DrawItemEventArgs e)   //重绘tabControl更改颜色
         {
             TabControl tc = sender as TabControl;
             Font font = new Font("微软雅黑", 10F);
-            SolidBrush bruFont = new SolidBrush(Color.White);//字体颜色
+            SolidBrush bruFont = new SolidBrush(Color.White);   //字体颜色
             SolidBrush tabPageBlack = new SolidBrush(Color.FromArgb(1, 1, 1));//Tab选项卡背景颜色150
             SolidBrush backgroundBlack = new SolidBrush(Color.FromArgb(1, 1, 1));//Tab整体背景颜色77
             StringFormat stringFormat = new StringFormat();
@@ -711,6 +798,16 @@ namespace DTscope_dome1._0
         private void checkedListBox_dubug_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        /// <summary>
+        /// 提供10ms的时间基准，计数用
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void timer_count_Tick(object sender, EventArgs e)
+        {
+            time_10ms_count++;
         }
 
 
