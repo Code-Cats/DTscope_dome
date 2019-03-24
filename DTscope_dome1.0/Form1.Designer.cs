@@ -46,7 +46,7 @@ namespace DTscope_dome1._0
             this.uav_connect = new System.Windows.Forms.Button();
             this.other2_connect = new System.Windows.Forms.Button();
             this.other3_connect = new System.Windows.Forms.Button();
-            this.refresh_online = new System.Windows.Forms.Button();
+            this.refresh_online_or_break_button = new System.Windows.Forms.Button();
             this.Connection_rate = new HslCommunication.Controls.UserVerticalProgress();
             this.label2 = new System.Windows.Forms.Label();
             this.channelListBox1 = new System.Windows.Forms.CheckedListBox();
@@ -70,13 +70,13 @@ namespace DTscope_dome1._0
             this.tabControl_Main = new System.Windows.Forms.TabControl();
             this.tabPage_chart = new System.Windows.Forms.TabPage();
             this.tabPage_debug = new System.Windows.Forms.TabPage();
+            this.Broadcast_communication_textBox = new System.Windows.Forms.TextBox();
             this.checkedListBox_dubug = new System.Windows.Forms.CheckedListBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.Unicast_communication_textBox = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.Debug_SendMsg_textBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.network_communication_labal = new System.Windows.Forms.Label();
             this.tabPage_config = new System.Windows.Forms.TabPage();
             this.label8 = new System.Windows.Forms.Label();
             this.tabPage_help = new System.Windows.Forms.TabPage();
@@ -119,6 +119,7 @@ namespace DTscope_dome1._0
             this.sentry2_connect.TabIndex = 3;
             this.sentry2_connect.Text = "哨兵2\r\noff-line";
             this.sentry2_connect.UseVisualStyleBackColor = false;
+            this.sentry2_connect.Click += new System.EventHandler(this.sentry2_connect_Click);
             // 
             // sentry1_connect
             // 
@@ -132,6 +133,7 @@ namespace DTscope_dome1._0
             this.sentry1_connect.TabIndex = 4;
             this.sentry1_connect.Text = "哨兵1\r\noff-line";
             this.sentry1_connect.UseVisualStyleBackColor = false;
+            this.sentry1_connect.Click += new System.EventHandler(this.sentry1_connect_Click);
             // 
             // infantry1_connect
             // 
@@ -145,6 +147,7 @@ namespace DTscope_dome1._0
             this.infantry1_connect.TabIndex = 5;
             this.infantry1_connect.Text = "步兵1\r\noff-line";
             this.infantry1_connect.UseVisualStyleBackColor = false;
+            this.infantry1_connect.Click += new System.EventHandler(this.infantry1_connect_Click);
             // 
             // infantry2_connect
             // 
@@ -158,6 +161,7 @@ namespace DTscope_dome1._0
             this.infantry2_connect.TabIndex = 6;
             this.infantry2_connect.Text = "步兵2\r\noff-line";
             this.infantry2_connect.UseVisualStyleBackColor = false;
+            this.infantry2_connect.Click += new System.EventHandler(this.infantry2_connect_Click);
             // 
             // hero2_connect
             // 
@@ -171,6 +175,7 @@ namespace DTscope_dome1._0
             this.hero2_connect.TabIndex = 7;
             this.hero2_connect.Text = "英雄2\r\noff-line";
             this.hero2_connect.UseVisualStyleBackColor = false;
+            this.hero2_connect.Click += new System.EventHandler(this.hero2_connect_Click);
             // 
             // hero1_connect
             // 
@@ -184,6 +189,7 @@ namespace DTscope_dome1._0
             this.hero1_connect.TabIndex = 8;
             this.hero1_connect.Text = "英雄1\r\noff-line";
             this.hero1_connect.UseVisualStyleBackColor = false;
+            this.hero1_connect.Click += new System.EventHandler(this.hero1_connect_Click);
             // 
             // engineer2_connect
             // 
@@ -197,6 +203,7 @@ namespace DTscope_dome1._0
             this.engineer2_connect.TabIndex = 9;
             this.engineer2_connect.Text = "工程2\r\noff-line";
             this.engineer2_connect.UseVisualStyleBackColor = false;
+            this.engineer2_connect.Click += new System.EventHandler(this.engineer2_connect_Click);
             // 
             // engineer1_connect
             // 
@@ -210,6 +217,7 @@ namespace DTscope_dome1._0
             this.engineer1_connect.TabIndex = 10;
             this.engineer1_connect.Text = "工程1\r\noff-line";
             this.engineer1_connect.UseVisualStyleBackColor = false;
+            this.engineer1_connect.Click += new System.EventHandler(this.engineer1_connect_Click);
             // 
             // other1_connect
             // 
@@ -223,6 +231,7 @@ namespace DTscope_dome1._0
             this.other1_connect.TabIndex = 11;
             this.other1_connect.Text = "其他1\r\noff-line";
             this.other1_connect.UseVisualStyleBackColor = false;
+            this.other1_connect.Click += new System.EventHandler(this.other1_connect_Click);
             // 
             // uav_connect
             // 
@@ -236,6 +245,7 @@ namespace DTscope_dome1._0
             this.uav_connect.TabIndex = 12;
             this.uav_connect.Text = "无人机\r\noff-line";
             this.uav_connect.UseVisualStyleBackColor = false;
+            this.uav_connect.Click += new System.EventHandler(this.uav_connect_Click);
             // 
             // other2_connect
             // 
@@ -249,6 +259,7 @@ namespace DTscope_dome1._0
             this.other2_connect.TabIndex = 13;
             this.other2_connect.Text = "其他2\r\noff-line";
             this.other2_connect.UseVisualStyleBackColor = false;
+            this.other2_connect.Click += new System.EventHandler(this.other2_connect_Click);
             // 
             // other3_connect
             // 
@@ -262,20 +273,21 @@ namespace DTscope_dome1._0
             this.other3_connect.TabIndex = 14;
             this.other3_connect.Text = "其他3\r\noff-line";
             this.other3_connect.UseVisualStyleBackColor = false;
+            this.other3_connect.Click += new System.EventHandler(this.other3_connect_Click);
             // 
-            // refresh_online
+            // refresh_online_or_break_button
             // 
-            this.refresh_online.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(155)))));
-            this.refresh_online.FlatAppearance.BorderSize = 0;
-            this.refresh_online.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.refresh_online.Font = new System.Drawing.Font("微软雅黑 Light", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.refresh_online.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.refresh_online.Location = new System.Drawing.Point(844, 19);
-            this.refresh_online.Name = "refresh_online";
-            this.refresh_online.Size = new System.Drawing.Size(75, 145);
-            this.refresh_online.TabIndex = 15;
-            this.refresh_online.Text = "刷\r\n\r\n新";
-            this.refresh_online.UseVisualStyleBackColor = false;
+            this.refresh_online_or_break_button.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(155)))));
+            this.refresh_online_or_break_button.FlatAppearance.BorderSize = 0;
+            this.refresh_online_or_break_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.refresh_online_or_break_button.Font = new System.Drawing.Font("微软雅黑 Light", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.refresh_online_or_break_button.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.refresh_online_or_break_button.Location = new System.Drawing.Point(844, 19);
+            this.refresh_online_or_break_button.Name = "refresh_online_or_break_button";
+            this.refresh_online_or_break_button.Size = new System.Drawing.Size(75, 145);
+            this.refresh_online_or_break_button.TabIndex = 15;
+            this.refresh_online_or_break_button.Text = "刷\r\n\r\n新";
+            this.refresh_online_or_break_button.UseVisualStyleBackColor = false;
             // 
             // Connection_rate
             // 
@@ -290,7 +302,6 @@ namespace DTscope_dome1._0
             this.Connection_rate.Size = new System.Drawing.Size(766, 8);
             this.Connection_rate.TabIndex = 16;
             this.Connection_rate.UseAnimation = true;
-            this.Connection_rate.Value = 10;
             // 
             // label2
             // 
@@ -308,6 +319,7 @@ namespace DTscope_dome1._0
             this.channelListBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.channelListBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.channelListBox1.CheckOnClick = true;
+            this.channelListBox1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.channelListBox1.FormattingEnabled = true;
             this.channelListBox1.Items.AddRange(new object[] {
             "ch1",
@@ -316,7 +328,7 @@ namespace DTscope_dome1._0
             "ch4"});
             this.channelListBox1.Location = new System.Drawing.Point(17, 19);
             this.channelListBox1.Name = "channelListBox1";
-            this.channelListBox1.Size = new System.Drawing.Size(120, 80);
+            this.channelListBox1.Size = new System.Drawing.Size(120, 88);
             this.channelListBox1.TabIndex = 19;
             this.channelListBox1.SelectedIndexChanged += new System.EventHandler(this.channelListBox1_SelectedIndexChanged);
             // 
@@ -422,7 +434,7 @@ namespace DTscope_dome1._0
             this.btn_connect_panel.Controls.Add(this.groupBox1);
             this.btn_connect_panel.Controls.Add(this.label2);
             this.btn_connect_panel.Controls.Add(this.Connection_rate);
-            this.btn_connect_panel.Controls.Add(this.refresh_online);
+            this.btn_connect_panel.Controls.Add(this.refresh_online_or_break_button);
             this.btn_connect_panel.Location = new System.Drawing.Point(6, 6);
             this.btn_connect_panel.Name = "btn_connect_panel";
             this.btn_connect_panel.Size = new System.Drawing.Size(1200, 175);
@@ -554,19 +566,33 @@ namespace DTscope_dome1._0
             // tabPage_debug
             // 
             this.tabPage_debug.BackColor = System.Drawing.Color.DimGray;
+            this.tabPage_debug.Controls.Add(this.Broadcast_communication_textBox);
             this.tabPage_debug.Controls.Add(this.checkedListBox_dubug);
-            this.tabPage_debug.Controls.Add(this.textBox2);
+            this.tabPage_debug.Controls.Add(this.Unicast_communication_textBox);
             this.tabPage_debug.Controls.Add(this.button1);
-            this.tabPage_debug.Controls.Add(this.textBox1);
+            this.tabPage_debug.Controls.Add(this.Debug_SendMsg_textBox);
             this.tabPage_debug.Controls.Add(this.label1);
             this.tabPage_debug.Controls.Add(this.label7);
-            this.tabPage_debug.Controls.Add(this.network_communication_labal);
             this.tabPage_debug.Location = new System.Drawing.Point(4, 25);
             this.tabPage_debug.Name = "tabPage_debug";
             this.tabPage_debug.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage_debug.Size = new System.Drawing.Size(1165, 618);
             this.tabPage_debug.TabIndex = 1;
             this.tabPage_debug.Text = "debug";
+            // 
+            // Broadcast_communication_textBox
+            // 
+            this.Broadcast_communication_textBox.BackColor = System.Drawing.Color.Black;
+            this.Broadcast_communication_textBox.ForeColor = System.Drawing.Color.DarkGray;
+            this.Broadcast_communication_textBox.Location = new System.Drawing.Point(13, 21);
+            this.Broadcast_communication_textBox.Multiline = true;
+            this.Broadcast_communication_textBox.Name = "Broadcast_communication_textBox";
+            this.Broadcast_communication_textBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.Broadcast_communication_textBox.Size = new System.Drawing.Size(504, 536);
+            this.Broadcast_communication_textBox.TabIndex = 8;
+            this.Broadcast_communication_textBox.Text = ".init";
+            this.Broadcast_communication_textBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Broadcast_communication_textBox_MouseDown);
+            this.Broadcast_communication_textBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Broadcast_communication_textBox_MouseMove);
             // 
             // checkedListBox_dubug
             // 
@@ -586,19 +612,19 @@ namespace DTscope_dome1._0
             this.checkedListBox_dubug.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.checkedListBox_debug_ItemCheck);
             this.checkedListBox_dubug.SelectedIndexChanged += new System.EventHandler(this.checkedListBox_dubug_SelectedIndexChanged);
             // 
-            // textBox2
+            // Unicast_communication_textBox
             // 
-            this.textBox2.BackColor = System.Drawing.Color.Black;
-            this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox2.ForeColor = System.Drawing.Color.DarkGray;
-            this.textBox2.Location = new System.Drawing.Point(523, 21);
-            this.textBox2.Multiline = true;
-            this.textBox2.Name = "textBox2";
-            this.textBox2.ReadOnly = true;
-            this.textBox2.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox2.Size = new System.Drawing.Size(610, 483);
-            this.textBox2.TabIndex = 6;
-            this.textBox2.Text = ".init";
+            this.Unicast_communication_textBox.BackColor = System.Drawing.Color.Black;
+            this.Unicast_communication_textBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.Unicast_communication_textBox.ForeColor = System.Drawing.Color.DarkGray;
+            this.Unicast_communication_textBox.Location = new System.Drawing.Point(523, 21);
+            this.Unicast_communication_textBox.Multiline = true;
+            this.Unicast_communication_textBox.Name = "Unicast_communication_textBox";
+            this.Unicast_communication_textBox.ReadOnly = true;
+            this.Unicast_communication_textBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.Unicast_communication_textBox.Size = new System.Drawing.Size(610, 483);
+            this.Unicast_communication_textBox.TabIndex = 6;
+            this.Unicast_communication_textBox.Text = ".init";
             // 
             // button1
             // 
@@ -610,17 +636,17 @@ namespace DTscope_dome1._0
             this.button1.Text = "发送";
             this.button1.UseVisualStyleBackColor = true;
             // 
-            // textBox1
+            // Debug_SendMsg_textBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(523, 507);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox1.Size = new System.Drawing.Size(501, 50);
-            this.textBox1.TabIndex = 4;
-            this.textBox1.Text = resources.GetString("textBox1.Text");
-            this.textBox1.WordWrap = false;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.Debug_SendMsg_textBox.Location = new System.Drawing.Point(523, 507);
+            this.Debug_SendMsg_textBox.Multiline = true;
+            this.Debug_SendMsg_textBox.Name = "Debug_SendMsg_textBox";
+            this.Debug_SendMsg_textBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.Debug_SendMsg_textBox.Size = new System.Drawing.Size(501, 50);
+            this.Debug_SendMsg_textBox.TabIndex = 4;
+            this.Debug_SendMsg_textBox.Text = resources.GetString("Debug_SendMsg_textBox.Text");
+            this.Debug_SendMsg_textBox.WordWrap = false;
+            this.Debug_SendMsg_textBox.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // label1
             // 
@@ -641,16 +667,6 @@ namespace DTscope_dome1._0
             this.label7.Size = new System.Drawing.Size(69, 20);
             this.label7.TabIndex = 1;
             this.label7.Text = "广播通信";
-            // 
-            // network_communication_labal
-            // 
-            this.network_communication_labal.BackColor = System.Drawing.Color.Black;
-            this.network_communication_labal.ForeColor = System.Drawing.Color.DarkGray;
-            this.network_communication_labal.Location = new System.Drawing.Point(13, 21);
-            this.network_communication_labal.Name = "network_communication_labal";
-            this.network_communication_labal.Size = new System.Drawing.Size(504, 536);
-            this.network_communication_labal.TabIndex = 0;
-            this.network_communication_labal.Text = ".init";
             // 
             // tabPage_config
             // 
@@ -749,7 +765,7 @@ namespace DTscope_dome1._0
         private System.Windows.Forms.Button uav_connect;
         private System.Windows.Forms.Button other2_connect;
         private System.Windows.Forms.Button other3_connect;
-        private System.Windows.Forms.Button refresh_online;
+        private System.Windows.Forms.Button refresh_online_or_break_button;
         private HslCommunication.Controls.UserVerticalProgress Connection_rate;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckedListBox channelListBox1;
@@ -773,11 +789,10 @@ namespace DTscope_dome1._0
         private System.Windows.Forms.TabPage tabPage_chart;
         private System.Windows.Forms.TabPage tabPage_debug;
         private Label label7;
-        private Label network_communication_labal;
-        private TextBox textBox1;
+        private TextBox Debug_SendMsg_textBox;
         private Label label1;
         private Button button1;
-        private TextBox textBox2;
+        private TextBox Unicast_communication_textBox;
         private CheckedListBox checkedListBox_dubug;
         private TabPage tabPage_config;
         private Label label8;
@@ -785,6 +800,7 @@ namespace DTscope_dome1._0
         private Label label9;
         private Label label_version;
         private Timer timer_count;
+        private TextBox Broadcast_communication_textBox;
     }
 }
 

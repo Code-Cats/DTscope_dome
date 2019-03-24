@@ -1,14 +1,9 @@
 E:\2019-Robomaster\程序基地\scope_dome\DTscope_dome1.0\DTscope_dome1.0\bin\Debug\DTscope_dome1.0.exe.config
+E:\2019-Robomaster\程序基地\scope_dome\DTscope_dome1.0\DTscope_dome1.0\obj\Debug\DTscope_dome1._0.Form1.resources
+E:\2019-Robomaster\程序基地\scope_dome\DTscope_dome1.0\DTscope_dome1.0\obj\Debug\DTscope_dome1.0.csproj.GenerateResource.Cache
 E:\2019-Robomaster\程序基地\scope_dome\DTscope_dome1.0\DTscope_dome1.0\bin\Debug\DTscope_dome1.0.exe
 E:\2019-Robomaster\程序基地\scope_dome\DTscope_dome1.0\DTscope_dome1.0\bin\Debug\DTscope_dome1.0.pdb
-E:\2019-Robomaster\程序基地\scope_dome\DTscope_dome1.0\DTscope_dome1.0\bin\Debug\HslCommunication.dll
-E:\2019-Robomaster\程序基地\scope_dome\DTscope_dome1.0\DTscope_dome1.0\bin\Debug\Newtonsoft.Json.dll
-E:\2019-Robomaster\程序基地\scope_dome\DTscope_dome1.0\DTscope_dome1.0\bin\Debug\HslCommunication.xml
-E:\2019-Robomaster\程序基地\scope_dome\DTscope_dome1.0\DTscope_dome1.0\bin\Debug\Newtonsoft.Json.pdb
-E:\2019-Robomaster\程序基地\scope_dome\DTscope_dome1.0\DTscope_dome1.0\bin\Debug\Newtonsoft.Json.xml
-E:\2019-Robomaster\程序基地\scope_dome\DTscope_dome1.0\DTscope_dome1.0\obj\Debug\DTscope_dome1._0.Form1.resources
 E:\2019-Robomaster\程序基地\scope_dome\DTscope_dome1.0\DTscope_dome1.0\obj\Debug\DTscope_dome1._0.Properties.Resources.resources
-E:\2019-Robomaster\程序基地\scope_dome\DTscope_dome1.0\DTscope_dome1.0\obj\Debug\DTscope_dome1.0.csproj.GenerateResource.Cache
 E:\2019-Robomaster\程序基地\scope_dome\DTscope_dome1.0\DTscope_dome1.0\obj\Debug\DTscope_dome1.0.exe
 E:\2019-Robomaster\程序基地\scope_dome\DTscope_dome1.0\DTscope_dome1.0\obj\Debug\DTscope_dome1.0.pdb
 E:\2019-Robomaster\程序基地\scope_dome\DTscope_dome1.0\DTscope_dome1.0\obj\Debug\DTscope_dome1.0.csprojResolveAssemblyReference.cache

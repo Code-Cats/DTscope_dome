@@ -12,6 +12,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
+
 namespace DTscope_dome1._0
 {
     /// <summary>
@@ -41,15 +43,15 @@ namespace DTscope_dome1._0
     {
         Off_line,   //放在第一个是默认类型-不在线
         On_line_free,
-        On_line_busy,
-        On_line_connectOK,    //在线且已连接
+        On_line_busy,   ////在线且已与其他主机连接
+        On_line_connectOK,    //在线且已与本机连接
         ROBOT_State_num
     }
 
     /// <summary>
     /// 表示软件当前对单个机器连接状态
     /// </summary>
-    public enum ROBOT_Connect_State //
+    public enum HOST_Connect_State //
     {
         Unconnected,   //放在第一个是默认类型-未连接
         Wait_Reply_connect,    //等待握手回复
@@ -60,6 +62,9 @@ namespace DTscope_dome1._0
 
     public struct ROBOT_Info  //自定义的数据类型。用来描述员工的信息。 
     {
+        /// <summary>
+        /// 记录当前机器对应设备名
+        /// </summary>
         public string Type_Name;
         /// <summary>
         /// 在线状态
@@ -75,6 +80,13 @@ namespace DTscope_dome1._0
 
     public partial class Form1 : Form
     {
+        /// <summary>
+        /// 定义下位机用来单播通信的端口
+        /// </summary>
+        const int ROBOT_UNICAST_PORT = 1815;
+
+        const int ROBOT_BROADCAST_PORT = 1813;
+
         /// <summary>
         /// 构造一个字典:将设备描述名称转换为对应结构体数组index
         /// </summary>
@@ -113,14 +125,36 @@ namespace DTscope_dome1._0
         //        {"Other3",ROBOT_Type.Other3 },
         //    };
 
-
+        /// <summary>
+        /// 所有机器信息结构体数组
+        /// </summary>
         static ROBOT_Info[] RobotInfo = new ROBOT_Info[(int)ROBOT_Type.ROBOT_Type_num]; //初始化10个机器信息结构体
-        ROBOT_Connect_State Robot_Connect_State = new ROBOT_Connect_State();    //机器连接状态，此软件版本为单连接版
-
+        /// <summary>
+        /// 本机的连接状态，单连接版本一次只能有一个连接
+        /// </summary>
+        HOST_Connect_State Host_Connect_State = new HOST_Connect_State();    //机器连接状态，此软件版本为单连接版
+        string Currently_connected_Device = null;   //当前连接设备名称-单连接版
 
         public Form1()
         {
+            //添加程序集解析事件  
+            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             InitializeComponent();
+        }
+        /// <summary>
+        /// 生成时将dll嵌入exe
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        System.Reflection.Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            string dllName = args.Name.Contains(",") ? args.Name.Substring(0, args.Name.IndexOf(',')) : args.Name.Replace(".dll", "");
+            dllName = dllName.Replace(".", "_");
+            if (dllName.EndsWith("_resources")) return null;
+            System.Resources.ResourceManager rm = new System.Resources.ResourceManager(GetType().Namespace + ".Properties.Resources", System.Reflection.Assembly.GetExecutingAssembly());
+            byte[] bytes = (byte[])rm.GetObject(dllName);
+            return System.Reflection.Assembly.Load(bytes);
         }
 
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)  //右侧通知栏
@@ -130,6 +164,11 @@ namespace DTscope_dome1._0
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            ROBOT_info_dataInit();
+
+            LocalIP =GetLocalIP();   //获取本地IP
+            LocalIPEndPoint_Broadcast = new IPEndPoint(IPAddress.Parse(LocalIP), 1812); //本地IP点
+
             Thread thrDiscovery = new Thread(Automatic_LAN_discovery);    //局域网发现线程，开机默认开启
             thrDiscovery.Start();
 
@@ -137,6 +176,18 @@ namespace DTscope_dome1._0
 
             // userCurve1.BringToFront();
         }
+
+        /// <summary>
+        /// RobotInfo数据初始化：遍历value将key赋值给Robotinfo
+        /// </summary>
+        void ROBOT_info_dataInit()
+        {
+            foreach (string key in RobotName_index_Dic.Keys)
+            {
+                RobotInfo[(int)RobotName_index_Dic[key]].Type_Name = key;   //遍历value将key赋值给Robotinfo
+            }
+        }
+
 
         /// <summary>
         /// 测试用的buttonstate
@@ -147,19 +198,19 @@ namespace DTscope_dome1._0
             button_state++;
             if (button_state == ROBOT_State.ROBOT_State_num) button_state = 0;
             test_button.Text = button_state.ToString();
-            button_set(sentry1_connect, button_state);
-            button_set(sentry2_connect, button_state);
-            button_set(infantry1_connect, button_state);
-            button_set(infantry2_connect, button_state);
-            button_set(hero1_connect, button_state);
-            button_set(hero2_connect, button_state);
-            button_set(engineer1_connect, button_state);
-            button_set(engineer2_connect, button_state);
+            button_color_set(sentry1_connect, button_state);
+            button_color_set(sentry2_connect, button_state);
+            button_color_set(infantry1_connect, button_state);
+            button_color_set(infantry2_connect, button_state);
+            button_color_set(hero1_connect, button_state);
+            button_color_set(hero2_connect, button_state);
+            button_color_set(engineer1_connect, button_state);
+            button_color_set(engineer2_connect, button_state);
             button_Enabled_Text_Set(sentry1_connect, button_state);
             button_Enabled_Text_Set(sentry2_connect, button_state);
         }
 
-        private void button_set(System.Windows.Forms.Button button , ROBOT_State button_state)
+        private void button_color_set(System.Windows.Forms.Button button , ROBOT_State button_state)
         {
             //button.Name.Length//可以通过长度、字符串识别来识别传入的按钮属于什么684835
             switch (button_state)
@@ -171,7 +222,6 @@ namespace DTscope_dome1._0
                         //button.Enabled = false;
                         //SetControlEnabled(button, false);
                         //button.Text = button.Text.Split('\n')[0]+ "\noff-line";//fuck this!线程中连按钮文本都不能改变？？？？服  了 
-                        Connection_rate.Value = 10;
                         break;
                     }
                 case ROBOT_State.On_line_busy:
@@ -183,7 +233,6 @@ namespace DTscope_dome1._0
                         
                         //button.Text = button.Text.Split('\n')[0] + "\nhas_occupied";//fuck this!线程中连按钮文本都不能改变？？？？服  了
                         
-                        Connection_rate.Value = 10;
                         break;
                     }
                 case ROBOT_State.On_line_connectOK:
@@ -195,7 +244,6 @@ namespace DTscope_dome1._0
                         
                         //button.Text = button.Text.Split('\n')[0] + "\nconnect_OK";//fuck this!线程中连按钮文本都不能改变？？？？服  了
                         /////////////////////////button.Text = button.Text.Replace("click_connect", "off-line");
-                        Connection_rate.Value = 10;
                         break;
                     }
                 case ROBOT_State.On_line_free:
@@ -206,7 +254,6 @@ namespace DTscope_dome1._0
                         //SetControlEnabled(button, true);//它被线程调用会发生死循环异常2019.3.21 所以转移到定时器里去了
                         //button.Text = button.Text.Replace("off-line", "click_connect");//= " 哨兵1   connect ";
                         //button.Text = button.Text.Split('\n')[0] + "\nclick_connect"; //fuck this!线程中连按钮文本都不能改变？？？？服  了
-                        Connection_rate.Value = 50;
                         break;
                     }
                 default:
@@ -269,20 +316,78 @@ namespace DTscope_dome1._0
         /// <summary>
         /// 设置本地端口1813收广播
         /// </summary>
-        static UdpClient UdpBroadcastRev;// = new UdpClient(1813);//设置本地端口1813收广播
+        static UdpClient UdpBroadcastRev;// = new UdpClient(ROBOT_BROADCAST_PORT);//设置本地端口1813收广播
         /// <summary>
-        /// 设置本地端口1812发专线
+        /// 设置本地端口1814发专线
         /// </summary>
-        static UdpClient UdpDedicatedSend = new UdpClient(1814);//设置本地端口1812发专线
+        static UdpClient UdpUnicastSend = new UdpClient(1814);//设置本地端口1814发专线
         /// <summary>
-        /// 设置本地端口1813收专线
+        /// 设置本地端口1815收专线
         /// </summary>
-        static UdpClient UdpDedicatedRev = new UdpClient(1815);//设置本地端口1813收专线
+        static UdpClient UdpUnicastRev;// = new UdpClient(ROBOT_UNICAST_PORT);//设置本地端口1815收专线
 
-        
+        /// <summary>
+        /// 线程：不断监听广播UDP报文
+        /// </summary>
+        Thread thrRecv_Broadcast;
+        /// <summary>
+        /// 开关：在监听UDP报文阶段为true，否则为false
+        /// </summary>
+        bool IsUdpcRecvStart_Broadcast = false;
+
+        /// <summary>
+        /// 线程：监听单播UDP报文
+        /// </summary>
+        Thread thrRecv_Unicast;
+        /// <summary>
+        /// 开关：在监听UDP报文阶段为true，否则为false
+        /// </summary>
+        bool IsUdpcRecvStart_Unicast = false;
+
+        /// <summary>
+        /// 所有广播信息储存展示
+        /// </summary>
+        static string All_recvMsg_Broadcast = ".init";  //所有广播信息储存展示
+        /// <summary>
+        /// 所有单播信息储存展示
+        /// </summary>
+        static string All_recvMsg_Unicast = ".init";  //所有单播信息储存展示
+
+        string LocalIP;
+        IPEndPoint LocalIPEndPoint_Broadcast;
+        /// <summary>
+        /// 获取本机主机ip 每次程序开启运行一次
+        /// </summary>
+        /// <returns></returns>
+        public static string GetLocalIP()
+        {
+            try
+            {
+                string HostName = Dns.GetHostName(); //得到主机名
+                IPHostEntry IpEntry = Dns.GetHostEntry(HostName);
+                for (int i = 0; i < IpEntry.AddressList.Length; i++)
+                {
+                    //从IP地址列表中筛选出IPv4类型的IP地址
+                    //AddressFamily.InterNetwork表示此IP为IPv4,
+                    //AddressFamily.InterNetworkV6表示此地址为IPv6类型
+                    if (IpEntry.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        string ip = "";
+                        ip = IpEntry.AddressList[i].ToString();
+                        return IpEntry.AddressList[i].ToString();
+                    }
+                }
+                return "";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
         private void test_connect_Click(object sender, EventArgs e)
         {
-            Thread thrSend = new Thread(SendMessage_DiscoveryRobot);    //发送线程
+            Thread thrSend = new Thread(SendMessage_Broadcast);    //发送线程
             thrSend.Start("#RM-DT=TEST:#END");
         }
 
@@ -311,9 +416,9 @@ namespace DTscope_dome1._0
             if (LAN_discovery_start_flag==false)   //初始化时默认为false，所以会默认连接
             {
                 UdpBroadcastRev = new UdpClient(1813);
-                thrRecv = new Thread(ReceiveMessage_DiscoveryRobot);
-                thrRecv.Start();
-                IsUdpcRecvStart = true;
+                thrRecv_Broadcast = new Thread(ReceiveMessage_DiscoveryRobot);
+                thrRecv_Broadcast.Start();
+                IsUdpcRecvStart_Broadcast = true;
                 LAN_discovery_start_flag = true;
                 //test_rev.Text = "连接成功";
             }
@@ -325,7 +430,7 @@ namespace DTscope_dome1._0
             {
                 if((time_10ms_count-last_LAN_discovery_time)>= temp_random)//随机数产生放在if里会导致一个BUG，在100ms-101ms时不断刷新导致刷到101ms从而看起来每次都是101ms
                 {
-                    Thread thrSend = new Thread(SendMessage_DiscoveryRobot);    //发送线程
+                    Thread thrSend = new Thread(SendMessage_Broadcast);    //发送线程
                     thrSend.Start("#RM-DT=DCY_ROBOT:#END");
                     last_LAN_discovery_time = time_10ms_count;
                     temp_random = LAN_discovery_interval_rd.Next(100, 200);
@@ -334,10 +439,10 @@ namespace DTscope_dome1._0
         }
 
         /// <summary>
-        /// 发送信息
+        /// 发送广播信息
         /// </summary>
         ///<param name="obj">
-        private void SendMessage_DiscoveryRobot(object obj)
+        private void SendMessage_Broadcast(object obj)
         {
             try
             {
@@ -362,7 +467,7 @@ namespace DTscope_dome1._0
         ///<param name="obj">
         private void ReceiveMessage_DiscoveryRobot(object obj)
         {
-            IPEndPoint revIpep = new IPEndPoint(IPAddress.Any, 0);    //这个没看出来干什么用 直接填0吧
+            IPEndPoint revIpep = new IPEndPoint(IPAddress.Any, 0);    //这个没看出来干什么用 直接填0吧 IPAddress.Any
             while (true)
             {
                 try
@@ -370,9 +475,9 @@ namespace DTscope_dome1._0
                     byte[] bytRecv = UdpBroadcastRev.Receive(ref revIpep);
                     string message = Encoding.Default.GetString(bytRecv, 0, bytRecv.Length);
                     //rev_msg = rev_msg.Insert(-1, message);//(int)rev_msg.LongCount()
-                    Broadcast_Message_Deal(message);
-                    
-                    rev_msg = rev_msg.Insert(rev_msg.LastIndexOf('.'), message+"\r\n");
+                    Broadcast_Message_Deal(message, revIpep);
+                    //byte[] temtt = revIpep.Address.GetAddressBytes(); //以字节数组
+                    All_recvMsg_Broadcast = All_recvMsg_Broadcast.Insert(All_recvMsg_Broadcast.LastIndexOf('.'), string.Format("[{0}]{1}", revIpep, message) + "\r\n"); //放在这里可以达到不管什么广播信息都会显示的目的
                     // ShowMessage(txtRecvMssg, string.Format("{0}[{1}]", remoteIpep, message));
                     
                 }
@@ -383,12 +488,12 @@ namespace DTscope_dome1._0
                 }
             }
         }
-        static string rev_msg=".init";  //对话框的内容储存
+
         /// <summary>
         /// 广播信息接收处理总函数
         /// </summary>
         /// <param name="rev_msg"></param>
-        void Broadcast_Message_Deal(string rev_msg)
+        void Broadcast_Message_Deal(string rev_msg, IPEndPoint revipep)
         {
             //可以用两种方式检测1、string函数查找帧头帧尾 2、每个字节状态机分析
             if (rev_msg.IndexOf("#RM-DT=") != -1 && rev_msg.IndexOf("#END") != -1)   //该函数会从0开始索引，第一个元素位置是0//如果属于DT-scope数据包
@@ -400,24 +505,40 @@ namespace DTscope_dome1._0
 
                 if(temp_string_split.Length==2) //防止数组越界，数组越界在线程中不会产生错误，会直接终止线程
                 {
-                    temp_type = rev_msg.Split(':')[0];//分割字符串 不包含该字符
-                    temp_data = rev_msg.Split(':')[1];//分割字符串 不包含该字符
+                    temp_type = temp_string_split[0];//分割字符串 不包含该字符
+                    temp_data = temp_string_split[1];//分割字符串 不包含该字符
                 }
                 else
                 {
                     return;
                 }
-
+                
                 switch (temp_type)   //广播信息的分发，下面的处理函数将只关注数据内容，不关注帧头或校验
                 {
                     case "DCY_ROBOT":   //其他设备的问询
                         {
-                            last_LAN_discovery_time = time_10ms_count;
+                            if(LocalIP.Equals(revipep.Address.ToString()))  //如果来源于本机IP，就丢弃
+                            {
+
+                            }
+                            else //来源其他IP，则为其他设备的问询
+                            {
+                                if (Host_Connect_State == HOST_Connect_State.Unconnected)
+                                {
+                                    //如果未连接就不做任何回复
+                                }
+                                else //如果自己开始连接或已经连接上了
+                                {
+                                    Othor_host_discover_Message_Deal(); //告诉其他主机该设备已连接
+                                }
+                            }
+                            last_LAN_discovery_time = time_10ms_count;  //不管上面if 如何，都会记录时间
                             break;
                         }
                     case "REP_DCY": //设备的回复
                         {
-                            Discover_Message_Deal(temp_data);
+                            if(!LocalIPEndPoint_Broadcast.Equals(revipep))  //不处理自己发的报文
+                            Discover_Message_Deal(temp_data, revipep);  //传递IP进去记录
                             break;
                         }
                     case "TEST":
@@ -436,7 +557,7 @@ namespace DTscope_dome1._0
         /// <summary>
         /// 局域网自动发现函数：只处理discover reply信息
         /// </summary>
-        void Discover_Message_Deal(string rev_msg)
+        void Discover_Message_Deal(string rev_msg, IPEndPoint revipep)
         {
             int im_index, sta_index, type_index = 0;
             string[] temp_robot_data = rev_msg.Split(new char[2] { '=', ';' }); //分割字符串 不包含该字符
@@ -459,9 +580,13 @@ namespace DTscope_dome1._0
                         int temp_on_line_state = 0;
                         if (int.TryParse(temp_robot_data[sta_index], out temp_on_line_state)&& temp_on_line_state!=3)    //将在线状态<string>转换为一个整形值并检查是否成功 //限制3，不允许设备通过广播连接成功
                         {//！！！！！！！！！！！！！！！！！！这里有个问题，当对方传递STA超过限定值，会发生意想不到的情况2019.3.22，应该加上安全限定//该问题无需解决，因为枚举值允许放入定义范围外的int值，且后面都是当作int的，swicth会直接丢弃3.22
-                            RobotInfo[(int)temp_robot_Typeindex].On_line_state_last = RobotInfo[(int)temp_robot_Typeindex].On_line_state;//更新上一次值
+                            if(temp_on_line_state==(int)ROBOT_State.On_line_free)   //仅当on-line-free才记录机器IP，因为机器只会发送这个状态
+                            {
+                                RobotInfo[(int)temp_robot_Typeindex].TarIpep = revipep;
+                            }
+                            RobotInfo[(int)temp_robot_Typeindex].On_line_state_last = RobotInfo[(int)temp_robot_Typeindex].On_line_state;//更新上一次值  //这个迭代之后应该统一放在定时器
                             RobotInfo[(int)temp_robot_Typeindex].On_line_state = (ROBOT_State)temp_on_line_state;    //若成功了就赋值
-                            Update_buttons_callback(RobotInfo[(int)temp_robot_Typeindex], temp_robot_Typeindex);  //调用函数进行按钮刷新
+                            Update_buttons_callback(RobotInfo[(int)temp_robot_Typeindex], temp_robot_Typeindex);  //调用函数进行按钮刷新  //这个之后还是放到定时器吧
                         }
                     }
                     else    ////尝试获取该设备命名描述对应的结构体ID，若无则说明对方没有按照规则发送，直接丢弃信息
@@ -476,6 +601,17 @@ namespace DTscope_dome1._0
                 
             }
         }
+        /// <summary>
+        /// 局域网其他主机的问询回复
+        /// </summary>
+        /// <param name="rev_msg"></param>
+        void Othor_host_discover_Message_Deal()
+        {
+            if(Currently_connected_Device!=null)    //不为空，即已经与某个设备正在或已经建立连接
+            {
+                SendMessage_Broadcast("#RM-DT=REP_DCY:IM="+Currently_connected_Device+ ";STA=2;#END");
+            }
+        }
 
         /// <summary>
         /// 按钮状态刷新函数：传入参数为对应按钮结构体，按钮在结构体中对应ID
@@ -486,62 +622,62 @@ namespace DTscope_dome1._0
             {
                 case ROBOT_Type.Sentry1:
                     {
-                        button_set(sentry1_connect, robotinfo.On_line_state);
+                        button_color_set(sentry1_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Sentry2:
                     {
-                        button_set(sentry2_connect, robotinfo.On_line_state);
+                        button_color_set(sentry2_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Infantry1:
                     {
-                        button_set(infantry1_connect, robotinfo.On_line_state);
+                        button_color_set(infantry1_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Infantry2:
                     {
-                        button_set(infantry2_connect, robotinfo.On_line_state);
+                        button_color_set(infantry2_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Hero1:
                     {
-                        button_set(hero1_connect, robotinfo.On_line_state);
+                        button_color_set(hero1_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Hero2:
                     {
-                        button_set(hero2_connect, robotinfo.On_line_state);
+                        button_color_set(hero2_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Engineer1:
                     {
-                        button_set(engineer1_connect, robotinfo.On_line_state);
+                        button_color_set(engineer1_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Engineer2:
                     {
-                        button_set(engineer2_connect, robotinfo.On_line_state);
+                        button_color_set(engineer2_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Uav:
                     {
-                        button_set(uav_connect, robotinfo.On_line_state);
+                        button_color_set(uav_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Other1:
                     {
-                        button_set(other1_connect, robotinfo.On_line_state);
+                        button_color_set(other1_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Other2:
                     {
-                        button_set(other2_connect, robotinfo.On_line_state);
+                        button_color_set(other2_connect, robotinfo.On_line_state);
                         break;
                     }
                 case ROBOT_Type.Other3:
                     {
-                        button_set(other3_connect, robotinfo.On_line_state);
+                        button_color_set(other3_connect, robotinfo.On_line_state);
                         break;
                     }
                 default:
@@ -625,34 +761,26 @@ namespace DTscope_dome1._0
             }
         }
 
-        /// <summary>
-        /// 开关：在监听UDP报文阶段为true，否则为false
-        /// </summary>
-        bool IsUdpcRecvStart = false;
 
-        /// <summary>
-        /// 线程：不断监听UDP报文
-        /// </summary>
-        Thread thrRecv;
 
         /// <summary>
         /// 按钮：是否监听UDP报文
         /// </summary>
         private void test_rev_Click(object sender, EventArgs e) //广播接收
         {
-            if(!IsUdpcRecvStart)
+            if(!IsUdpcRecvStart_Broadcast)
             {
                 UdpBroadcastRev = new UdpClient(1813);
-                thrRecv = new Thread(ReceiveMessage_DiscoveryRobot);
-                thrRecv.Start();
-                IsUdpcRecvStart = true;
+                thrRecv_Broadcast = new Thread(ReceiveMessage_DiscoveryRobot);
+                thrRecv_Broadcast.Start();
+                IsUdpcRecvStart_Broadcast = true;
                 test_rev.Text = "连接成功";
             }
             else
             {
-                thrRecv.Abort();
+                thrRecv_Broadcast.Abort();
                 UdpBroadcastRev.Close();
-                IsUdpcRecvStart = false;
+                IsUdpcRecvStart_Broadcast = false;
                 test_rev.Text = "已关闭";
             }
             
@@ -665,13 +793,23 @@ namespace DTscope_dome1._0
         /// <param name="e"></param>
         private void timer_UI_Tick(object sender, EventArgs e)
         {
-            rev_text.Text = rev_msg;
+            //rev_text.Text = All_recvMsg_Broadcast;
             for(int i=0;i<(int)ROBOT_Type.ROBOT_Type_num;i++)
             {
                 Update_buttonsEnabled_andText(RobotInfo[i], (ROBOT_Type)i);
             }
-            
-            network_communication_labal.Text = rev_msg;
+
+            if (Host_Connect_State == HOST_Connect_State.Unconnected)   //根据主机连接状态决定刷新按钮的信息
+            {
+                refresh_online_or_break_button.Text = "刷新";
+            }
+            else 
+            {
+                refresh_online_or_break_button.Text = "断开\r\n连接";
+            }
+
+            Broadcast_communication_textBox.Text = All_recvMsg_Broadcast;   //放入对话框缓存
+            Unicast_communication_textBox.Text = All_recvMsg_Unicast;   //放入对话框缓存
 
         }
 
@@ -825,6 +963,314 @@ namespace DTscope_dome1._0
             {
                 System.Diagnostics.Process.Start("https://github.com/yx19981001");  //默认浏览器打开
             }
+        }
+
+        /// <summary>
+        /// 禁止选中textBox文字
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Broadcast_communication_textBox_MouseDown(object sender, MouseEventArgs e)
+        {
+            Broadcast_communication_textBox.Select(Debug_SendMsg_textBox.Text.Length, 0);
+            
+        }
+        /// <summary>
+        /// 禁止选中textBox文字
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Broadcast_communication_textBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            Broadcast_communication_textBox.Select(Debug_SendMsg_textBox.Text.Length, 0);
+        }
+
+        private void sentry1_connect_Click(object sender, EventArgs e)
+        {
+            if(Host_Connect_State==HOST_Connect_State.Unconnected)
+            {
+                Start_Connect_unicast(ROBOT_Type.Sentry1);
+            }
+        }
+
+        private void sentry2_connect_Click(object sender, EventArgs e)
+        {
+            if (Host_Connect_State == HOST_Connect_State.Unconnected)
+            {
+                Start_Connect_unicast(ROBOT_Type.Sentry2);
+                Currently_connected_Device = RobotInfo[1].Type_Name;
+            }
+        }
+
+        private void infantry1_connect_Click(object sender, EventArgs e)
+        {
+            if (Host_Connect_State == HOST_Connect_State.Unconnected)
+            {
+                Start_Connect_unicast(ROBOT_Type.Infantry1);
+                Currently_connected_Device = RobotInfo[2].Type_Name;
+            }
+        }
+
+        private void infantry2_connect_Click(object sender, EventArgs e)
+        {
+            if (Host_Connect_State == HOST_Connect_State.Unconnected)
+            {
+                Start_Connect_unicast(ROBOT_Type.Infantry2);
+                Currently_connected_Device = RobotInfo[3].Type_Name;
+            }
+        }
+
+        private void hero1_connect_Click(object sender, EventArgs e)
+        {
+            if (Host_Connect_State == HOST_Connect_State.Unconnected)
+            {
+                Currently_connected_Device = RobotInfo[4].Type_Name;
+                Host_Connect_State = HOST_Connect_State.Wait_OSPF;
+            }
+        }
+
+        private void hero2_connect_Click(object sender, EventArgs e)
+        {
+            if (Host_Connect_State == HOST_Connect_State.Unconnected)
+            {
+                Currently_connected_Device = RobotInfo[5].Type_Name;
+            }
+        }
+
+        private void engineer1_connect_Click(object sender, EventArgs e)
+        {
+            if (Host_Connect_State == HOST_Connect_State.Unconnected)
+            {
+                Currently_connected_Device = RobotInfo[6].Type_Name;
+            }
+        }
+
+        private void engineer2_connect_Click(object sender, EventArgs e)
+        {
+            if (Host_Connect_State == HOST_Connect_State.Unconnected)
+            {
+                Currently_connected_Device = RobotInfo[7].Type_Name;
+            }
+        }
+
+        private void uav_connect_Click(object sender, EventArgs e)
+        {
+            if (Host_Connect_State == HOST_Connect_State.Unconnected)
+            {
+                Currently_connected_Device = RobotInfo[8].Type_Name;
+            }
+        }
+
+        private void other1_connect_Click(object sender, EventArgs e)
+        {
+            if (Host_Connect_State == HOST_Connect_State.Unconnected)
+            {
+                Currently_connected_Device = RobotInfo[9].Type_Name;
+            }
+        }
+
+        private void other2_connect_Click(object sender, EventArgs e)
+        {
+            if (Host_Connect_State == HOST_Connect_State.Unconnected)
+            {
+                Currently_connected_Device = RobotInfo[10].Type_Name;
+            }
+        }
+
+        private void other3_connect_Click(object sender, EventArgs e)
+        {
+            if (Host_Connect_State == HOST_Connect_State.Unconnected)
+            {
+                Currently_connected_Device = RobotInfo[11].Type_Name;
+            }
+        }
+
+        /// <summary>
+        /// 开始尝试连接设备，此函数在点击连接按钮时触发，只触发一次
+        /// </summary>
+        /// <param name="obj"></param>
+        private void Start_Connect_unicast(object obj)  //
+        {
+            int robot_typeindex = (int)obj;
+            Currently_connected_Device = RobotInfo[robot_typeindex].Type_Name;    //记录该值，当其他主机问询用
+            Host_Connect_State = HOST_Connect_State.Wait_Reply_connect;
+
+            Thread thrSend = new Thread(SendMessage_unicast);    //单播发送握手请求
+            string[] sendmeg = new string[] { "#RM-DT=CNET:TAR="+ Currently_connected_Device+ ";TIP="+ RobotInfo[robot_typeindex].TarIpep.Address.ToString()+ ";CIP="+LocalIP+ ";CPT="+"1815"+";#END", RobotInfo[robot_typeindex].TarIpep.Address.ToString() };
+            thrSend.Start(sendmeg);
+
+            //thrRecv_Unicast = new Thread();
+            ///////////////
+            UdpUnicastRev = new UdpClient(1815);
+            thrRecv_Unicast = new Thread(ReceiveMessage_Unicast);
+            thrRecv_Unicast.Start(RobotInfo[robot_typeindex].TarIpep);
+            IsUdpcRecvStart_Unicast = true;
+            ////////////////////////
+
+            SendMessage_Broadcast("#RM-DT=REP_DCY:IM=" + Currently_connected_Device + ";STA=2;#END");   //告诉其他主机本机已连接该设备
+        }
+
+        /// <summary>
+        /// 单播发送函数，传入参数string[]: msg, tarip
+        /// </summary>
+        /// <param name="obj"></param>
+        private void SendMessage_unicast(object obj)//string sendmsg,(string)(tarip)
+        {
+            string[] sendmsg = (string[])obj;
+            //IPEndPoint tempip= IPEndPoint  
+            try
+            {
+                //string message = "#RM-DT=DCY_ROBOT#END";
+                byte[] sendbytes = Encoding.Default.GetBytes(sendmsg[0]);
+                IPEndPoint tarIpep = new IPEndPoint(IPAddress.Parse(sendmsg[1]), ROBOT_UNICAST_PORT); // 发送到的IP地址和端口号
+                UdpUnicastSend.Send(sendbytes, sendbytes.Length, tarIpep);
+                //UdpUnicastSend.Close();
+            }
+            catch
+            {
+                //提示：直接在按钮上提示或者新建label
+            }
+        }
+
+        /// <summary>
+        /// 接收单播数据线程函数/握手/数据帧
+        /// </summary>
+        ///<param name="obj">
+        private void ReceiveMessage_Unicast(object obj)
+        {
+            IPEndPoint revIpep = new IPEndPoint(IPAddress.Any, 0);    //这个没看出来干什么用 直接填0吧 IPAddress.Any
+            IPEndPoint tarIpep = (IPEndPoint)obj;   //目标IP，便于后面传参分析，或增加新的功能
+            while (true)
+            {
+                try
+                {
+                    byte[] bytRecv = UdpUnicastRev.Receive(ref revIpep);
+                    string strRecv = Encoding.Default.GetString(bytRecv, 0, bytRecv.Length);
+                    Unicast_Message_Deal(strRecv,bytRecv, revIpep, tarIpep);
+                    //byte[] temtt = revIpep.Address.GetAddressBytes(); //以字节数组
+                    All_recvMsg_Unicast = All_recvMsg_Unicast.Insert(All_recvMsg_Unicast.LastIndexOf('.'), string.Format("[{0}]{1}", revIpep, bytRecv) + "\r\n"); //放在这里可以达到不管什么单播信息都会显示的目的
+
+                }
+                catch (Exception ex)
+                {
+                    //Console.WriteLine(ex.Message);
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 接收单播数据总处理函数
+        /// </summary>
+        /// <param name="bytrecv"></param>
+        /// <param name="revipep"></param>
+        /// <param name="taripep"></param>
+        void Unicast_Message_Deal(string strrecv,byte[] bytrecv, IPEndPoint revipep, IPEndPoint taripep)
+        {//后期多连接肯定要对发送方IP判断兵种再实现多连接通用函数，现在先用curr
+            
+            if (strrecv.IndexOf("#RM-DT=") != -1 && strrecv.IndexOf("#END") != -1)   //该函数会从0开始索引，第一个元素位置是0//如果属于DT-scope数据包
+            {   //进入到该if说明#RM-DT=存在
+                string temp_datatype;
+                string temp_data;
+                strrecv = Regex.Split(strrecv, "#RM-DT=", RegexOptions.IgnoreCase)[1];   //#RM-DT=将原字符串分为null 和 REP_DCY……
+                string[] temp_string_split = strrecv.Split(':');
+
+                if (temp_string_split.Length == 2) //防止数组越界，数组越界在线程中不会产生错误，会直接终止线程
+                {
+                    temp_datatype = temp_string_split[0];//分割字符串 不包含该字符
+                    temp_data = temp_string_split[1];//分割字符串 不包含该字符
+                }
+                else
+                {
+                    return;
+                }
+
+                switch (Host_Connect_State) //根据连接状态
+                {
+                    case HOST_Connect_State.Unconnected:
+                        {
+                            break;
+                        }
+                    case HOST_Connect_State.Wait_Reply_connect:
+                        {
+                            Connection_rate.Value = 30;
+                            if (temp_datatype.Equals("RCNET"))
+                            {
+                                if(Unicast_Handshake_Reply_Check(temp_data, taripep)) //若握手回复协议正确，则进入等待透传阶段
+                                {
+                                    Host_Connect_State = HOST_Connect_State.Wait_OSPF;
+                                    Connection_rate.Value = 60;
+                                }
+
+                            }
+                            break;
+                        }
+                    case HOST_Connect_State.Wait_OSPF:
+                        {
+                            if (temp_datatype.Equals("RCNET"))
+                            {
+                                if (temp_data.Equals("OK;#END"))    //即回复 #RM-DT=RCNET:OK;#END
+                                {
+                                    Host_Connect_State = HOST_Connect_State.ConnectOK;
+                                    
+
+                                    ROBOT_Type temp_robot_Typeindex = 0;
+                                    if (RobotName_index_Dic.TryGetValue(Currently_connected_Device, out temp_robot_Typeindex))   //尝试获取该设备命名描述对应的结构体ID，若有则进if
+                                    {
+                                        RobotInfo[(int)temp_robot_Typeindex].On_line_state_last = RobotInfo[(int)temp_robot_Typeindex].On_line_state;   //这个迭代之后应该统一放在定时器，防止程序过大编写遗漏
+                                        RobotInfo[(int)temp_robot_Typeindex].On_line_state = ROBOT_State.On_line_connectOK;
+                                    }
+                                    Update_buttons_callback(RobotInfo[(int)temp_robot_Typeindex], temp_robot_Typeindex);  //调用函数进行按钮刷新//这个之后还是放到定时器吧
+
+                                    //在准备工作都做好后 发送一个#RM-DT=CNET:OK;#END
+                                    Thread thrSend = new Thread(SendMessage_unicast);    //单播发送握手请求
+                                    string[] sendmeg = new string[] { "#RM-DT=CNET:OK;#END", RobotInfo[(int)temp_robot_Typeindex].TarIpep.Address.ToString() };
+                                    thrSend.Start(sendmeg);
+
+                                    Connection_rate.Value = 100;
+                                }
+                            }
+                            break;
+                        }
+                    case HOST_Connect_State.ConnectOK:
+                        {
+                            //这里放数据接收、缓存、显示相关
+                            break;
+                        }
+                    default:
+                        {
+                            break;
+                        }
+                }
+
+            }
+        }
+        /// <summary>
+        /// 检测单播握手回复是否正确
+        /// </summary>
+        /// <param name="strrecv"></param>
+        /// <returns></returns>
+        bool Unicast_Handshake_Reply_Check(string strrecv, IPEndPoint taripep)
+        {
+            int tip_index, cip_index, cpt_index = 0;
+            string[] temp_robot_data = strrecv.Split(new char[3] { '=', ';',':' }); //分割字符串 加上：原因是防止调用出错
+            tip_index = temp_robot_data.ToList().IndexOf("TIP") + 1; //机器的目标IP，即本机IP
+            cip_index = temp_robot_data.ToList().IndexOf("CIP") + 1;    //机器的当前IP，即HOST的目标IP
+            cpt_index = temp_robot_data.ToList().IndexOf("CPT") + 1;   //机器的当前端口，即HOST的目标端口
+            //temp_type = temp1[1].Split(':');
+            if (tip_index == 0 || cip_index == 0 || cpt_index==0)   //没有状态标识或名称标识，丢弃
+            {
+                return false;
+            }
+            else
+            {//下面的IF检测双方IP，对方PT是否正确
+                if (temp_robot_data[tip_index].Equals(LocalIP) && temp_robot_data[cip_index].Equals(taripep.Address.ToString()) && temp_robot_data[cpt_index].Equals(ROBOT_UNICAST_PORT.ToString()))   //检测双方IP，对方PT是否正确
+                {
+                    return true;    //回应正确
+                }
+           
+            }
+            return false;
         }
 
 
