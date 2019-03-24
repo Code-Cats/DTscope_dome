@@ -172,6 +172,8 @@ namespace DTscope_dome1._0
             Thread thrDiscovery = new Thread(Automatic_LAN_discovery);    //局域网发现线程，开机默认开启
             thrDiscovery.Start();
 
+            dataGridView_channel.ClearSelection();
+
             //this.Focus();
 
             // userCurve1.BringToFront();
@@ -769,25 +771,25 @@ namespace DTscope_dome1._0
         /// <summary>
         /// 按钮：是否监听UDP报文
         /// </summary>
-        private void test_rev_Click(object sender, EventArgs e) //广播接收
-        {
-            if(!IsUdpcRecvStart_Broadcast)
-            {
-                UdpBroadcastRev = new UdpClient(1813);
-                thrRecv_Broadcast = new Thread(ReceiveMessage_DiscoveryRobot);
-                thrRecv_Broadcast.Start();
-                IsUdpcRecvStart_Broadcast = true;
-                test_rev.Text = "连接成功";
-            }
-            else
-            {
-                thrRecv_Broadcast.Abort();
-                UdpBroadcastRev.Close();
-                IsUdpcRecvStart_Broadcast = false;
-                test_rev.Text = "已关闭";
-            }
+        //private void test_rev_Click(object sender, EventArgs e) //广播接收
+        //{
+        //    if(!IsUdpcRecvStart_Broadcast)
+        //    {
+        //        UdpBroadcastRev = new UdpClient(1813);
+        //        thrRecv_Broadcast = new Thread(ReceiveMessage_DiscoveryRobot);
+        //        thrRecv_Broadcast.Start();
+        //        IsUdpcRecvStart_Broadcast = true;
+        //        test_rev.Text = "连接成功";
+        //    }
+        //    else
+        //    {
+        //        thrRecv_Broadcast.Abort();
+        //        UdpBroadcastRev.Close();
+        //        IsUdpcRecvStart_Broadcast = false;
+        //        test_rev.Text = "已关闭";
+        //    }
             
-        }
+        //}
 
         /// <summary>
         /// UI定时器：更新按键及显示文本信息
@@ -960,11 +962,11 @@ namespace DTscope_dome1._0
         {
             try
             {
-                System.Diagnostics.Process.Start("chrome.exe", "https://github.com/yx19981001");    //优先使用chrome浏览器打开
+                System.Diagnostics.Process.Start("chrome.exe", "https://github.com/yx19981001/DTscope_dome");    //优先使用chrome浏览器打开
             }
             catch
             {
-                System.Diagnostics.Process.Start("https://github.com/yx19981001");  //默认浏览器打开
+                System.Diagnostics.Process.Start("https://github.com/yx19981001/DTscope_dome");  //默认浏览器打开
             }
         }
 
@@ -1238,6 +1240,7 @@ namespace DTscope_dome1._0
                     case HOST_Connect_State.ConnectOK:
                         {
                             //这里放数据接收、缓存、显示相关
+                            RobotData_Receive_Main(temp_datatype, temp_data);   //connectOK后数据处理总函数
                             break;
                         }
                     default:
@@ -1312,6 +1315,121 @@ namespace DTscope_dome1._0
             }
         }
 
+        private void button_test_Datagrad_Click(object sender, EventArgs e)
+        {
+            //int index = this.dataGridView_channel.Rows.Add();
+            //this.dataGridView_channel.Rows[index].Cells[0].Value = "1";
+            //this.dataGridView_channel.Rows[index].Cells[1].Value = "2";
+
+            ////DataGridViewRow row = new DataGridViewRow();
+            ////DataGridViewCheckBoxCell comboxcell = new DataGridViewCheckBoxCell();
+            ////row.Cells.Add(comboxcell);
+            ////DataGridViewTextBoxCell textboxcell = new DataGridViewTextBoxCell();
+            ////textboxcell.Value = "ch0";
+            ////row.Cells.Add(textboxcell);
+            ////dataGridView_channel.Rows.Add(row);
+
+            ////DataGridViewRow row2 = new DataGridViewRow();
+            ////DataGridViewCheckBoxCell comboxcell2 = new DataGridViewCheckBoxCell();
+            ////row2.Cells.Add(comboxcell2);
+            ////DataGridViewTextBoxCell textboxcell2 = new DataGridViewTextBoxCell();
+            ////textboxcell2.Value = "ch1";
+            ////row2.Cells.Add(textboxcell2);
+            ////dataGridView_channel.Rows.Add(row2);
+
+            ////dataGridView_channel.ClearSelection();
+
+            ////dataGridView_channel.Rows[0].Cells[2].Value = time_10ms_count.ToString();
+            ////dataGridView_channel.Rows[1].Cells[0].Value = true;
+        }
+
+        /// <summary>
+        /// 单击表格内容时发生，用来清除高亮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dataGridView_channel_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            //Object tem = dataGridView_channel.Rows[0].Cells[0].Value; //无效
+            dataGridView_channel.ClearSelection();  //取消高亮选中，更美观
+        }
+
+        /// <summary>
+        /// 表格初始内容加载一次
+        /// </summary>
+        bool IsLoadInit_DataGridView = false;
+        /// <summary>
+        /// 表格控件布局时发生，发现会运行两次？
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dataGridView_channel_Layout(object sender, LayoutEventArgs e)
+        {
+            if(!IsLoadInit_DataGridView)
+            {
+                dataGridView_channel_AddNewRow("ch0"); 
+                dataGridView_channel_AddNewRow("ch1");
+                dataGridView_channel_AddNewRow("ch2");
+                dataGridView_channel_AddNewRow("ch3");
+
+                dataGridView_channel.Rows[0].Cells[2].Value = time_10ms_count.ToString();
+                //dataGridView_channel.Rows[1].Cells[0].Value = true;
+
+                dataGridView_channel.ClearSelection();
+
+                IsLoadInit_DataGridView = true;
+            }
+            dataGridView_channel.ClearSelection();
+        }
+
+        private void dataGridView_channel_AddNewRow(string ch_name)
+        {
+            DataGridViewRow row = new DataGridViewRow();
+            DataGridViewCheckBoxCell checkboxcell = new DataGridViewCheckBoxCell();
+            row.Cells.Add(checkboxcell);
+            DataGridViewTextBoxCell textboxcell = new DataGridViewTextBoxCell();
+            textboxcell.Value = ch_name;
+            row.Cells.Add(textboxcell);
+            dataGridView_channel.Rows.Add(row);
+        }
+
+        /// <summary>
+        /// connectOK后对机器信息处理的总函数
+        /// </summary>
+        /// <param name="strtype"></param>
+        /// <param name="strdata"></param>
+        private void RobotData_Receive_Main(string strtype, string strdata)
+        {
+            switch(strtype)
+            {
+                case "DATA_INFO":
+                    {
+                        RobotData_InfoSet(strdata);
+                        break;
+                    }
+                case "DATA":
+                    {
+                        break;
+                    }
+                case "CMD":
+                    {
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
+            }
+        }
+
+        /// <summary>
+        /// 设置数据接受信息
+        /// </summary>
+        /// <param name="strset"></param>
+        private void RobotData_InfoSet(string strset)
+        {
+
+        }
 
         //////////////////////////////////////////////////////////////////////////////////
 
