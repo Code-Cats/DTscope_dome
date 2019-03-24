@@ -288,6 +288,7 @@ namespace DTscope_dome1._0
             this.refresh_online_or_break_button.TabIndex = 15;
             this.refresh_online_or_break_button.Text = "刷\r\n\r\n新";
             this.refresh_online_or_break_button.UseVisualStyleBackColor = false;
+            this.refresh_online_or_break_button.Click += new System.EventHandler(this.refresh_online_or_break_button_Click);
             // 
             // Connection_rate
             // 

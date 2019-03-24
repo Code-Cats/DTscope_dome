@@ -426,14 +426,17 @@ namespace DTscope_dome1._0
             {
             }
             int temp_random = 0;
-            while(true)
+            while(true) //这个while一运行起来就占用15%CPU
             {
-                if((time_10ms_count-last_LAN_discovery_time)>= temp_random)//随机数产生放在if里会导致一个BUG，在100ms-101ms时不断刷新导致刷到101ms从而看起来每次都是101ms
+                //if(time_10ms_count%2==0)
+                if ((time_10ms_count - last_LAN_discovery_time) >= temp_random)//随机数产生放在if里会导致一个BUG，在100ms-101ms时不断刷新导致刷到101ms从而看起来每次都是101ms
                 {
                     Thread thrSend = new Thread(SendMessage_Broadcast);    //发送线程
                     thrSend.Start("#RM-DT=DCY_ROBOT:#END");
                     last_LAN_discovery_time = time_10ms_count;
-                    temp_random = LAN_discovery_interval_rd.Next(100, 200);
+                    temp_random = LAN_discovery_interval_rd.Next(150, 250);
+                    //this.thrDiscovery
+                    Thread.Sleep(temp_random*15);
                 }
             }
         }
@@ -1106,6 +1109,7 @@ namespace DTscope_dome1._0
             thrRecv_Unicast.Start(RobotInfo[robot_typeindex].TarIpep);
             IsUdpcRecvStart_Unicast = true;
             ////////////////////////
+            Connection_rate.Value = 10; //发送后就进度10%
 
             SendMessage_Broadcast("#RM-DT=REP_DCY:IM=" + Currently_connected_Device + ";STA=2;#END");   //告诉其他主机本机已连接该设备
         }
@@ -1213,7 +1217,6 @@ namespace DTscope_dome1._0
                                 {
                                     Host_Connect_State = HOST_Connect_State.ConnectOK;
                                     
-
                                     ROBOT_Type temp_robot_Typeindex = 0;
                                     if (RobotName_index_Dic.TryGetValue(Currently_connected_Device, out temp_robot_Typeindex))   //尝试获取该设备命名描述对应的结构体ID，若有则进if
                                     {
@@ -1271,6 +1274,42 @@ namespace DTscope_dome1._0
            
             }
             return false;
+        }
+
+        private void refresh_online_or_break_button_Click(object sender, EventArgs e)   //在非连接状态时刷新用，在连接状态复用为断开连接
+        {
+            switch(Host_Connect_State)
+            {
+                case HOST_Connect_State.Unconnected:    //未连接时刷新使用
+                    {
+                        Thread thrSend = new Thread(SendMessage_Broadcast);    //发送线程
+                        thrSend.Start("#RM-DT=DCY_ROBOT:#END");
+                        last_LAN_discovery_time = time_10ms_count;
+                        break;
+                    }
+                case HOST_Connect_State.Wait_Reply_connect:
+                case HOST_Connect_State.Wait_OSPF:
+                case HOST_Connect_State.ConnectOK:  //需要停止接收线程、关掉UDP单播
+                    {
+                        thrRecv_Unicast.Abort();
+                        UdpUnicastRev.Close();
+                        IsUdpcRecvStart_Unicast = false;
+                        Connection_rate.Value = 0; //发送后就进度0%
+
+                        Host_Connect_State = HOST_Connect_State.Unconnected;
+
+                        ROBOT_Type temp_robot_Typeindex = 0;
+                        if (RobotName_index_Dic.TryGetValue(Currently_connected_Device, out temp_robot_Typeindex))   //尝试获取该设备命名描述对应的结构体ID，若有则进if
+                        {
+                            RobotInfo[(int)temp_robot_Typeindex].On_line_state_last = RobotInfo[(int)temp_robot_Typeindex].On_line_state;   //这个迭代之后应该统一放在定时器，防止程序过大编写遗漏
+                            RobotInfo[(int)temp_robot_Typeindex].On_line_state = ROBOT_State.On_line_free;
+                        }
+                        Update_buttons_callback(RobotInfo[(int)temp_robot_Typeindex], temp_robot_Typeindex);  //调用函数进行按钮刷新//这个之后还是放到定时器吧
+
+                        Currently_connected_Device = null;
+                        break;
+                    }
+            }
         }
 
 
