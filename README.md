@@ -24,7 +24,7 @@ Send:#RM-DT=REP_DCY:IM=<type>;STA=<state>;#END	//state=已连接
 
 数据传输协议：<点播>	//需要有：时间间隔信息，该信息一般不变，可放在握手协议，还需要有：每包几个字节数据；算了，该信息放在CMD中
 配置信息包：
-Send:#RM-DT=DATA_INFO:TIM=<tim_interavl>;ABYTES=<byte_numbers>;TYPE=<s2.s2.s2.s2>#END	//TYPE的值含义是：1数据类型+1字节数.2数据类型+2字节数……
+Send:#RM-DT=DATA_INFO:TIM=<tim_interavl>;ABYTES=<byte_numbers>;TYPE=<s2.s2.s2.s2>;#END	//TYPE的值含义是：1数据类型+1字节数.2数据类型+2字节数……	目前只支持：s8,u8,s16,u16,s32,u32,float
 Rev:#RM-DT=INFOOK:#END
 数据包：
 Rev:#RM-DT=DATA:<XX****160****XX>;#END
@@ -35,6 +35,12 @@ Send:#RM-DT=HTBEAT:#END
 正常退出：
 Rev:Send:#RM-DT=CMD:EXIT;#END
 
+
+//完整的流程：
+#RM-DT=REP_DCY:IM=SENTRY1;STA=1;#END
+#RM-DT=RCNET:TIP=192.168.1.74;CIP=192.168.1.25;CPT=1815;#END
+#RM-DT=RCNET:OK;#END
+#RM-DT=DATA_INFO:TIM=1;ABYTES=10;TYPE=<s2.s2.s2.s2.s2>;#END
 
 {"SENTRY1",ROBOT_Type.Sentry1 },
                 {"SENTRY2",ROBOT_Type.Sentry2 },

@@ -92,6 +92,7 @@ namespace DTscope_dome1._0
             this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.max_value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.min_value = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.rOBOTDATAFOMATINFOBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.CurveOptions_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_channel)).BeginInit();
             this.btn_connect_panel.SuspendLayout();
@@ -101,6 +102,7 @@ namespace DTscope_dome1._0
             this.tabPage_debug.SuspendLayout();
             this.tabPage_config.SuspendLayout();
             this.tabPage_help.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.rOBOTDATAFOMATINFOBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // Curve1
@@ -328,7 +330,7 @@ namespace DTscope_dome1._0
             // 
             // save
             // 
-            this.save.Location = new System.Drawing.Point(17, 185);
+            this.save.Location = new System.Drawing.Point(17, 218);
             this.save.Name = "save";
             this.save.Size = new System.Drawing.Size(75, 23);
             this.save.TabIndex = 20;
@@ -337,7 +339,7 @@ namespace DTscope_dome1._0
             // 
             // clear
             // 
-            this.clear.Location = new System.Drawing.Point(17, 156);
+            this.clear.Location = new System.Drawing.Point(17, 185);
             this.clear.Name = "clear";
             this.clear.Size = new System.Drawing.Size(75, 23);
             this.clear.TabIndex = 21;
@@ -346,7 +348,7 @@ namespace DTscope_dome1._0
             // 
             // test_button
             // 
-            this.test_button.Location = new System.Drawing.Point(108, 156);
+            this.test_button.Location = new System.Drawing.Point(120, 185);
             this.test_button.Name = "test_button";
             this.test_button.Size = new System.Drawing.Size(120, 58);
             this.test_button.TabIndex = 22;
@@ -372,7 +374,7 @@ namespace DTscope_dome1._0
             // 
             // button_test_Datagrad
             // 
-            this.button_test_Datagrad.Location = new System.Drawing.Point(17, 231);
+            this.button_test_Datagrad.Location = new System.Drawing.Point(17, 247);
             this.button_test_Datagrad.Name = "button_test_Datagrad";
             this.button_test_Datagrad.Size = new System.Drawing.Size(93, 40);
             this.button_test_Datagrad.TabIndex = 29;
@@ -421,7 +423,7 @@ namespace DTscope_dome1._0
             this.dataGridView_channel.RowsDefaultCellStyle = dataGridViewCellStyle5;
             this.dataGridView_channel.RowTemplate.Height = 27;
             this.dataGridView_channel.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.dataGridView_channel.Size = new System.Drawing.Size(246, 147);
+            this.dataGridView_channel.Size = new System.Drawing.Size(246, 165);
             this.dataGridView_channel.TabIndex = 28;
             this.dataGridView_channel.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_channel_CellContentClick);
             this.dataGridView_channel.Layout += new System.Windows.Forms.LayoutEventHandler(this.dataGridView_channel_Layout);
@@ -795,6 +797,10 @@ namespace DTscope_dome1._0
             this.min_value.ReadOnly = true;
             this.min_value.Width = 60;
             // 
+            // rOBOTDATAFOMATINFOBindingSource
+            // 
+            this.rOBOTDATAFOMATINFOBindingSource.DataSource = typeof(DTscope_dome1._0.ROBOT_DATA_FOMAT_INFO);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
@@ -823,6 +829,7 @@ namespace DTscope_dome1._0
             this.tabPage_config.PerformLayout();
             this.tabPage_help.ResumeLayout(false);
             this.tabPage_help.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.rOBOTDATAFOMATINFOBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -884,6 +891,7 @@ namespace DTscope_dome1._0
         private DataGridViewTextBoxColumn value;
         private DataGridViewTextBoxColumn max_value;
         private DataGridViewTextBoxColumn min_value;
+        private BindingSource rOBOTDATAFOMATINFOBindingSource;
     }
 }
 

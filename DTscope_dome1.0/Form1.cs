@@ -78,6 +78,42 @@ namespace DTscope_dome1._0
         public IPEndPoint TarIpep;  //目标IP
     }
 
+    /// <summary>
+    /// 通道数据类型枚举
+    /// </summary>
+    public enum ROBOT_DATA_FOMAT_TYPE //
+    {
+        u8,   //
+        s8,   //
+        u16,  //
+        s16,
+        u32,
+        s32,
+        f32,
+        ROBOT_DataType_num
+    }
+
+    /// <summary>
+    /// 机器回传数据单个通道格式
+    /// </summary>
+    public struct ROBOT_DATA_FOMAT_CHANNEL
+    {
+        public ROBOT_DATA_FOMAT_TYPE type;    //数据类型
+        public int bytes;  //当前数据类型占用多少字节
+        public int index;  //当前数据类型首字节索引
+        public List<float> datalist;
+    }
+    /// <summary>
+    /// 机器回传数据信息格式
+    /// </summary>
+    public struct ROBOT_DATA_FOMAT_INFO
+    {
+        public ROBOT_DATA_FOMAT_CHANNEL[] ch;    //各个通道信息
+        public int inter_frame_time;  //帧与帧之间间隔多少ms
+        public int frame_bytes;  //一帧所有通道共含有几个字节
+        public int ch_num; //当前有效通道数
+    }
+
     public partial class Form1 : Form
     {
         /// <summary>
@@ -171,7 +207,7 @@ namespace DTscope_dome1._0
 
             Thread thrDiscovery = new Thread(Automatic_LAN_discovery);    //局域网发现线程，开机默认开启
             thrDiscovery.Start();
-
+            DrawdataGridView_Form_robotDataFomatInfo(RobotDataFomatInfo, dataGridView_channel);
             dataGridView_channel.ClearSelection();
 
             //this.Focus();
@@ -241,7 +277,7 @@ namespace DTscope_dome1._0
                     {
                         button.BackColor = Color.FromArgb(2, 131, 201);
                         button.ForeColor = Color.FromArgb(243, 249, 252);//46 58 132
-                                                                         // button.Enabled = false;
+                        // button.Enabled = false;
                         //SetControlEnabled(button, false); //转移到定时器里去了
                         
                         //button.Text = button.Text.Split('\n')[0] + "\nconnect_OK";//fuck this!线程中连按钮文本都不能改变？？？？服  了
@@ -1154,7 +1190,7 @@ namespace DTscope_dome1._0
                     string strRecv = Encoding.Default.GetString(bytRecv, 0, bytRecv.Length);
                     Unicast_Message_Deal(strRecv,bytRecv, revIpep, tarIpep);
                     //byte[] temtt = revIpep.Address.GetAddressBytes(); //以字节数组
-                    All_recvMsg_Unicast = All_recvMsg_Unicast.Insert(All_recvMsg_Unicast.LastIndexOf('.'), string.Format("[{0}]{1}", revIpep, bytRecv) + "\r\n"); //放在这里可以达到不管什么单播信息都会显示的目的
+                    All_recvMsg_Unicast = All_recvMsg_Unicast.Insert(All_recvMsg_Unicast.LastIndexOf('.'), string.Format("[{0}]{1}", revIpep, strRecv) + "\r\n"); //放在这里可以达到不管什么单播信息都会显示的目的
 
                 }
                 catch (Exception ex)
@@ -1279,6 +1315,11 @@ namespace DTscope_dome1._0
             return false;
         }
 
+        /// <summary>
+        /// 刷新或者断开连接
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void refresh_online_or_break_button_Click(object sender, EventArgs e)   //在非连接状态时刷新用，在连接状态复用为断开连接
         {
             switch(Host_Connect_State)
@@ -1292,7 +1333,7 @@ namespace DTscope_dome1._0
                     }
                 case HOST_Connect_State.Wait_Reply_connect:
                 case HOST_Connect_State.Wait_OSPF:
-                case HOST_Connect_State.ConnectOK:  //需要停止接收线程、关掉UDP单播
+                case HOST_Connect_State.ConnectOK:  //断开连接//需要停止接收线程、关掉UDP单播
                     {
                         thrRecv_Unicast.Abort();
                         UdpUnicastRev.Close();
@@ -1367,12 +1408,16 @@ namespace DTscope_dome1._0
         {
             if(!IsLoadInit_DataGridView)
             {
-                dataGridView_channel_AddNewRow("ch0"); 
-                dataGridView_channel_AddNewRow("ch1");
-                dataGridView_channel_AddNewRow("ch2");
-                dataGridView_channel_AddNewRow("ch3");
+                robotDataFomatInfo_DataInit(out RobotDataFomatInfo);    //数据格式信息初始化
 
-                dataGridView_channel.Rows[0].Cells[2].Value = time_10ms_count.ToString();
+                DrawdataGridView_Form_robotDataFomatInfo(RobotDataFomatInfo, dataGridView_channel);//根据fomatinfo信息生成dataGridView
+
+                //dataGridView_AddNewRow(dataGridView_channel, "ch0"); 
+                //dataGridView_AddNewRow(dataGridView_channel, "ch1");
+                //dataGridView_AddNewRow(dataGridView_channel, "ch2");
+                //dataGridView_AddNewRow(dataGridView_channel, "ch3");
+
+                //dataGridView_channel.Rows[0].Cells[2].Value = time_10ms_count.ToString();
                 //dataGridView_channel.Rows[1].Cells[0].Value = true;
 
                 dataGridView_channel.ClearSelection();
@@ -1382,7 +1427,12 @@ namespace DTscope_dome1._0
             dataGridView_channel.ClearSelection();
         }
 
-        private void dataGridView_channel_AddNewRow(string ch_name)
+        /// <summary>
+        /// 在生成dataGridView时添加新行
+        /// </summary>
+        /// <param name="datagridview"></param>
+        /// <param name="ch_name"></param>
+        private void dataGridView_AddNewRow(DataGridView datagridview,string ch_name)
         {
             DataGridViewRow row = new DataGridViewRow();
             DataGridViewCheckBoxCell checkboxcell = new DataGridViewCheckBoxCell();
@@ -1390,7 +1440,53 @@ namespace DTscope_dome1._0
             DataGridViewTextBoxCell textboxcell = new DataGridViewTextBoxCell();
             textboxcell.Value = ch_name;
             row.Cells.Add(textboxcell);
-            dataGridView_channel.Rows.Add(row);
+            datagridview.Rows.Add(row);
+        }
+
+        /// <summary>
+        /// 机器回传数据格式信息及通道信息结构体，包含通道信息  version单连接
+        /// </summary>
+        ROBOT_DATA_FOMAT_INFO RobotDataFomatInfo = new ROBOT_DATA_FOMAT_INFO(); //需要在load前进行初始化
+        /// <summary>
+        /// RobotDataFomatInfo数据初始化
+        /// </summary>
+        public void robotDataFomatInfo_DataInit(out ROBOT_DATA_FOMAT_INFO data)
+        {
+            data.inter_frame_time = 1;
+            data.frame_bytes = 8;
+            data.ch_num = 5;
+            data.ch = new ROBOT_DATA_FOMAT_CHANNEL[data.ch_num];
+
+            for(int i=0;i< data.ch_num;i++)
+            {
+                data.ch[i].type = ROBOT_DATA_FOMAT_TYPE.s16;
+                data.ch[i].index = i * 2;
+                data.ch[i].bytes = 10;
+            }
+            
+        }
+        /// <summary>
+        /// 根据数据格式信息生成DataGridView表格部分信息
+        /// </summary>
+        /// <param name="fomat_data"></param>
+        /// <param name="data_gridview"></param>
+        public void DrawdataGridView_Form_robotDataFomatInfo(ROBOT_DATA_FOMAT_INFO fomat_data, DataGridView data_gridview)
+        {
+            //DataGridView temp_dataGridView = new DataGridView();  //new的方法需要加入列，很麻烦 直接删除原来的行吧
+
+            for (int i = 0; i < data_gridview.Rows.Count; i++)  //删除当前所有行
+            {
+                DataGridViewRow row = data_gridview.Rows[i];
+                data_gridview.Rows.Remove(row);
+                i--; //这句是关键。。
+            }
+
+            for (int i = 0; i < fomat_data.ch_num; i++) 
+            {
+                dataGridView_AddNewRow(data_gridview, "ch"+i.ToString());
+            }
+            //data_gridview = temp_dataGridView;
+            dataGridView_channel.ClearSelection();
         }
 
         /// <summary>
@@ -1399,12 +1495,12 @@ namespace DTscope_dome1._0
         /// <param name="strtype"></param>
         /// <param name="strdata"></param>
         private void RobotData_Receive_Main(string strtype, string strdata)
-        {
-            switch(strtype)
+        {//strdata数据格式：TIM=<tim_interavl>;ABYTES=<byte_numbers>;TYPE=<s2.s2.s2.s2>;#END
+            switch (strtype)
             {
                 case "DATA_INFO":
                     {
-                        RobotData_InfoSet(strdata);
+                        RobotData_InfoSet(strdata,ref RobotDataFomatInfo);
                         break;
                     }
                 case "DATA":
@@ -1426,9 +1522,186 @@ namespace DTscope_dome1._0
         /// 设置数据接受信息
         /// </summary>
         /// <param name="strset"></param>
-        private void RobotData_InfoSet(string strset)
-        {
+        private void RobotData_InfoSet(string strset,ref ROBOT_DATA_FOMAT_INFO fomat_data)
+        {//strdata数据格式：TIM=<tim_interavl>;ABYTES=<byte_numbers>;TYPE=<s2.s2.s2.s2>;#END
 
+            int tim_index, abytes_index, type_index = 0;
+            string[] temp_fomatinfo_data = strset.Split(new char[2] { '=', ';' }); //分割字符串 不包含该字符
+            tim_index = temp_fomatinfo_data.ToList().IndexOf("TIM") + 1;
+            abytes_index = temp_fomatinfo_data.ToList().IndexOf("ABYTES") + 1;
+            type_index = temp_fomatinfo_data.ToList().IndexOf("TYPE") + 1;
+            //temp_type = temp1[1].Split(':');
+            if (tim_index == 0 || abytes_index == 0 || type_index == 0)   //没有任意一个标识，丢弃
+            {
+                return;
+            }
+            else //有标识，将fomat信息存入
+            {
+                if (int.TryParse(temp_fomatinfo_data[tim_index], out fomat_data.inter_frame_time) &&
+                    int.TryParse(temp_fomatinfo_data[abytes_index], out fomat_data.frame_bytes))
+                {   //到此处该处理s2.s2.s2.s2.s2
+                    string[] temp_type_data = temp_fomatinfo_data[type_index].Split('.');
+                    if(robotDataFomatInfo_ChannelType_TrySet(temp_type_data, ref fomat_data))   //如果通道信息正常
+                    {
+                        //刷新datagrid
+                        DrawdataGridView_Form_robotDataFomatInfo(RobotDataFomatInfo, dataGridView_channel);
+                        //在准备工作都做好后 发送一个#RM-DT=INFOOK:#END
+                        ROBOT_Type robot_typeindex;
+                        RobotName_index_Dic.TryGetValue(Currently_connected_Device, out robot_typeindex);   //获取当前机器ID
+                        Thread thrSend = new Thread(SendMessage_unicast);    //单播发送握手请求
+                        string[] sendmeg = new string[] { "#RM-DT=INFOOK:#END", RobotInfo[(int)robot_typeindex].TarIpep.Address.ToString() };
+                        thrSend.Start(sendmeg);
+                    }
+                    else //通道信息解析出错
+                    {
+
+                    }
+
+
+                }
+
+                //data.inter_frame_time = 1;
+                //data.frame_bytes = 8;
+                //data.ch_num = 5;
+                //data.ch = new ROBOT_DATA_FOMAT_CHANNEL[data.ch_num];
+
+                //for (int i = 0; i < data.ch_num; i++)
+                //{
+                //    data.ch[i].type = ROBOT_DATA_FOMAT_TYPE.s16;
+                //    data.ch[i].index = i * 2;
+                //    data.ch[i].bytes = 10;
+                //}
+
+            }
+            
+                
+        }
+        /// <summary>
+        /// 机器回传格式信息中对所有通道变量信息的设置，传入格式为s2.s2.s2.s2.s2
+        /// </summary>
+        /// <param name="strtype"></param>
+        /// <param name="fomat_data"></param>
+        /// <returns></returns>
+        private bool robotDataFomatInfo_ChannelType_TrySet(string[] strtype, ref ROBOT_DATA_FOMAT_INFO fomat_data)//机器回传格式信息中对通道变量信息的设置
+        {//目前只支持：s8,u8,s16,u16,s32,u32,float  2019.3.25//data.ch = new ROBOT_DATA_FOMAT_CHANNEL[data.ch_num];
+            fomat_data.ch_num = strtype.Length; //先获取分成了几个块、即几个通道
+            fomat_data.ch = new ROBOT_DATA_FOMAT_CHANNEL[fomat_data.ch_num];    //刷新信息，刷新之前的信息
+            for (int i = 0; i < strtype.Length; i++)
+            {
+                fomat_data.ch_num = i;  //再更新ch_num值，以免执行到某一步后面的解析失败了
+                switch (strtype[i])
+                {
+                    case "s1":
+                        {
+                            fomat_data.ch[i].type = ROBOT_DATA_FOMAT_TYPE.s8;   //设置当前通道类型
+                            fomat_data.ch[i].bytes = 1; //设置当前通道所占字节
+                            if(i==0)    //如果是第一个通道直接索引=0
+                            {
+                                fomat_data.ch[i].index = 0;
+                            }
+                            else //后面几个通道索引=前一个索引+前一个bytes
+                            {
+                                fomat_data.ch[i].index = fomat_data.ch[i - 1].index + fomat_data.ch[i - 1].bytes;
+                            }
+                            break;
+                        }
+                    case "u1":
+                        {
+                            fomat_data.ch[i].type = ROBOT_DATA_FOMAT_TYPE.u8;   //设置当前通道类型
+                            fomat_data.ch[i].bytes = 1; //设置当前通道所占字节
+                            if (i == 0)    //如果是第一个通道直接索引=0
+                            {
+                                fomat_data.ch[i].index = 0;
+                            }
+                            else //后面几个通道索引=前一个索引+前一个bytes
+                            {
+                                fomat_data.ch[i].index = fomat_data.ch[i - 1].index + fomat_data.ch[i - 1].bytes;
+                            }
+                            break;
+                        }
+                    case "s2":
+                        {
+                            fomat_data.ch[i].type = ROBOT_DATA_FOMAT_TYPE.s16;  //设置当前通道类型
+                            fomat_data.ch[i].bytes = 2; //设置当前通道所占字节
+                            if (i == 0)    //如果是第一个通道直接索引=0
+                            {
+                                fomat_data.ch[i].index = 0;
+                            }
+                            else //后面几个通道索引=前一个索引+前一个bytes
+                            {
+                                fomat_data.ch[i].index = fomat_data.ch[i - 1].index + fomat_data.ch[i - 1].bytes;
+                            }
+                            break;
+                        }
+                    case "u2":
+                        {
+                            fomat_data.ch[i].type = ROBOT_DATA_FOMAT_TYPE.u16;  //设置当前通道类型
+                            fomat_data.ch[i].bytes = 2; //设置当前通道所占字节
+                            if (i == 0)    //如果是第一个通道直接索引=0
+                            {
+                                fomat_data.ch[i].index = 0;
+                            }
+                            else //后面几个通道索引=前一个索引+前一个bytes
+                            {
+                                fomat_data.ch[i].index = fomat_data.ch[i - 1].index + fomat_data.ch[i - 1].bytes;
+                            }
+                            break;
+                        }
+                    case "s4":
+                        {
+                            fomat_data.ch[i].type = ROBOT_DATA_FOMAT_TYPE.s32;  //设置当前通道类型
+                            fomat_data.ch[i].bytes = 4; //设置当前通道所占字节
+                            if (i == 0)    //如果是第一个通道直接索引=0
+                            {
+                                fomat_data.ch[i].index = 0;
+                            }
+                            else //后面几个通道索引=前一个索引+前一个bytes
+                            {
+                                fomat_data.ch[i].index = fomat_data.ch[i - 1].index + fomat_data.ch[i - 1].bytes;
+                            }
+                            break;
+                        }
+                    case "u4":
+                        {
+                            fomat_data.ch[i].type = ROBOT_DATA_FOMAT_TYPE.u32;  //设置当前通道类型
+                            fomat_data.ch[i].bytes = 4; //设置当前通道所占字节
+                            if (i == 0)    //如果是第一个通道直接索引=0
+                            {
+                                fomat_data.ch[i].index = 0;
+                            }
+                            else //后面几个通道索引=前一个索引+前一个bytes
+                            {
+                                fomat_data.ch[i].index = fomat_data.ch[i - 1].index + fomat_data.ch[i - 1].bytes;
+                            }
+                            break;
+                        }
+                    case "f4":
+                        {
+                            fomat_data.ch[i].type = ROBOT_DATA_FOMAT_TYPE.f32;  //设置当前通道类型
+                            fomat_data.ch[i].bytes = 4; //设置当前通道所占字节
+                            if (i == 0)    //如果是第一个通道直接索引=0
+                            {
+                                fomat_data.ch[i].index = 0;
+                            }
+                            else //后面几个通道索引=前一个索引+前一个bytes
+                            {
+                                fomat_data.ch[i].index = fomat_data.ch[i - 1].index + fomat_data.ch[i - 1].bytes;
+                            }
+                            break;
+                        }
+                    default:    //不存在的类型，直接返回false
+                        {
+                            return false;
+                        }
+                }//switch结束
+                fomat_data.ch_num = i+1;  //再更新ch_num值，以免执行到某一步后面的解析失败了
+            }//for结束
+            //下面该检查frame_bytes是否和types计算出来的是否相等
+            if(fomat_data.ch[fomat_data.ch_num-1].index+ fomat_data.ch[fomat_data.ch_num - 1].bytes== fomat_data.frame_bytes)
+            {
+                return true;    //符合一系列条件
+            }
+            return false;
         }
 
         //////////////////////////////////////////////////////////////////////////////////
