@@ -104,6 +104,15 @@ namespace DTscope_dome1._0
         public List<float> datalist;
     }
     /// <summary>
+    /// 机器当前数据协议状态
+    /// </summary>
+    public enum ROBOT_DATA_FOMAT_DATA_STATE
+    {
+        Info_notset,
+        InfoSet_DatanotRev,
+        All_Ok,
+    }
+    /// <summary>
     /// 机器回传数据信息格式
     /// </summary>
     public struct ROBOT_DATA_FOMAT_INFO
@@ -116,6 +125,7 @@ namespace DTscope_dome1._0
         public int loss_num;    //丢包数量
         public int nomal_num;   //正常情况下1s应有的包数  //每一包数据来了后计算：1000/(packet_bytes/frame_bytes*inter_frame_time)
         public int loss_rate;   //丢包率，单位%
+        public ROBOT_DATA_FOMAT_DATA_STATE data_rev_state;
     }
 
     public partial class Form1 : Form
@@ -214,8 +224,9 @@ namespace DTscope_dome1._0
             DrawdataGridView_Form_robotDataFomatInfo(RobotDataFomatInfo, dataGridView_channel);
             dataGridView_channel.ClearSelection();
 
+            RobotDataFomatInfo.ch[0].datalist.Add((float)2);    //测试BUG2019.3.26 21：32
             //this.Focus();
-            
+
             // userCurve1.BringToFront();
         }
 
@@ -862,6 +873,9 @@ namespace DTscope_dome1._0
                 DrawdataGridView_Form_robotDataFomatInfo(RobotDataFomatInfo, dataGridView_channel);
             }
 
+            if(Host_Connect_State==HOST_Connect_State.ConnectOK)
+            updataGridView_chvalue_Form_robotDataFomatInfo(RobotDataFomatInfo, dataGridView_channel);   //更新value
+
         }
 
         /// <summary>
@@ -1483,11 +1497,14 @@ namespace DTscope_dome1._0
             data.loss_num = 0;  //丢包数
             data.loss_rate = 100*data.loss_num / data.nomal_num;    //丢包率
 
+            data.data_rev_state = ROBOT_DATA_FOMAT_DATA_STATE.Info_notset;
+
             for (int i=0;i< data.ch_num;i++)
             { 
                 data.ch[i].type = ROBOT_DATA_FOMAT_TYPE.s16;
                 data.ch[i].index = i * 2;
                 data.ch[i].bytes = 10;
+                data.ch[i].datalist = new List<float>();  //不加这句话会有BUG "未将对象引用设置到对象的实例"
             }
             
         }
@@ -1514,6 +1531,18 @@ namespace DTscope_dome1._0
             //data_gridview = temp_dataGridView;
             dataGridView_channel.ClearSelection();
         }
+
+        public void updataGridView_chvalue_Form_robotDataFomatInfo(ROBOT_DATA_FOMAT_INFO fomat_data, DataGridView data_gridview)
+        {
+            if(fomat_data.data_rev_state == ROBOT_DATA_FOMAT_DATA_STATE.All_Ok)
+            {
+                for (int i = 0; i < fomat_data.ch_num; i++)
+                {
+                    data_gridview.Rows[i].Cells[2].Value = fomat_data.ch[i].datalist[fomat_data.ch[i].datalist.Count() - 1].ToString();
+                }
+            }
+        }
+
         /// <summary>
         /// dataGridView是否刷新的标志，若有刷新，则在UI_timer中刷新
         /// </summary>
@@ -1535,6 +1564,7 @@ namespace DTscope_dome1._0
                     }
                 case "DATA":
                     {
+                        RobotData_DataDeal(strdata, ref RobotDataFomatInfo);
                         break;
                     }
                 case "CMD":
@@ -1615,8 +1645,10 @@ namespace DTscope_dome1._0
         {//目前只支持：s8,u8,s16,u16,s32,u32,float  2019.3.25//data.ch = new ROBOT_DATA_FOMAT_CHANNEL[data.ch_num];
             fomat_data.ch_num = strtype.Length; //先获取分成了几个块、即几个通道
             fomat_data.ch = new ROBOT_DATA_FOMAT_CHANNEL[fomat_data.ch_num];    //刷新信息，刷新之前的信息
+            
             for (int i = 0; i < strtype.Length; i++)
             {
+                fomat_data.ch[i].datalist = new List<float>();  //不加这句话会有BUG "未将对象引用设置到对象的实例"
                 fomat_data.ch_num = i;  //再更新ch_num值，以免执行到某一步后面的解析失败了
                 switch (strtype[i])
                 {
@@ -1725,8 +1757,11 @@ namespace DTscope_dome1._0
                 }//switch结束
                 fomat_data.ch_num = i+1;  //再更新ch_num值，以免执行到某一步后面的解析失败了
             }//for结束
+
+            fomat_data.data_rev_state = ROBOT_DATA_FOMAT_DATA_STATE.InfoSet_DatanotRev;
+
             //下面该检查frame_bytes是否和types计算出来的是否相等
-            if(fomat_data.ch[fomat_data.ch_num-1].index+ fomat_data.ch[fomat_data.ch_num - 1].bytes== fomat_data.frame_bytes)
+            if (fomat_data.ch[fomat_data.ch_num-1].index+ fomat_data.ch[fomat_data.ch_num - 1].bytes== fomat_data.frame_bytes)
             {
                 return true;    //符合一系列条件
             }
@@ -1743,7 +1778,7 @@ namespace DTscope_dome1._0
             string temp_chs_data = strdata.Substring(3);
             if (strdata.Substring(0, 1).Equals("S") && //第一位为S
                 int.TryParse(strdata.Substring(1, 1), out temp_package_number_now) && //第二位为数字0-9
-                strdata.Substring(1, 2).Equals("="))    //第三位为=
+                strdata.Substring(2, 1).Equals("="))    //第三位为=
             {
                 if (temp_chs_data.Length % fomat_data.frame_bytes == 0) //当前字节数为单包字节数整倍数
                 {
@@ -1811,9 +1846,10 @@ namespace DTscope_dome1._0
                             }
                             //BitConverter.ToSingle
                             //fomat_data.ch[j].datalist.Add();
-                        }
-                    }
-
+                        }//通道for结束
+                    }//帧for结束
+                    //怎么通知定时器更新了？？？？？？？？？？？？？
+                    fomat_data.data_rev_state = ROBOT_DATA_FOMAT_DATA_STATE.All_Ok;
                 }
             }
             //sn_index = temp_fomatinfo_data.ToList().IndexOf("TIM") + 1;
