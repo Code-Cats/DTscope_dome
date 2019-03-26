@@ -852,6 +852,12 @@ namespace DTscope_dome1._0
             Broadcast_communication_textBox.Text = All_recvMsg_Broadcast;   //放入对话框缓存
             Unicast_communication_textBox.Text = All_recvMsg_Unicast;   //放入对话框缓存
 
+            if(ReDrawdataGridView_Flag==true)
+            {
+                ReDrawdataGridView_Flag = false;//不能在线程中更改窗体控件，除非使用委托，否则要在timer_UI中修改
+                DrawdataGridView_Form_robotDataFomatInfo(RobotDataFomatInfo, dataGridView_channel);
+            }
+
         }
 
         /// <summary>
@@ -1488,6 +1494,10 @@ namespace DTscope_dome1._0
             //data_gridview = temp_dataGridView;
             dataGridView_channel.ClearSelection();
         }
+        /// <summary>
+        /// dataGridView是否刷新的标志，若有刷新，则在UI_timer中刷新
+        /// </summary>
+        bool ReDrawdataGridView_Flag = false;
 
         /// <summary>
         /// connectOK后对机器信息处理的总函数
@@ -1544,11 +1554,12 @@ namespace DTscope_dome1._0
                     if(robotDataFomatInfo_ChannelType_TrySet(temp_type_data, ref fomat_data))   //如果通道信息正常
                     {
                         //刷新datagrid
-                        DrawdataGridView_Form_robotDataFomatInfo(RobotDataFomatInfo, dataGridView_channel);
+                        ReDrawdataGridView_Flag = true;//不能在线程中更改窗体控件，除非使用委托，否则要在timer_UI中修改
+                        //DrawdataGridView_Form_robotDataFomatInfo(RobotDataFomatInfo, dataGridView_channel);
                         //在准备工作都做好后 发送一个#RM-DT=INFOOK:#END
                         ROBOT_Type robot_typeindex;
                         RobotName_index_Dic.TryGetValue(Currently_connected_Device, out robot_typeindex);   //获取当前机器ID
-                        Thread thrSend = new Thread(SendMessage_unicast);    //单播发送握手请求
+                        Thread thrSend = new Thread(SendMessage_unicast);    //单播发送信息接收成功反馈
                         string[] sendmeg = new string[] { "#RM-DT=INFOOK:#END", RobotInfo[(int)robot_typeindex].TarIpep.Address.ToString() };
                         thrSend.Start(sendmeg);
                     }
