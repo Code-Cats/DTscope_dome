@@ -31,11 +31,11 @@ namespace DTscope_dome1._0
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle26 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle27 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle29 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle30 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle28 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.Curve1 = new HslCommunication.Controls.UserCurve();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
@@ -92,7 +92,13 @@ namespace DTscope_dome1._0
             this.tabPage_help = new System.Windows.Forms.TabPage();
             this.label9 = new System.Windows.Forms.Label();
             this.timer_count = new System.Windows.Forms.Timer(this.components);
-            this.rOBOTDATAFOMATINFOBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.timer_1s_FPS = new System.Windows.Forms.Timer(this.components);
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.timer_1ms_updataCurve = new System.Windows.Forms.Timer(this.components);
             this.CurveOptions_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_channel)).BeginInit();
             this.btn_connect_panel.SuspendLayout();
@@ -102,7 +108,7 @@ namespace DTscope_dome1._0
             this.tabPage_debug.SuspendLayout();
             this.tabPage_config.SuspendLayout();
             this.tabPage_help.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.rOBOTDATAFOMATINFOBindingSource)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // Curve1
@@ -113,6 +119,9 @@ namespace DTscope_dome1._0
             this.Curve1.Name = "Curve1";
             this.Curve1.Size = new System.Drawing.Size(900, 370);
             this.Curve1.TabIndex = 0;
+            this.Curve1.ValueMaxLeft = 65535F;
+            this.Curve1.ValueMaxRight = 50000F;
+            this.Curve1.Load += new System.EventHandler(this.Curve1_Load);
             // 
             // notifyIcon1
             // 
@@ -330,7 +339,7 @@ namespace DTscope_dome1._0
             // 
             // save
             // 
-            this.save.Location = new System.Drawing.Point(17, 218);
+            this.save.Location = new System.Drawing.Point(165, 335);
             this.save.Name = "save";
             this.save.Size = new System.Drawing.Size(75, 23);
             this.save.TabIndex = 20;
@@ -339,7 +348,7 @@ namespace DTscope_dome1._0
             // 
             // clear
             // 
-            this.clear.Location = new System.Drawing.Point(17, 185);
+            this.clear.Location = new System.Drawing.Point(17, 262);
             this.clear.Name = "clear";
             this.clear.Size = new System.Drawing.Size(75, 23);
             this.clear.TabIndex = 21;
@@ -374,9 +383,9 @@ namespace DTscope_dome1._0
             // 
             // button_test_Datagrad
             // 
-            this.button_test_Datagrad.Location = new System.Drawing.Point(17, 247);
+            this.button_test_Datagrad.Location = new System.Drawing.Point(17, 185);
             this.button_test_Datagrad.Name = "button_test_Datagrad";
-            this.button_test_Datagrad.Size = new System.Drawing.Size(93, 40);
+            this.button_test_Datagrad.Size = new System.Drawing.Size(93, 58);
             this.button_test_Datagrad.TabIndex = 29;
             this.button_test_Datagrad.Text = "测试表格";
             this.button_test_Datagrad.UseVisualStyleBackColor = true;
@@ -385,19 +394,19 @@ namespace DTscope_dome1._0
             // dataGridView_channel
             // 
             this.dataGridView_channel.AllowUserToAddRows = false;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.dataGridView_channel.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle26.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.dataGridView_channel.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle26;
             this.dataGridView_channel.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.dataGridView_channel.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dataGridView_channel.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView_channel.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle27.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle27.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle27.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle27.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle27.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle27.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle27.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView_channel.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle27;
             this.dataGridView_channel.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView_channel.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.channel_selected,
@@ -409,18 +418,18 @@ namespace DTscope_dome1._0
             this.dataGridView_channel.Location = new System.Drawing.Point(3, 3);
             this.dataGridView_channel.Name = "dataGridView_channel";
             this.dataGridView_channel.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView_channel.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle29.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle29.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle29.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle29.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle29.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle29.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle29.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView_channel.RowHeadersDefaultCellStyle = dataGridViewCellStyle29;
             this.dataGridView_channel.RowHeadersVisible = false;
             this.dataGridView_channel.RowHeadersWidth = 10;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.dataGridView_channel.RowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle30.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.dataGridView_channel.RowsDefaultCellStyle = dataGridViewCellStyle30;
             this.dataGridView_channel.RowTemplate.Height = 27;
             this.dataGridView_channel.ScrollBars = System.Windows.Forms.ScrollBars.None;
             this.dataGridView_channel.Size = new System.Drawing.Size(246, 165);
@@ -437,9 +446,9 @@ namespace DTscope_dome1._0
             // 
             // channel_ID
             // 
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Gray;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.channel_ID.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle28.BackColor = System.Drawing.Color.Gray;
+            dataGridViewCellStyle28.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.channel_ID.DefaultCellStyle = dataGridViewCellStyle28;
             this.channel_ID.HeaderText = "ch";
             this.channel_ID.Name = "channel_ID";
             this.channel_ID.Width = 38;
@@ -470,7 +479,7 @@ namespace DTscope_dome1._0
             this.revnum_label.AutoSize = true;
             this.revnum_label.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
             this.revnum_label.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(140)))), ((int)(((byte)(140)))));
-            this.revnum_label.Location = new System.Drawing.Point(146, 282);
+            this.revnum_label.Location = new System.Drawing.Point(158, 247);
             this.revnum_label.Name = "revnum_label";
             this.revnum_label.Size = new System.Drawing.Size(55, 15);
             this.revnum_label.TabIndex = 27;
@@ -479,7 +488,7 @@ namespace DTscope_dome1._0
             // rev_text
             // 
             this.rev_text.BackColor = System.Drawing.SystemColors.ButtonShadow;
-            this.rev_text.Location = new System.Drawing.Point(146, 297);
+            this.rev_text.Location = new System.Drawing.Point(158, 262);
             this.rev_text.Name = "rev_text";
             this.rev_text.Size = new System.Drawing.Size(82, 59);
             this.rev_text.TabIndex = 26;
@@ -487,7 +496,7 @@ namespace DTscope_dome1._0
             // 
             // test_connect
             // 
-            this.test_connect.Location = new System.Drawing.Point(17, 333);
+            this.test_connect.Location = new System.Drawing.Point(17, 335);
             this.test_connect.Name = "test_connect";
             this.test_connect.Size = new System.Drawing.Size(75, 23);
             this.test_connect.TabIndex = 24;
@@ -632,6 +641,7 @@ namespace DTscope_dome1._0
             // tabPage_chart
             // 
             this.tabPage_chart.BackColor = System.Drawing.Color.DimGray;
+            this.tabPage_chart.Controls.Add(this.panel1);
             this.tabPage_chart.Controls.Add(this.Curve1);
             this.tabPage_chart.Controls.Add(this.btn_connect_panel);
             this.tabPage_chart.Controls.Add(this.CurveOptions_panel);
@@ -667,7 +677,7 @@ namespace DTscope_dome1._0
             this.Broadcast_communication_textBox.Multiline = true;
             this.Broadcast_communication_textBox.Name = "Broadcast_communication_textBox";
             this.Broadcast_communication_textBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.Broadcast_communication_textBox.Size = new System.Drawing.Size(504, 536);
+            this.Broadcast_communication_textBox.Size = new System.Drawing.Size(504, 576);
             this.Broadcast_communication_textBox.TabIndex = 8;
             this.Broadcast_communication_textBox.Text = ".init";
             this.Broadcast_communication_textBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Broadcast_communication_textBox_MouseDown);
@@ -683,7 +693,7 @@ namespace DTscope_dome1._0
             this.checkedListBox_dubug.Items.AddRange(new object[] {
             "广播",
             "点播"});
-            this.checkedListBox_dubug.Location = new System.Drawing.Point(1092, 514);
+            this.checkedListBox_dubug.Location = new System.Drawing.Point(1092, 549);
             this.checkedListBox_dubug.Name = "checkedListBox_dubug";
             this.checkedListBox_dubug.Size = new System.Drawing.Size(56, 40);
             this.checkedListBox_dubug.TabIndex = 7;
@@ -701,14 +711,14 @@ namespace DTscope_dome1._0
             this.Unicast_communication_textBox.Name = "Unicast_communication_textBox";
             this.Unicast_communication_textBox.ReadOnly = true;
             this.Unicast_communication_textBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.Unicast_communication_textBox.Size = new System.Drawing.Size(610, 483);
+            this.Unicast_communication_textBox.Size = new System.Drawing.Size(610, 522);
             this.Unicast_communication_textBox.TabIndex = 6;
             this.Unicast_communication_textBox.Text = ".init";
             // 
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("等线", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button1.Location = new System.Drawing.Point(1030, 507);
+            this.button1.Location = new System.Drawing.Point(1030, 547);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(56, 50);
             this.button1.TabIndex = 5;
@@ -717,7 +727,7 @@ namespace DTscope_dome1._0
             // 
             // Debug_SendMsg_textBox
             // 
-            this.Debug_SendMsg_textBox.Location = new System.Drawing.Point(523, 507);
+            this.Debug_SendMsg_textBox.Location = new System.Drawing.Point(523, 547);
             this.Debug_SendMsg_textBox.Multiline = true;
             this.Debug_SendMsg_textBox.Name = "Debug_SendMsg_textBox";
             this.Debug_SendMsg_textBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
@@ -797,16 +807,79 @@ namespace DTscope_dome1._0
             this.timer_count.Interval = 10;
             this.timer_count.Tick += new System.EventHandler(this.timer_count_Tick);
             // 
-            // rOBOTDATAFOMATINFOBindingSource
+            // timer_1s_FPS
             // 
-            this.rOBOTDATAFOMATINFOBindingSource.DataSource = typeof(DTscope_dome1._0.ROBOT_DATA_FOMAT_INFO);
+            this.timer_1s_FPS.Interval = 1000;
+            this.timer_1s_FPS.Tick += new System.EventHandler(this.timer_1s_FPS_Tick);
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            this.panel1.Controls.Add(this.label13);
+            this.panel1.Controls.Add(this.label12);
+            this.panel1.Controls.Add(this.label11);
+            this.panel1.Controls.Add(this.label10);
+            this.panel1.Location = new System.Drawing.Point(6, 564);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1163, 36);
+            this.panel1.TabIndex = 28;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(145)))));
+            this.label10.Location = new System.Drawing.Point(73, 12);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(35, 16);
+            this.label10.TabIndex = 26;
+            this.label10.Text = "FPS:";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(145)))));
+            this.label11.Location = new System.Drawing.Point(169, 12);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(140, 16);
+            this.label11.TabIndex = 27;
+            this.label11.Text = "Frame Loss Rate:0%";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(145)))));
+            this.label12.Location = new System.Drawing.Point(17, 12);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(50, 16);
+            this.label12.TabIndex = 28;
+            this.label12.Text = "INFO:";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(145)))));
+            this.label13.Location = new System.Drawing.Point(368, 12);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(107, 16);
+            this.label13.TabIndex = 29;
+            this.label13.Text = "Data Info State:";
+            // 
+            // timer_1ms_updataCurve
+            // 
+            this.timer_1ms_updataCurve.Enabled = true;
+            this.timer_1ms_updataCurve.Interval = 1;
+            this.timer_1ms_updataCurve.Tick += new System.EventHandler(this.timer_1ms_updataCurve_Tick);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.ClientSize = new System.Drawing.Size(1164, 590);
+            this.ClientSize = new System.Drawing.Size(1164, 625);
             this.Controls.Add(this.tabControl_Main);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -829,7 +902,8 @@ namespace DTscope_dome1._0
             this.tabPage_config.PerformLayout();
             this.tabPage_help.ResumeLayout(false);
             this.tabPage_help.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.rOBOTDATAFOMATINFOBindingSource)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -891,7 +965,13 @@ namespace DTscope_dome1._0
         private DataGridViewTextBoxColumn value;
         private DataGridViewTextBoxColumn max_value;
         private DataGridViewTextBoxColumn min_value;
-        private BindingSource rOBOTDATAFOMATINFOBindingSource;
+        private Timer timer_1s_FPS;
+        private Panel panel1;
+        private Label label13;
+        private Label label12;
+        private Label label11;
+        private Label label10;
+        private Timer timer_1ms_updataCurve;
     }
 }
 

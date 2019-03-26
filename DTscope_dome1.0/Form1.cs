@@ -1386,6 +1386,8 @@ namespace DTscope_dome1._0
                         Update_buttons_callback(RobotInfo[(int)temp_robot_Typeindex], temp_robot_Typeindex);  //调用函数进行按钮刷新//这个之后还是放到定时器吧
 
                         Currently_connected_Device = null;
+
+                        robotDataFomatInfo_DataInit(out RobotDataFomatInfo);
                         break;
                     }
             }
@@ -1853,6 +1855,39 @@ namespace DTscope_dome1._0
                 }
             }
             //sn_index = temp_fomatinfo_data.ToList().IndexOf("TIM") + 1;
+        }
+
+        private void timer_1s_FPS_Tick(object sender, EventArgs e)
+        {
+
+        }
+
+        int temp_curve_index = 0;
+        private void Updata_Curve(HslCommunication.Controls.UserCurve curve, ROBOT_DATA_FOMAT_INFO fomat_data)
+        {
+            if (fomat_data.data_rev_state == ROBOT_DATA_FOMAT_DATA_STATE.All_Ok &&
+                Host_Connect_State == HOST_Connect_State.ConnectOK) 
+            {
+                
+                if(timer_1ms_updataCurve.Interval% fomat_data.inter_frame_time==0)
+                {
+                    Curve1.AddCurveData("test", fomat_data.ch[0].datalist[fomat_data.ch[0].datalist.Count() - 1]);
+                }
+            }
+            else
+            {
+                temp_curve_index = 0;
+            }
+        }
+
+        private void timer_1ms_updataCurve_Tick(object sender, EventArgs e)
+        {
+            Updata_Curve(Curve1, RobotDataFomatInfo);
+        }
+
+        private void Curve1_Load(object sender, EventArgs e)
+        {
+            Curve1.SetLeftCurve("test",new float[] {10000,10000,0,0 }, Color.FromArgb(85, 180, 155));    //, Color.DeepSkyBlue
         }
 
         //////////////////////////////////////////////////////////////////////////////////
