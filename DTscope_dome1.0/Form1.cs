@@ -109,9 +109,13 @@ namespace DTscope_dome1._0
     public struct ROBOT_DATA_FOMAT_INFO
     {
         public ROBOT_DATA_FOMAT_CHANNEL[] ch;    //各个通道信息
-        public int inter_frame_time;  //帧与帧之间间隔多少ms
+        public int inter_frame_time;  //帧与帧之间间隔多少ms，一个UDP包可能含有多个帧
         public int frame_bytes;  //一帧所有通道共含有几个字节
         public int ch_num; //当前有效通道数
+        public int package_number_last;  //上一个包序号，目的是计算丢包率
+        public int loss_num;    //丢包数量
+        public int nomal_num;   //正常情况下1s应有的包数  //每一包数据来了后计算：1000/(packet_bytes/frame_bytes*inter_frame_time)
+        public int loss_rate;   //丢包率，单位%
     }
 
     public partial class Form1 : Form
@@ -211,7 +215,7 @@ namespace DTscope_dome1._0
             dataGridView_channel.ClearSelection();
 
             //this.Focus();
-
+            
             // userCurve1.BringToFront();
         }
 
@@ -1215,18 +1219,29 @@ namespace DTscope_dome1._0
         /// <param name="taripep"></param>
         void Unicast_Message_Deal(string strrecv,byte[] bytrecv, IPEndPoint revipep, IPEndPoint taripep)
         {//后期多连接肯定要对发送方IP判断兵种再实现多连接通用函数，现在先用curr
-            
+            //这里需要考虑到回传数据data中段含有多个与‘:’相同的值！！！！！！！否则会出现BUG
             if (strrecv.IndexOf("#RM-DT=") != -1 && strrecv.IndexOf("#END") != -1)   //该函数会从0开始索引，第一个元素位置是0//如果属于DT-scope数据包
             {   //进入到该if说明#RM-DT=存在
                 string temp_datatype;
                 string temp_data;
-                strrecv = Regex.Split(strrecv, "#RM-DT=", RegexOptions.IgnoreCase)[1];   //#RM-DT=将原字符串分为null 和 REP_DCY……
+                strrecv = Regex.Split(strrecv, "#RM-DT=", RegexOptions.IgnoreCase)[1];   //#RM-DT=将原字符串分为null 和 DATA:Sn=<XX****160****XX>;#END
                 string[] temp_string_split = strrecv.Split(':');
 
                 if (temp_string_split.Length == 2) //防止数组越界，数组越界在线程中不会产生错误，会直接终止线程
                 {
-                    temp_datatype = temp_string_split[0];//分割字符串 不包含该字符
-                    temp_data = temp_string_split[1];//分割字符串 不包含该字符
+                    //temp_datatype = temp_string_split[0];//分割字符串 不包含该字符
+                    //temp_data = temp_string_split[1];//分割字符串 不包含该字符
+
+                    int first_indexOfcolon = strrecv.IndexOf(':');
+                    temp_datatype = strrecv.Substring(0, first_indexOfcolon);
+                    temp_data = strrecv.Substring(first_indexOfcolon + 1, strrecv.IndexOf(";#END") - first_indexOfcolon - 1);
+                }
+                else if(temp_string_split.Length > 2)   //数据存在与:相同值，需要重新分割
+                {
+                    int first_indexOfcolon = strrecv.IndexOf(':');
+                    temp_datatype = strrecv.Substring(0, first_indexOfcolon);
+                    temp_data = strrecv.Substring(first_indexOfcolon + 1, strrecv.IndexOf(";#END") - first_indexOfcolon - 1);
+                    
                 }
                 else
                 {
@@ -1257,7 +1272,7 @@ namespace DTscope_dome1._0
                         {
                             if (temp_datatype.Equals("RCNET"))
                             {
-                                if (temp_data.Equals("OK;#END"))    //即回复 #RM-DT=RCNET:OK;#END
+                                if (temp_data.Equals("OK"))    //即回复 #RM-DT=RCNET:OK;#END
                                 {
                                     Host_Connect_State = HOST_Connect_State.ConnectOK;
                                     
@@ -1463,8 +1478,13 @@ namespace DTscope_dome1._0
             data.ch_num = 5;
             data.ch = new ROBOT_DATA_FOMAT_CHANNEL[data.ch_num];
 
-            for(int i=0;i< data.ch_num;i++)
-            {
+            data.package_number_last = 0;   //上一包序号
+            data.nomal_num = 1000 / ((2 * 5 * 20) / (2 * 5) * data.inter_frame_time);//公式：1000/(packet_bytes/frame_bytes*inter_frame_time)
+            data.loss_num = 0;  //丢包数
+            data.loss_rate = 100*data.loss_num / data.nomal_num;    //丢包率
+
+            for (int i=0;i< data.ch_num;i++)
+            { 
                 data.ch[i].type = ROBOT_DATA_FOMAT_TYPE.s16;
                 data.ch[i].index = i * 2;
                 data.ch[i].bytes = 10;
@@ -1529,7 +1549,7 @@ namespace DTscope_dome1._0
         }
 
         /// <summary>
-        /// 设置数据接受信息
+        /// 根据info配置包设置数据接受信息
         /// </summary>
         /// <param name="strset"></param>
         private void RobotData_InfoSet(string strset,ref ROBOT_DATA_FOMAT_INFO fomat_data)
@@ -1567,8 +1587,6 @@ namespace DTscope_dome1._0
                     {
 
                     }
-
-
                 }
 
                 //data.inter_frame_time = 1;
@@ -1713,6 +1731,92 @@ namespace DTscope_dome1._0
                 return true;    //符合一系列条件
             }
             return false;
+        }
+
+        /// <summary>
+        /// 机器数据的接收、存入ch等等
+        /// </summary>
+        /// <param name="strdata"></param>
+        private void RobotData_DataDeal(string strdata, ref ROBOT_DATA_FOMAT_INFO fomat_data) //需要考虑到数据中可能存在和ascii同值的数据，可能会被字符串误分割
+        {//传进来的参数形式：Sn=<XX****160****XX>
+            int temp_package_number_now = 0;
+            string temp_chs_data = strdata.Substring(3);
+            if (strdata.Substring(0, 1).Equals("S") && //第一位为S
+                int.TryParse(strdata.Substring(1, 1), out temp_package_number_now) && //第二位为数字0-9
+                strdata.Substring(1, 2).Equals("="))    //第三位为=
+            {
+                if (temp_chs_data.Length % fomat_data.frame_bytes == 0) //当前字节数为单包字节数整倍数
+                {
+
+                    int temp_package_number_diff = temp_package_number_now - fomat_data.package_number_last;
+                    fomat_data.loss_num += (temp_package_number_diff > 0 ? temp_package_number_diff : (temp_package_number_diff + 10)) - 1; //在1s定时器中清零
+                    
+                    fomat_data.nomal_num = (int)(1000 / (temp_chs_data.Length / fomat_data.frame_bytes * fomat_data.inter_frame_time));//公式：1000/(packet_bytes/frame_bytes*inter_frame_time)
+                    //fomat_data.loss_rate = 100 * data.loss_num / data.nomal_num;    //丢包率放在单独定时器中使用
+                    fomat_data.package_number_last = temp_package_number_now;   //上一包序号
+
+                    int temp_frame_numbers = temp_chs_data.Length / fomat_data.frame_bytes;
+
+                    byte[] bytes_chs_data = System.Text.Encoding.Default.GetBytes(temp_chs_data);   //转换为byte[]
+                    //到这里数据已经成为了<XX****160****XX>的byte[]形式
+                    for (int i = 0; i < temp_frame_numbers; i++)    //一包中若干帧数据的遍历
+                    {
+                        for (int j = 0; j < fomat_data.ch_num; j++) //一帧中若干通道的遍历
+                        {
+                            int temp_index_now = fomat_data.ch[j].index + i * fomat_data.frame_bytes;
+                            switch (fomat_data.ch[j].type)
+                            {
+                                case ROBOT_DATA_FOMAT_TYPE.s8:
+                                    {
+                                        sbyte temp_s8 = (sbyte)bytes_chs_data[temp_index_now];
+                                        fomat_data.ch[j].datalist.Add((float)temp_s8);
+                                        break;
+                                    }
+                                case ROBOT_DATA_FOMAT_TYPE.u8:
+                                    {
+                                        byte temp_u8 = (byte)bytes_chs_data[temp_index_now];
+                                        fomat_data.ch[j].datalist.Add((float)temp_u8);
+                                        break;
+                                    }
+                                case ROBOT_DATA_FOMAT_TYPE.s16:
+                                    {
+                                        short temp_short = BitConverter.ToInt16(bytes_chs_data, temp_index_now);
+                                        fomat_data.ch[j].datalist.Add((float)temp_short);
+                                        break;
+                                    }
+                                case ROBOT_DATA_FOMAT_TYPE.u16:
+                                    {
+                                        ushort temp_Ushort = BitConverter.ToUInt16(bytes_chs_data, temp_index_now);
+                                        fomat_data.ch[j].datalist.Add((float)temp_Ushort);
+                                        break;
+                                    }
+                                case ROBOT_DATA_FOMAT_TYPE.s32:
+                                    {
+                                        Int32 temp_int32 = BitConverter.ToInt32(bytes_chs_data, temp_index_now);
+                                        fomat_data.ch[j].datalist.Add((float)temp_int32);
+                                        break;
+                                    }
+                                case ROBOT_DATA_FOMAT_TYPE.u32:
+                                    {
+                                        UInt32 temp_Uint32 = BitConverter.ToUInt32(bytes_chs_data, temp_index_now);
+                                        fomat_data.ch[j].datalist.Add((float)temp_Uint32);
+                                        break;
+                                    }
+                                case ROBOT_DATA_FOMAT_TYPE.f32:
+                                    {
+                                        float temp_float = BitConverter.ToSingle(bytes_chs_data, temp_index_now);
+                                        fomat_data.ch[j].datalist.Add((float)temp_float);
+                                        break;
+                                    }
+                            }
+                            //BitConverter.ToSingle
+                            //fomat_data.ch[j].datalist.Add();
+                        }
+                    }
+
+                }
+            }
+            //sn_index = temp_fomatinfo_data.ToList().IndexOf("TIM") + 1;
         }
 
         //////////////////////////////////////////////////////////////////////////////////

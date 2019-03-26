@@ -154,22 +154,42 @@
 	1814用于专有tx-robot
 	1815用于专有rx-robot
 
-robot:	1812用于握手广播
-	1814用于专有通讯
+robot:	1813用于握手广播
+	1815用于专有通讯
 
 问询协议：&lt;广播&gt;
 Send:#RM-DT=DCY_ROBOT:#END
-Rev:#RM-DT=REP_DCY:IM=&lt;type&gt;;STA=&lt;state&gt;#END
+Rev:#RM-DT=REP_DCY:IM=&lt;type&gt;;STA=&lt;state_code&gt;;[TYPE=&lt;is_rm?&gt;;]#END	//state=0:Off_line  1:On_line_free  2:On_line_busy  3:On_line_connectOK
 握手协议：&lt;点播&gt;
-Send:#RM-DT=CNET:TAR=&lt;type&gt;;TIP=&lt;tar_ip+1&gt;;CIP=&lt;ip&gt;;CPT=&lt;port&gt;#END
-rev:#RM-DT=RCNET:TIP=&lt;tip+1&gt;;CIP=&lt;ip&gt;;CPT=&lt;port&gt;#END
+Send:#RM-DT=CNET:TAR=&lt;type&gt;;TIP=&lt;tar_ip&gt;;CIP=&lt;ip&gt;;CPT=&lt;port&gt;;#END
+rev:#RM-DT=RCNET:TIP=&lt;tip&gt;;CIP=&lt;ip&gt;;CPT=&lt;port&gt;;#END
 wait 1s&lt;等待切换到透传&gt;
-rev:#RM-DT=RCNET:OK#END
-Send:#RM-DT=CNET:OK#END
+rev:#RM-DT=RCNET:OK;#END
+Send:#RM-DT=CNET:OK;#END
 
 已连接的HOST被问询:&lt;广播&gt;
 Rev:#RM-DT=DCY_ROBOT:#END
-Send:#RM-DT=REP_DCY:IM=&lt;type&gt;;STA=&lt;state&gt;#END	//state=已连接</value>
+Send:#RM-DT=REP_DCY:IM=&lt;type&gt;;STA=&lt;state&gt;;#END	//state=已连接
+
+数据传输协议：&lt;点播&gt;	//需要有：时间间隔信息，该信息一般不变，可放在握手协议，还需要有：每包几个字节数据；算了，该信息放在CMD中
+配置信息包：
+Send:#RM-DT=DATA_INFO:TIM=&lt;tim_interavl&gt;;ABYTES=&lt;byte_numbers&gt;;TYPE=&lt;s2.s2.s2.s2&gt;;#END	//TYPE的值含义是：1数据类型+1字节数.2数据类型+2字节数……	目前只支持：s8,u8,s16,u16,s32,u32,float
+Rev:#RM-DT=INFOOK:#END
+数据包：
+Rev:#RM-DT=DATA:Sn=&lt;XX****160****XX&gt;;#END
+
+心跳包：
+Send:#RM-DT=HTBEAT:#END
+
+正常退出：
+Rev:Send:#RM-DT=CMD:EXIT;#END
+
+//完整的流程：
+#RM-DT=REP_DCY:IM=SENTRY1;STA=1;#END
+#RM-DT=RCNET:TIP=192.168.1.74;CIP=192.168.1.25;CPT=1815;#END
+#RM-DT=RCNET:OK;#END
+#RM-DT=DATA_INFO:TIM=1;ABYTES=10;TYPE=&lt;s2.s2.s2.s2.s2&gt;;#END
+Rev:#RM-DT=DATA:Sn=&lt;XX****160****XX&gt;;#END</value>
   </data>
   <metadata name="timer_count.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>276, 17</value>

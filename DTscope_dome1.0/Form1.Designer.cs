@@ -35,8 +35,8 @@ namespace DTscope_dome1._0
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.Curve1 = new HslCommunication.Controls.UserCurve();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.sentry2_connect = new System.Windows.Forms.Button();
@@ -60,6 +60,11 @@ namespace DTscope_dome1._0
             this.CurveOptions_panel = new System.Windows.Forms.Panel();
             this.button_test_Datagrad = new System.Windows.Forms.Button();
             this.dataGridView_channel = new System.Windows.Forms.DataGridView();
+            this.channel_selected = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.channel_ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.max_value = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.min_value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.revnum_label = new System.Windows.Forms.Label();
             this.rev_text = new System.Windows.Forms.Label();
             this.test_connect = new System.Windows.Forms.Button();
@@ -87,11 +92,6 @@ namespace DTscope_dome1._0
             this.tabPage_help = new System.Windows.Forms.TabPage();
             this.label9 = new System.Windows.Forms.Label();
             this.timer_count = new System.Windows.Forms.Timer(this.components);
-            this.channel_selected = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.channel_ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.max_value = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.min_value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.rOBOTDATAFOMATINFOBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.CurveOptions_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_channel)).BeginInit();
@@ -428,6 +428,43 @@ namespace DTscope_dome1._0
             this.dataGridView_channel.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_channel_CellContentClick);
             this.dataGridView_channel.Layout += new System.Windows.Forms.LayoutEventHandler(this.dataGridView_channel_Layout);
             // 
+            // channel_selected
+            // 
+            this.channel_selected.HeaderText = "";
+            this.channel_selected.Name = "channel_selected";
+            this.channel_selected.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.channel_selected.Width = 25;
+            // 
+            // channel_ID
+            // 
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Gray;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.channel_ID.DefaultCellStyle = dataGridViewCellStyle3;
+            this.channel_ID.HeaderText = "ch";
+            this.channel_ID.Name = "channel_ID";
+            this.channel_ID.Width = 38;
+            // 
+            // value
+            // 
+            this.value.HeaderText = "value";
+            this.value.Name = "value";
+            this.value.ReadOnly = true;
+            this.value.Width = 60;
+            // 
+            // max_value
+            // 
+            this.max_value.HeaderText = "max";
+            this.max_value.Name = "max_value";
+            this.max_value.ReadOnly = true;
+            this.max_value.Width = 60;
+            // 
+            // min_value
+            // 
+            this.min_value.HeaderText = "min";
+            this.min_value.Name = "min_value";
+            this.min_value.ReadOnly = true;
+            this.min_value.Width = 60;
+            // 
             // revnum_label
             // 
             this.revnum_label.AutoSize = true;
@@ -746,11 +783,11 @@ namespace DTscope_dome1._0
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("华文新魏", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label9.Font = new System.Drawing.Font("华文新魏", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(150)))));
-            this.label9.Location = new System.Drawing.Point(33, 40);
+            this.label9.Location = new System.Drawing.Point(24, 18);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(651, 391);
+            this.label9.Size = new System.Drawing.Size(1129, 516);
             this.label9.TabIndex = 24;
             this.label9.Text = resources.GetString("label9.Text");
             // 
@@ -759,43 +796,6 @@ namespace DTscope_dome1._0
             this.timer_count.Enabled = true;
             this.timer_count.Interval = 10;
             this.timer_count.Tick += new System.EventHandler(this.timer_count_Tick);
-            // 
-            // channel_selected
-            // 
-            this.channel_selected.HeaderText = "";
-            this.channel_selected.Name = "channel_selected";
-            this.channel_selected.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.channel_selected.Width = 25;
-            // 
-            // channel_ID
-            // 
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Gray;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.channel_ID.DefaultCellStyle = dataGridViewCellStyle3;
-            this.channel_ID.HeaderText = "ch";
-            this.channel_ID.Name = "channel_ID";
-            this.channel_ID.Width = 38;
-            // 
-            // value
-            // 
-            this.value.HeaderText = "value";
-            this.value.Name = "value";
-            this.value.ReadOnly = true;
-            this.value.Width = 60;
-            // 
-            // max_value
-            // 
-            this.max_value.HeaderText = "max";
-            this.max_value.Name = "max_value";
-            this.max_value.ReadOnly = true;
-            this.max_value.Width = 60;
-            // 
-            // min_value
-            // 
-            this.min_value.HeaderText = "min";
-            this.min_value.Name = "min_value";
-            this.min_value.ReadOnly = true;
-            this.min_value.Width = 60;
             // 
             // rOBOTDATAFOMATINFOBindingSource
             // 
