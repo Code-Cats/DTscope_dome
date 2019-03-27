@@ -1393,34 +1393,6 @@ namespace DTscope_dome1._0
             }
         }
 
-        private void button_test_Datagrad_Click(object sender, EventArgs e)
-        {
-            //int index = this.dataGridView_channel.Rows.Add();
-            //this.dataGridView_channel.Rows[index].Cells[0].Value = "1";
-            //this.dataGridView_channel.Rows[index].Cells[1].Value = "2";
-
-            ////DataGridViewRow row = new DataGridViewRow();
-            ////DataGridViewCheckBoxCell comboxcell = new DataGridViewCheckBoxCell();
-            ////row.Cells.Add(comboxcell);
-            ////DataGridViewTextBoxCell textboxcell = new DataGridViewTextBoxCell();
-            ////textboxcell.Value = "ch0";
-            ////row.Cells.Add(textboxcell);
-            ////dataGridView_channel.Rows.Add(row);
-
-            ////DataGridViewRow row2 = new DataGridViewRow();
-            ////DataGridViewCheckBoxCell comboxcell2 = new DataGridViewCheckBoxCell();
-            ////row2.Cells.Add(comboxcell2);
-            ////DataGridViewTextBoxCell textboxcell2 = new DataGridViewTextBoxCell();
-            ////textboxcell2.Value = "ch1";
-            ////row2.Cells.Add(textboxcell2);
-            ////dataGridView_channel.Rows.Add(row2);
-
-            ////dataGridView_channel.ClearSelection();
-
-            ////dataGridView_channel.Rows[0].Cells[2].Value = time_10ms_count.ToString();
-            ////dataGridView_channel.Rows[1].Cells[0].Value = true;
-        }
-
         /// <summary>
         /// 单击表格内容时发生，用来清除高亮
         /// </summary>
@@ -1857,21 +1829,88 @@ namespace DTscope_dome1._0
             //sn_index = temp_fomatinfo_data.ToList().IndexOf("TIM") + 1;
         }
 
+        int frame_loss_num_all = 0;
         private void timer_1s_FPS_Tick(object sender, EventArgs e)
         {
-
+            if (RobotDataFomatInfo.data_rev_state == ROBOT_DATA_FOMAT_DATA_STATE.All_Ok &&  //这里没有适配多连接
+                Host_Connect_State == HOST_Connect_State.ConnectOK)
+            {
+                RobotDataFomatInfo.loss_rate = 100 * RobotDataFomatInfo.loss_num / RobotDataFomatInfo.nomal_num;    //丢包率放在单独定时器中使用
+                frame_loss_num_all += RobotDataFomatInfo.loss_num;
+                RobotDataFomatInfo.loss_num = 0;
+                label_FPS.Text = "FPS:" + 1000 / RobotDataFomatInfo.inter_frame_time;
+                label_Frame_Loss_Rate.Text = "Frame Loss Rate: " + RobotDataFomatInfo.loss_rate.ToString() + "%";
+                label_Frame_Loss_number.Text = "Frame Loss number: " + frame_loss_num_all.ToString();
+                switch(RobotDataFomatInfo.data_rev_state)
+                {
+                    case ROBOT_DATA_FOMAT_DATA_STATE.Info_notset:
+                        {
+                            label_Data_Info_State.Text= "Data Info State: Info_notset";
+                            break;
+                        }
+                    case ROBOT_DATA_FOMAT_DATA_STATE.InfoSet_DatanotRev:
+                        {
+                            label_Data_Info_State.Text = "Data Info State: InfoSet_DatanotRev";
+                            break;
+                        }
+                    case ROBOT_DATA_FOMAT_DATA_STATE.All_Ok:
+                        {
+                            label_Data_Info_State.Text = "Data Info State: All_Ok";
+                            break;
+                        }
+                }
+            }
+            else
+            {
+                frame_loss_num_all = 0;
+                label_FPS.Text = "FPS: 0";
+                label_Frame_Loss_Rate.Text = "Frame Loss Rate: 0%";
+                label_Frame_Loss_number.Text = "Frame Loss number: 0";
+                label_Data_Info_State.Text = "Data Info State: Info_notset";
+                switch (RobotDataFomatInfo.data_rev_state)
+                {
+                    case ROBOT_DATA_FOMAT_DATA_STATE.Info_notset:
+                        {
+                            label_Data_Info_State.Text = "Data Info State: Info_notset";
+                            break;
+                        }
+                    case ROBOT_DATA_FOMAT_DATA_STATE.InfoSet_DatanotRev:
+                        {
+                            label_Data_Info_State.Text = "Data Info State: InfoSet_DatanotRev";
+                            break;
+                        }
+                    case ROBOT_DATA_FOMAT_DATA_STATE.All_Ok:
+                        {
+                            label_Data_Info_State.Text = "Data Info State: All_Ok";
+                            break;
+                        }
+                }
+            }
         }
 
         int temp_curve_index = 0;
+        int time_1ms_count = 0;
         private void Updata_Curve(HslCommunication.Controls.UserCurve curve, ROBOT_DATA_FOMAT_INFO fomat_data)
         {
+            time_1ms_count++;
             if (fomat_data.data_rev_state == ROBOT_DATA_FOMAT_DATA_STATE.All_Ok &&
                 Host_Connect_State == HOST_Connect_State.ConnectOK) 
             {
                 
-                if(timer_1ms_updataCurve.Interval% fomat_data.inter_frame_time==0)
+                if(time_1ms_count % fomat_data.inter_frame_time==0)//timer_1ms_updataCurve.Interval
                 {
-                    Curve1.AddCurveData("test", fomat_data.ch[0].datalist[fomat_data.ch[0].datalist.Count() - 1]);
+                    //目前最多支持6条曲线
+                    if(fomat_data.ch[0].datalist.Count()>= fomat_data.inter_frame_time*25)
+                    {
+                        if (temp_curve_index < fomat_data.ch[0].datalist.Count()) temp_curve_index++;   //索引增加
+                        for (int i=0;i< fomat_data.ch_num;i++)
+                        {
+                            Curve1.SetCurveVisible("ch" + i.ToString(), true);
+                            Curve1.AddCurveData("ch"+i.ToString(), fomat_data.ch[i].datalist[fomat_data.ch[i].datalist.Count() - 1]);
+                        }
+                    }
+                    //for()Curve1.SetCurveVisible("ch0", true);
+                   
                 }
             }
             else
@@ -1887,7 +1926,18 @@ namespace DTscope_dome1._0
 
         private void Curve1_Load(object sender, EventArgs e)
         {
-            Curve1.SetLeftCurve("test",new float[] {10000,10000,0,0 }, Color.FromArgb(85, 180, 155));    //, Color.DeepSkyBlue
+            Curve1.SetLeftCurve("ch0",new float[] {5000,10000,0,0 }, Color.FromArgb(85, 180, 155));    //, Color.DeepSkyBlue
+            Curve1.SetLeftCurve("ch1", new float[] { 10000, 10000, 0, 0 }, Color.FromArgb(35, 177, 77));    //, Color.DeepSkyBlue
+            Curve1.SetLeftCurve("ch2", new float[] { 15000, 10000, 0, 0 }, Color.FromArgb(254, 242, 0));    //, Color.DeepSkyBlue
+            Curve1.SetLeftCurve("ch3", new float[] { 20000, 10000, 0, 0 }, Color.FromArgb(237, 27, 36));    //, Color.DeepSkyBlue
+            Curve1.SetLeftCurve("ch4", new float[] { 25000, 10000, 0, 0 }, Color.FromArgb(20, 20, 254));    //, Color.DeepSkyBlue
+            Curve1.SetLeftCurve("ch5", new float[] { 25000, 10000, 0, 0 }, Color.FromArgb(255, 255, 255));
+            Curve1.SetCurveVisible("ch0",false);
+            Curve1.SetCurveVisible("ch1", false);
+            Curve1.SetCurveVisible("ch2", false);
+            Curve1.SetCurveVisible("ch3", false);
+            Curve1.SetCurveVisible("ch4", false);
+            Curve1.SetCurveVisible("ch5", false);
         }
 
         //////////////////////////////////////////////////////////////////////////////////

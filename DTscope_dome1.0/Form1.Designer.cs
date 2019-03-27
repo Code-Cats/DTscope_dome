@@ -31,11 +31,11 @@ namespace DTscope_dome1._0
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle26 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle27 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle29 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle30 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle28 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.Curve1 = new HslCommunication.Controls.UserCurve();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
@@ -58,15 +58,7 @@ namespace DTscope_dome1._0
             this.clear = new System.Windows.Forms.Button();
             this.test_button = new System.Windows.Forms.Button();
             this.CurveOptions_panel = new System.Windows.Forms.Panel();
-            this.button_test_Datagrad = new System.Windows.Forms.Button();
             this.dataGridView_channel = new System.Windows.Forms.DataGridView();
-            this.channel_selected = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.channel_ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.max_value = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.min_value = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.revnum_label = new System.Windows.Forms.Label();
-            this.rev_text = new System.Windows.Forms.Label();
             this.test_connect = new System.Windows.Forms.Button();
             this.timer_UI = new System.Windows.Forms.Timer(this.components);
             this.btn_connect_panel = new System.Windows.Forms.Panel();
@@ -79,6 +71,12 @@ namespace DTscope_dome1._0
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tabControl_Main = new System.Windows.Forms.TabControl();
             this.tabPage_chart = new System.Windows.Forms.TabPage();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label_Frame_Loss_number = new System.Windows.Forms.Label();
+            this.label_Data_Info_State = new System.Windows.Forms.Label();
+            this.label_INFO = new System.Windows.Forms.Label();
+            this.label_Frame_Loss_Rate = new System.Windows.Forms.Label();
+            this.label_FPS = new System.Windows.Forms.Label();
             this.tabPage_debug = new System.Windows.Forms.TabPage();
             this.Broadcast_communication_textBox = new System.Windows.Forms.TextBox();
             this.checkedListBox_dubug = new System.Windows.Forms.CheckedListBox();
@@ -93,22 +91,25 @@ namespace DTscope_dome1._0
             this.label9 = new System.Windows.Forms.Label();
             this.timer_count = new System.Windows.Forms.Timer(this.components);
             this.timer_1s_FPS = new System.Windows.Forms.Timer(this.components);
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
             this.timer_1ms_updataCurve = new System.Windows.Forms.Timer(this.components);
+            this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.label10 = new System.Windows.Forms.Label();
+            this.channel_selected = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.ch = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.max_value = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.min_value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CurveOptions_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_channel)).BeginInit();
             this.btn_connect_panel.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabControl_Main.SuspendLayout();
             this.tabPage_chart.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.tabPage_debug.SuspendLayout();
             this.tabPage_config.SuspendLayout();
             this.tabPage_help.SuspendLayout();
-            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // Curve1
@@ -119,7 +120,7 @@ namespace DTscope_dome1._0
             this.Curve1.Name = "Curve1";
             this.Curve1.Size = new System.Drawing.Size(900, 370);
             this.Curve1.TabIndex = 0;
-            this.Curve1.ValueMaxLeft = 65535F;
+            this.Curve1.ValueMaxLeft = 30000F;
             this.Curve1.ValueMaxRight = 50000F;
             this.Curve1.Load += new System.EventHandler(this.Curve1_Load);
             // 
@@ -339,39 +340,54 @@ namespace DTscope_dome1._0
             // 
             // save
             // 
-            this.save.Location = new System.Drawing.Point(165, 335);
+            this.save.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(155)))));
+            this.save.FlatAppearance.BorderSize = 0;
+            this.save.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.save.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.save.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.save.Location = new System.Drawing.Point(128, 316);
             this.save.Name = "save";
-            this.save.Size = new System.Drawing.Size(75, 23);
+            this.save.Size = new System.Drawing.Size(118, 45);
             this.save.TabIndex = 20;
             this.save.Text = "保存";
-            this.save.UseVisualStyleBackColor = true;
+            this.save.UseVisualStyleBackColor = false;
             // 
             // clear
             // 
-            this.clear.Location = new System.Drawing.Point(17, 262);
+            this.clear.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(155)))));
+            this.clear.FlatAppearance.BorderSize = 0;
+            this.clear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.clear.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.clear.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.clear.Location = new System.Drawing.Point(4, 316);
             this.clear.Name = "clear";
-            this.clear.Size = new System.Drawing.Size(75, 23);
+            this.clear.Size = new System.Drawing.Size(118, 45);
             this.clear.TabIndex = 21;
             this.clear.Text = "清除";
-            this.clear.UseVisualStyleBackColor = true;
+            this.clear.UseVisualStyleBackColor = false;
             // 
             // test_button
             // 
-            this.test_button.Location = new System.Drawing.Point(120, 185);
+            this.test_button.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(155)))));
+            this.test_button.FlatAppearance.BorderSize = 0;
+            this.test_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.test_button.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.test_button.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.test_button.Location = new System.Drawing.Point(128, 214);
             this.test_button.Name = "test_button";
-            this.test_button.Size = new System.Drawing.Size(120, 58);
+            this.test_button.Size = new System.Drawing.Size(118, 45);
             this.test_button.TabIndex = 22;
             this.test_button.Text = "测试按钮外观";
-            this.test_button.UseVisualStyleBackColor = true;
+            this.test_button.UseVisualStyleBackColor = false;
             this.test_button.Click += new System.EventHandler(this.test_button_Click);
             // 
             // CurveOptions_panel
             // 
             this.CurveOptions_panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            this.CurveOptions_panel.Controls.Add(this.button_test_Datagrad);
+            this.CurveOptions_panel.Controls.Add(this.label10);
+            this.CurveOptions_panel.Controls.Add(this.button3);
+            this.CurveOptions_panel.Controls.Add(this.button2);
             this.CurveOptions_panel.Controls.Add(this.dataGridView_channel);
-            this.CurveOptions_panel.Controls.Add(this.revnum_label);
-            this.CurveOptions_panel.Controls.Add(this.rev_text);
             this.CurveOptions_panel.Controls.Add(this.test_connect);
             this.CurveOptions_panel.Controls.Add(this.clear);
             this.CurveOptions_panel.Controls.Add(this.save);
@@ -381,127 +397,75 @@ namespace DTscope_dome1._0
             this.CurveOptions_panel.Size = new System.Drawing.Size(273, 370);
             this.CurveOptions_panel.TabIndex = 23;
             // 
-            // button_test_Datagrad
-            // 
-            this.button_test_Datagrad.Location = new System.Drawing.Point(17, 185);
-            this.button_test_Datagrad.Name = "button_test_Datagrad";
-            this.button_test_Datagrad.Size = new System.Drawing.Size(93, 58);
-            this.button_test_Datagrad.TabIndex = 29;
-            this.button_test_Datagrad.Text = "测试表格";
-            this.button_test_Datagrad.UseVisualStyleBackColor = true;
-            this.button_test_Datagrad.Click += new System.EventHandler(this.button_test_Datagrad_Click);
-            // 
             // dataGridView_channel
             // 
             this.dataGridView_channel.AllowUserToAddRows = false;
-            dataGridViewCellStyle26.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.dataGridView_channel.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle26;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.dataGridView_channel.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView_channel.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.dataGridView_channel.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dataGridView_channel.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleVertical;
             this.dataGridView_channel.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle27.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle27.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle27.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle27.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle27.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle27.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle27.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView_channel.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle27;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(151)))), ((int)(((byte)(211)))), ((int)(((byte)(197)))));
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView_channel.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView_channel.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView_channel.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.channel_selected,
-            this.channel_ID,
+            this.ch,
             this.value,
             this.max_value,
             this.min_value});
-            this.dataGridView_channel.GridColor = System.Drawing.SystemColors.ControlDarkDark;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(151)))), ((int)(((byte)(211)))), ((int)(((byte)(197)))));
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(151)))), ((int)(((byte)(211)))), ((int)(((byte)(197)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView_channel.DefaultCellStyle = dataGridViewCellStyle3;
+            this.dataGridView_channel.EnableHeadersVisualStyles = false;
+            this.dataGridView_channel.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.dataGridView_channel.Location = new System.Drawing.Point(3, 3);
             this.dataGridView_channel.Name = "dataGridView_channel";
             this.dataGridView_channel.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle29.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle29.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle29.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle29.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle29.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle29.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle29.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView_channel.RowHeadersDefaultCellStyle = dataGridViewCellStyle29;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView_channel.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridView_channel.RowHeadersVisible = false;
             this.dataGridView_channel.RowHeadersWidth = 10;
-            dataGridViewCellStyle30.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.dataGridView_channel.RowsDefaultCellStyle = dataGridViewCellStyle30;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.dataGridView_channel.RowsDefaultCellStyle = dataGridViewCellStyle5;
             this.dataGridView_channel.RowTemplate.Height = 27;
             this.dataGridView_channel.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.dataGridView_channel.Size = new System.Drawing.Size(246, 165);
+            this.dataGridView_channel.Size = new System.Drawing.Size(243, 173);
             this.dataGridView_channel.TabIndex = 28;
             this.dataGridView_channel.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_channel_CellContentClick);
             this.dataGridView_channel.Layout += new System.Windows.Forms.LayoutEventHandler(this.dataGridView_channel_Layout);
             // 
-            // channel_selected
-            // 
-            this.channel_selected.HeaderText = "";
-            this.channel_selected.Name = "channel_selected";
-            this.channel_selected.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.channel_selected.Width = 25;
-            // 
-            // channel_ID
-            // 
-            dataGridViewCellStyle28.BackColor = System.Drawing.Color.Gray;
-            dataGridViewCellStyle28.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.channel_ID.DefaultCellStyle = dataGridViewCellStyle28;
-            this.channel_ID.HeaderText = "ch";
-            this.channel_ID.Name = "channel_ID";
-            this.channel_ID.Width = 38;
-            // 
-            // value
-            // 
-            this.value.HeaderText = "value";
-            this.value.Name = "value";
-            this.value.ReadOnly = true;
-            this.value.Width = 60;
-            // 
-            // max_value
-            // 
-            this.max_value.HeaderText = "max";
-            this.max_value.Name = "max_value";
-            this.max_value.ReadOnly = true;
-            this.max_value.Width = 60;
-            // 
-            // min_value
-            // 
-            this.min_value.HeaderText = "min";
-            this.min_value.Name = "min_value";
-            this.min_value.ReadOnly = true;
-            this.min_value.Width = 60;
-            // 
-            // revnum_label
-            // 
-            this.revnum_label.AutoSize = true;
-            this.revnum_label.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
-            this.revnum_label.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(140)))), ((int)(((byte)(140)))));
-            this.revnum_label.Location = new System.Drawing.Point(158, 247);
-            this.revnum_label.Name = "revnum_label";
-            this.revnum_label.Size = new System.Drawing.Size(55, 15);
-            this.revnum_label.TabIndex = 27;
-            this.revnum_label.Text = "label7";
-            // 
-            // rev_text
-            // 
-            this.rev_text.BackColor = System.Drawing.SystemColors.ButtonShadow;
-            this.rev_text.Location = new System.Drawing.Point(158, 262);
-            this.rev_text.Name = "rev_text";
-            this.rev_text.Size = new System.Drawing.Size(82, 59);
-            this.rev_text.TabIndex = 26;
-            this.rev_text.Text = "label3";
-            // 
             // test_connect
             // 
-            this.test_connect.Location = new System.Drawing.Point(17, 335);
+            this.test_connect.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(155)))));
+            this.test_connect.FlatAppearance.BorderSize = 0;
+            this.test_connect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.test_connect.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.test_connect.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.test_connect.Location = new System.Drawing.Point(4, 214);
             this.test_connect.Name = "test_connect";
-            this.test_connect.Size = new System.Drawing.Size(75, 23);
+            this.test_connect.Size = new System.Drawing.Size(118, 45);
             this.test_connect.TabIndex = 24;
             this.test_connect.Text = "测试发送";
-            this.test_connect.UseVisualStyleBackColor = true;
+            this.test_connect.UseVisualStyleBackColor = false;
             this.test_connect.Click += new System.EventHandler(this.test_connect_Click);
             // 
             // timer_UI
@@ -651,6 +615,74 @@ namespace DTscope_dome1._0
             this.tabPage_chart.Size = new System.Drawing.Size(1165, 618);
             this.tabPage_chart.TabIndex = 0;
             this.tabPage_chart.Text = "chart";
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            this.panel1.Controls.Add(this.label_Frame_Loss_number);
+            this.panel1.Controls.Add(this.label_Data_Info_State);
+            this.panel1.Controls.Add(this.label_INFO);
+            this.panel1.Controls.Add(this.label_Frame_Loss_Rate);
+            this.panel1.Controls.Add(this.label_FPS);
+            this.panel1.Location = new System.Drawing.Point(6, 564);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1163, 36);
+            this.panel1.TabIndex = 28;
+            // 
+            // label_Frame_Loss_number
+            // 
+            this.label_Frame_Loss_number.AutoSize = true;
+            this.label_Frame_Loss_number.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_Frame_Loss_number.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(145)))));
+            this.label_Frame_Loss_number.Location = new System.Drawing.Point(337, 12);
+            this.label_Frame_Loss_number.Name = "label_Frame_Loss_number";
+            this.label_Frame_Loss_number.Size = new System.Drawing.Size(149, 16);
+            this.label_Frame_Loss_number.TabIndex = 30;
+            this.label_Frame_Loss_number.Text = "Frame Loss number: 0";
+            // 
+            // label_Data_Info_State
+            // 
+            this.label_Data_Info_State.AutoSize = true;
+            this.label_Data_Info_State.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_Data_Info_State.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(145)))));
+            this.label_Data_Info_State.Location = new System.Drawing.Point(516, 12);
+            this.label_Data_Info_State.Name = "label_Data_Info_State";
+            this.label_Data_Info_State.Size = new System.Drawing.Size(183, 16);
+            this.label_Data_Info_State.TabIndex = 29;
+            this.label_Data_Info_State.Text = "Data Info State: Info_notset";
+            // 
+            // label_INFO
+            // 
+            this.label_INFO.AutoSize = true;
+            this.label_INFO.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_INFO.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(145)))));
+            this.label_INFO.Location = new System.Drawing.Point(17, 12);
+            this.label_INFO.Name = "label_INFO";
+            this.label_INFO.Size = new System.Drawing.Size(50, 16);
+            this.label_INFO.TabIndex = 28;
+            this.label_INFO.Text = "INFO:";
+            // 
+            // label_Frame_Loss_Rate
+            // 
+            this.label_Frame_Loss_Rate.AutoSize = true;
+            this.label_Frame_Loss_Rate.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_Frame_Loss_Rate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(145)))));
+            this.label_Frame_Loss_Rate.Location = new System.Drawing.Point(152, 12);
+            this.label_Frame_Loss_Rate.Name = "label_Frame_Loss_Rate";
+            this.label_Frame_Loss_Rate.Size = new System.Drawing.Size(144, 16);
+            this.label_Frame_Loss_Rate.TabIndex = 27;
+            this.label_Frame_Loss_Rate.Text = "Frame Loss Rate: 0%";
+            // 
+            // label_FPS
+            // 
+            this.label_FPS.AutoSize = true;
+            this.label_FPS.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_FPS.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(145)))));
+            this.label_FPS.Location = new System.Drawing.Point(73, 12);
+            this.label_FPS.Name = "label_FPS";
+            this.label_FPS.Size = new System.Drawing.Size(48, 16);
+            this.label_FPS.TabIndex = 26;
+            this.label_FPS.Text = "FPS: 0";
             // 
             // tabPage_debug
             // 
@@ -809,70 +841,90 @@ namespace DTscope_dome1._0
             // 
             // timer_1s_FPS
             // 
+            this.timer_1s_FPS.Enabled = true;
             this.timer_1s_FPS.Interval = 1000;
             this.timer_1s_FPS.Tick += new System.EventHandler(this.timer_1s_FPS_Tick);
-            // 
-            // panel1
-            // 
-            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            this.panel1.Controls.Add(this.label13);
-            this.panel1.Controls.Add(this.label12);
-            this.panel1.Controls.Add(this.label11);
-            this.panel1.Controls.Add(this.label10);
-            this.panel1.Location = new System.Drawing.Point(6, 564);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1163, 36);
-            this.panel1.TabIndex = 28;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(145)))));
-            this.label10.Location = new System.Drawing.Point(73, 12);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(35, 16);
-            this.label10.TabIndex = 26;
-            this.label10.Text = "FPS:";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(145)))));
-            this.label11.Location = new System.Drawing.Point(169, 12);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(140, 16);
-            this.label11.TabIndex = 27;
-            this.label11.Text = "Frame Loss Rate:0%";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(145)))));
-            this.label12.Location = new System.Drawing.Point(17, 12);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(50, 16);
-            this.label12.TabIndex = 28;
-            this.label12.Text = "INFO:";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(145)))));
-            this.label13.Location = new System.Drawing.Point(368, 12);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(107, 16);
-            this.label13.TabIndex = 29;
-            this.label13.Text = "Data Info State:";
             // 
             // timer_1ms_updataCurve
             // 
             this.timer_1ms_updataCurve.Enabled = true;
             this.timer_1ms_updataCurve.Interval = 1;
             this.timer_1ms_updataCurve.Tick += new System.EventHandler(this.timer_1ms_updataCurve_Tick);
+            // 
+            // button2
+            // 
+            this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(155)))));
+            this.button2.FlatAppearance.BorderSize = 0;
+            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.button2.Location = new System.Drawing.Point(4, 265);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(118, 45);
+            this.button2.TabIndex = 29;
+            this.button2.Text = "暂停";
+            this.button2.UseVisualStyleBackColor = false;
+            // 
+            // button3
+            // 
+            this.button3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(155)))));
+            this.button3.FlatAppearance.BorderSize = 0;
+            this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.button3.Location = new System.Drawing.Point(128, 265);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(118, 45);
+            this.button3.TabIndex = 30;
+            this.button3.Text = "继续";
+            this.button3.UseVisualStyleBackColor = false;
+            // 
+            // label10
+            // 
+            this.label10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+            this.label10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label10.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(145)))));
+            this.label10.Location = new System.Drawing.Point(4, 183);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(242, 23);
+            this.label10.TabIndex = 31;
+            this.label10.Text = "data fomat: s2.s2.s2.s2.s2";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // channel_selected
+            // 
+            this.channel_selected.HeaderText = "";
+            this.channel_selected.Name = "channel_selected";
+            this.channel_selected.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.channel_selected.Width = 25;
+            // 
+            // ch
+            // 
+            this.ch.HeaderText = "ch";
+            this.ch.Name = "ch";
+            this.ch.Width = 38;
+            // 
+            // value
+            // 
+            this.value.HeaderText = "value";
+            this.value.Name = "value";
+            this.value.ReadOnly = true;
+            this.value.Width = 60;
+            // 
+            // max_value
+            // 
+            this.max_value.HeaderText = "max";
+            this.max_value.Name = "max_value";
+            this.max_value.ReadOnly = true;
+            this.max_value.Width = 60;
+            // 
+            // min_value
+            // 
+            this.min_value.HeaderText = "min";
+            this.min_value.Name = "min_value";
+            this.min_value.ReadOnly = true;
+            this.min_value.Width = 58;
             // 
             // Form1
             // 
@@ -889,21 +941,20 @@ namespace DTscope_dome1._0
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.CurveOptions_panel.ResumeLayout(false);
-            this.CurveOptions_panel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_channel)).EndInit();
             this.btn_connect_panel.ResumeLayout(false);
             this.btn_connect_panel.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.tabControl_Main.ResumeLayout(false);
             this.tabPage_chart.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.tabPage_debug.ResumeLayout(false);
             this.tabPage_debug.PerformLayout();
             this.tabPage_config.ResumeLayout(false);
             this.tabPage_config.PerformLayout();
             this.tabPage_help.ResumeLayout(false);
             this.tabPage_help.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -932,7 +983,6 @@ namespace DTscope_dome1._0
         private System.Windows.Forms.Button test_button;
         private System.Windows.Forms.Panel CurveOptions_panel;
         private System.Windows.Forms.Button test_connect;
-        private System.Windows.Forms.Label rev_text;
         private System.Windows.Forms.Timer timer_UI;
         private System.Windows.Forms.Panel btn_connect_panel;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -941,7 +991,6 @@ namespace DTscope_dome1._0
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label revnum_label;
         private System.Windows.Forms.TabControl tabControl_Main;
         private System.Windows.Forms.TabPage tabPage_chart;
         private System.Windows.Forms.TabPage tabPage_debug;
@@ -959,19 +1008,22 @@ namespace DTscope_dome1._0
         private Timer timer_count;
         private TextBox Broadcast_communication_textBox;
         private DataGridView dataGridView_channel;
-        private Button button_test_Datagrad;
+        private Timer timer_1s_FPS;
+        private Panel panel1;
+        private Label label_Data_Info_State;
+        private Label label_INFO;
+        private Label label_Frame_Loss_Rate;
+        private Label label_FPS;
+        private Timer timer_1ms_updataCurve;
+        private Label label_Frame_Loss_number;
+        private Button button3;
+        private Button button2;
+        private Label label10;
         private DataGridViewCheckBoxColumn channel_selected;
-        private DataGridViewTextBoxColumn channel_ID;
+        private DataGridViewTextBoxColumn ch;
         private DataGridViewTextBoxColumn value;
         private DataGridViewTextBoxColumn max_value;
         private DataGridViewTextBoxColumn min_value;
-        private Timer timer_1s_FPS;
-        private Panel panel1;
-        private Label label13;
-        private Label label12;
-        private Label label11;
-        private Label label10;
-        private Timer timer_1ms_updataCurve;
     }
 }
 
