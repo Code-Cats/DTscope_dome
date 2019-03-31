@@ -1574,6 +1574,7 @@ namespace DTscope_dome1._0
                 if (int.TryParse(temp_fomatinfo_data[tim_index], out fomat_data.inter_frame_time) &&
                     int.TryParse(temp_fomatinfo_data[abytes_index], out fomat_data.frame_bytes))
                 {   //到此处该处理s2.s2.s2.s2.s2
+                            robot_data_fomat_temp = temp_fomatinfo_data[type_index];//临时加的显示data fomat
                     string[] temp_type_data = temp_fomatinfo_data[type_index].Split('.');
                     if(robotDataFomatInfo_ChannelType_TrySet(temp_type_data, ref fomat_data))   //如果通道信息正常
                     {
@@ -1830,8 +1831,10 @@ namespace DTscope_dome1._0
         }
 
         int frame_loss_num_all = 0;
+        string robot_data_fomat_temp = new string("s2.s2.s2.s2.s2".ToArray());  //new char[] { 's','2','.',s,2.s2.s2.s2 }
         private void timer_1s_FPS_Tick(object sender, EventArgs e)
         {
+            label_data_fomat.Text = "data fomat: " + robot_data_fomat_temp;
             if (RobotDataFomatInfo.data_rev_state == ROBOT_DATA_FOMAT_DATA_STATE.All_Ok &&  //这里没有适配多连接
                 Host_Connect_State == HOST_Connect_State.ConnectOK)
             {

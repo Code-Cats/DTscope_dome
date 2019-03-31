@@ -58,7 +58,15 @@ namespace DTscope_dome1._0
             this.clear = new System.Windows.Forms.Button();
             this.test_button = new System.Windows.Forms.Button();
             this.CurveOptions_panel = new System.Windows.Forms.Panel();
+            this.label_data_fomat = new System.Windows.Forms.Label();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.dataGridView_channel = new System.Windows.Forms.DataGridView();
+            this.channel_selected = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.ch = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.max_value = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.min_value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.test_connect = new System.Windows.Forms.Button();
             this.timer_UI = new System.Windows.Forms.Timer(this.components);
             this.btn_connect_panel = new System.Windows.Forms.Panel();
@@ -92,14 +100,6 @@ namespace DTscope_dome1._0
             this.timer_count = new System.Windows.Forms.Timer(this.components);
             this.timer_1s_FPS = new System.Windows.Forms.Timer(this.components);
             this.timer_1ms_updataCurve = new System.Windows.Forms.Timer(this.components);
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.label10 = new System.Windows.Forms.Label();
-            this.channel_selected = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.ch = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.max_value = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.min_value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CurveOptions_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_channel)).BeginInit();
             this.btn_connect_panel.SuspendLayout();
@@ -384,7 +384,7 @@ namespace DTscope_dome1._0
             // CurveOptions_panel
             // 
             this.CurveOptions_panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            this.CurveOptions_panel.Controls.Add(this.label10);
+            this.CurveOptions_panel.Controls.Add(this.label_data_fomat);
             this.CurveOptions_panel.Controls.Add(this.button3);
             this.CurveOptions_panel.Controls.Add(this.button2);
             this.CurveOptions_panel.Controls.Add(this.dataGridView_channel);
@@ -396,6 +396,47 @@ namespace DTscope_dome1._0
             this.CurveOptions_panel.Name = "CurveOptions_panel";
             this.CurveOptions_panel.Size = new System.Drawing.Size(273, 370);
             this.CurveOptions_panel.TabIndex = 23;
+            // 
+            // label_data_fomat
+            // 
+            this.label_data_fomat.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+            this.label_data_fomat.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label_data_fomat.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_data_fomat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(145)))));
+            this.label_data_fomat.Location = new System.Drawing.Point(4, 183);
+            this.label_data_fomat.Name = "label_data_fomat";
+            this.label_data_fomat.Size = new System.Drawing.Size(242, 23);
+            this.label_data_fomat.TabIndex = 31;
+            this.label_data_fomat.Text = "data fomat: s2.s2.s2.s2.s2";
+            this.label_data_fomat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // button3
+            // 
+            this.button3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(155)))));
+            this.button3.FlatAppearance.BorderSize = 0;
+            this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.button3.Location = new System.Drawing.Point(128, 265);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(118, 45);
+            this.button3.TabIndex = 30;
+            this.button3.Text = "继续";
+            this.button3.UseVisualStyleBackColor = false;
+            // 
+            // button2
+            // 
+            this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(155)))));
+            this.button2.FlatAppearance.BorderSize = 0;
+            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.button2.Location = new System.Drawing.Point(4, 265);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(118, 45);
+            this.button2.TabIndex = 29;
+            this.button2.Text = "暂停";
+            this.button2.UseVisualStyleBackColor = false;
             // 
             // dataGridView_channel
             // 
@@ -452,6 +493,40 @@ namespace DTscope_dome1._0
             this.dataGridView_channel.TabIndex = 28;
             this.dataGridView_channel.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_channel_CellContentClick);
             this.dataGridView_channel.Layout += new System.Windows.Forms.LayoutEventHandler(this.dataGridView_channel_Layout);
+            // 
+            // channel_selected
+            // 
+            this.channel_selected.HeaderText = "";
+            this.channel_selected.Name = "channel_selected";
+            this.channel_selected.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.channel_selected.Width = 25;
+            // 
+            // ch
+            // 
+            this.ch.HeaderText = "ch";
+            this.ch.Name = "ch";
+            this.ch.Width = 38;
+            // 
+            // value
+            // 
+            this.value.HeaderText = "value";
+            this.value.Name = "value";
+            this.value.ReadOnly = true;
+            this.value.Width = 60;
+            // 
+            // max_value
+            // 
+            this.max_value.HeaderText = "max";
+            this.max_value.Name = "max_value";
+            this.max_value.ReadOnly = true;
+            this.max_value.Width = 60;
+            // 
+            // min_value
+            // 
+            this.min_value.HeaderText = "min";
+            this.min_value.Name = "min_value";
+            this.min_value.ReadOnly = true;
+            this.min_value.Width = 58;
             // 
             // test_connect
             // 
@@ -851,81 +926,6 @@ namespace DTscope_dome1._0
             this.timer_1ms_updataCurve.Interval = 1;
             this.timer_1ms_updataCurve.Tick += new System.EventHandler(this.timer_1ms_updataCurve_Tick);
             // 
-            // button2
-            // 
-            this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(155)))));
-            this.button2.FlatAppearance.BorderSize = 0;
-            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.button2.Location = new System.Drawing.Point(4, 265);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(118, 45);
-            this.button2.TabIndex = 29;
-            this.button2.Text = "暂停";
-            this.button2.UseVisualStyleBackColor = false;
-            // 
-            // button3
-            // 
-            this.button3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(155)))));
-            this.button3.FlatAppearance.BorderSize = 0;
-            this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.button3.Location = new System.Drawing.Point(128, 265);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(118, 45);
-            this.button3.TabIndex = 30;
-            this.button3.Text = "继续";
-            this.button3.UseVisualStyleBackColor = false;
-            // 
-            // label10
-            // 
-            this.label10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
-            this.label10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label10.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(145)))));
-            this.label10.Location = new System.Drawing.Point(4, 183);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(242, 23);
-            this.label10.TabIndex = 31;
-            this.label10.Text = "data fomat: s2.s2.s2.s2.s2";
-            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // channel_selected
-            // 
-            this.channel_selected.HeaderText = "";
-            this.channel_selected.Name = "channel_selected";
-            this.channel_selected.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.channel_selected.Width = 25;
-            // 
-            // ch
-            // 
-            this.ch.HeaderText = "ch";
-            this.ch.Name = "ch";
-            this.ch.Width = 38;
-            // 
-            // value
-            // 
-            this.value.HeaderText = "value";
-            this.value.Name = "value";
-            this.value.ReadOnly = true;
-            this.value.Width = 60;
-            // 
-            // max_value
-            // 
-            this.max_value.HeaderText = "max";
-            this.max_value.Name = "max_value";
-            this.max_value.ReadOnly = true;
-            this.max_value.Width = 60;
-            // 
-            // min_value
-            // 
-            this.min_value.HeaderText = "min";
-            this.min_value.Name = "min_value";
-            this.min_value.ReadOnly = true;
-            this.min_value.Width = 58;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
@@ -1018,7 +1018,7 @@ namespace DTscope_dome1._0
         private Label label_Frame_Loss_number;
         private Button button3;
         private Button button2;
-        private Label label10;
+        private Label label_data_fomat;
         private DataGridViewCheckBoxColumn channel_selected;
         private DataGridViewTextBoxColumn ch;
         private DataGridViewTextBoxColumn value;
