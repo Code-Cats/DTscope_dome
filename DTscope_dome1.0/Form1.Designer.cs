@@ -100,6 +100,7 @@ namespace DTscope_dome1._0
             this.timer_count = new System.Windows.Forms.Timer(this.components);
             this.timer_1s_FPS = new System.Windows.Forms.Timer(this.components);
             this.timer_1ms_updataCurve = new System.Windows.Forms.Timer(this.components);
+            this.label_test_count = new System.Windows.Forms.Label();
             this.CurveOptions_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_channel)).BeginInit();
             this.btn_connect_panel.SuspendLayout();
@@ -694,6 +695,7 @@ namespace DTscope_dome1._0
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            this.panel1.Controls.Add(this.label_test_count);
             this.panel1.Controls.Add(this.label_Frame_Loss_number);
             this.panel1.Controls.Add(this.label_Data_Info_State);
             this.panel1.Controls.Add(this.label_INFO);
@@ -926,6 +928,17 @@ namespace DTscope_dome1._0
             this.timer_1ms_updataCurve.Interval = 1;
             this.timer_1ms_updataCurve.Tick += new System.EventHandler(this.timer_1ms_updataCurve_Tick);
             // 
+            // label_test_count
+            // 
+            this.label_test_count.AutoSize = true;
+            this.label_test_count.Font = new System.Drawing.Font("华文新魏", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_test_count.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(180)))), ((int)(((byte)(145)))));
+            this.label_test_count.Location = new System.Drawing.Point(725, 12);
+            this.label_test_count.Name = "label_test_count";
+            this.label_test_count.Size = new System.Drawing.Size(48, 16);
+            this.label_test_count.TabIndex = 31;
+            this.label_test_count.Text = "FPS: 0";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
@@ -1024,6 +1037,7 @@ namespace DTscope_dome1._0
         private DataGridViewTextBoxColumn value;
         private DataGridViewTextBoxColumn max_value;
         private DataGridViewTextBoxColumn min_value;
+        private Label label_test_count;
     }
 }
 

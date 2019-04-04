@@ -140,7 +140,7 @@ namespace DTscope_dome1._0
         /// <summary>
         /// 构造一个字典:将设备描述名称转换为对应结构体数组index
         /// </summary>
-        static Dictionary<string, ROBOT_Type>  RobotName_index_Dic =new Dictionary<string, ROBOT_Type>
+        static Dictionary<string, ROBOT_Type> RobotName_index_Dic = new Dictionary<string, ROBOT_Type>
             {
                 {"SENTRY1",ROBOT_Type.Sentry1 },
                 {"SENTRY2",ROBOT_Type.Sentry2 },
@@ -209,14 +209,14 @@ namespace DTscope_dome1._0
 
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)  //右侧通知栏
         {
-           
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             ROBOT_info_dataInit();
 
-            LocalIP =GetLocalIP();   //获取本地IP
+            LocalIP = GetLocalIP();   //获取本地IP
             LocalIPEndPoint_Broadcast = new IPEndPoint(IPAddress.Parse(LocalIP), 1812); //本地IP点
 
             Thread thrDiscovery = new Thread(Automatic_LAN_discovery);    //局域网发现线程，开机默认开启
@@ -263,7 +263,7 @@ namespace DTscope_dome1._0
             button_Enabled_Text_Set(sentry2_connect, button_state);
         }
 
-        private void button_color_set(System.Windows.Forms.Button button , ROBOT_State button_state)
+        private void button_color_set(System.Windows.Forms.Button button, ROBOT_State button_state)
         {
             //button.Name.Length//可以通过长度、字符串识别来识别传入的按钮属于什么684835
             switch (button_state)
@@ -282,19 +282,19 @@ namespace DTscope_dome1._0
                         button.BackColor = Color.FromArgb(20, 140, 210); //灰色 disconnect
                         button.ForeColor = Color.FromArgb(200, 200, 200); //160 160 160 字体颜色
                                                                           // button.Enabled = false;
-                        //SetControlEnabled(button, false);//转移到定时器里了
-                        
+                                                                          //SetControlEnabled(button, false);//转移到定时器里了
+
                         //button.Text = button.Text.Split('\n')[0] + "\nhas_occupied";//fuck this!线程中连按钮文本都不能改变？？？？服  了
-                        
+
                         break;
                     }
                 case ROBOT_State.On_line_connectOK:
                     {
                         button.BackColor = Color.FromArgb(2, 131, 201);
                         button.ForeColor = Color.FromArgb(243, 249, 252);//46 58 132
-                        // button.Enabled = false;
-                        //SetControlEnabled(button, false); //转移到定时器里去了
-                        
+                                                                         // button.Enabled = false;
+                                                                         //SetControlEnabled(button, false); //转移到定时器里去了
+
                         //button.Text = button.Text.Split('\n')[0] + "\nconnect_OK";//fuck this!线程中连按钮文本都不能改变？？？？服  了
                         /////////////////////////button.Text = button.Text.Replace("click_connect", "off-line");
                         break;
@@ -304,9 +304,9 @@ namespace DTscope_dome1._0
                         button.BackColor = Color.FromArgb(2, 131, 201);
                         button.ForeColor = Color.FromArgb(243, 249, 252);//46 58 132
                                                                          //button.Enabled = true;
-                        //SetControlEnabled(button, true);//它被线程调用会发生死循环异常2019.3.21 所以转移到定时器里去了
-                        //button.Text = button.Text.Replace("off-line", "click_connect");//= " 哨兵1   connect ";
-                        //button.Text = button.Text.Split('\n')[0] + "\nclick_connect"; //fuck this!线程中连按钮文本都不能改变？？？？服  了
+                                                                         //SetControlEnabled(button, true);//它被线程调用会发生死循环异常2019.3.21 所以转移到定时器里去了
+                                                                         //button.Text = button.Text.Replace("off-line", "click_connect");//= " 哨兵1   connect ";
+                                                                         //button.Text = button.Text.Split('\n')[0] + "\nclick_connect"; //fuck this!线程中连按钮文本都不能改变？？？？服  了
                         break;
                     }
                 default:
@@ -466,7 +466,7 @@ namespace DTscope_dome1._0
         /// <param name="obj"></param>
         private void Automatic_LAN_discovery(object obj)
         {
-            if (LAN_discovery_start_flag==false)   //初始化时默认为false，所以会默认连接
+            if (LAN_discovery_start_flag == false)   //初始化时默认为false，所以会默认连接
             {
                 UdpBroadcastRev = new UdpClient(1813);
                 thrRecv_Broadcast = new Thread(ReceiveMessage_DiscoveryRobot);
@@ -479,7 +479,7 @@ namespace DTscope_dome1._0
             {
             }
             int temp_random = 0;
-            while(true) //这个while一运行起来就占用15%CPU
+            while (true) //这个while一运行起来就占用15%CPU
             {
                 //if(time_10ms_count%2==0)
                 if ((time_10ms_count - last_LAN_discovery_time) >= temp_random)//随机数产生放在if里会导致一个BUG，在100ms-101ms时不断刷新导致刷到101ms从而看起来每次都是101ms
@@ -489,7 +489,7 @@ namespace DTscope_dome1._0
                     last_LAN_discovery_time = time_10ms_count;
                     temp_random = LAN_discovery_interval_rd.Next(150, 250);
                     //this.thrDiscovery
-                    Thread.Sleep(temp_random*15);
+                    Thread.Sleep(temp_random * 15);
                 }
             }
         }
@@ -504,7 +504,7 @@ namespace DTscope_dome1._0
             {
                 string message = (string)obj;
                 //string message = "#RM-DT=DCY_ROBOT#END";
-                byte[] sendbytes = Encoding.Default.GetBytes(message);
+                byte[] sendbytes = Encoding.ASCII.GetBytes(message);
                 IPEndPoint remoteIpep = new IPEndPoint(IPAddress.Parse("192.168.1.255"), 1813); // 发送到的IP地址和端口号
                 UdpBroadcastSend.Send(sendbytes, sendbytes.Length, remoteIpep);
                 //UdpBroadcastSend.Close();
@@ -529,13 +529,13 @@ namespace DTscope_dome1._0
                 try
                 {
                     byte[] bytRecv = UdpBroadcastRev.Receive(ref revIpep);
-                    string message = Encoding.Default.GetString(bytRecv, 0, bytRecv.Length);
+                    string message = Encoding.ASCII.GetString(bytRecv, 0, bytRecv.Length);
                     //rev_msg = rev_msg.Insert(-1, message);//(int)rev_msg.LongCount()
                     Broadcast_Message_Deal(message, revIpep);
                     //byte[] temtt = revIpep.Address.GetAddressBytes(); //以字节数组
                     All_recvMsg_Broadcast = All_recvMsg_Broadcast.Insert(All_recvMsg_Broadcast.LastIndexOf('.'), string.Format("[{0}]{1}", revIpep, message) + "\r\n"); //放在这里可以达到不管什么广播信息都会显示的目的
-                    // ShowMessage(txtRecvMssg, string.Format("{0}[{1}]", remoteIpep, message));
-                    
+                                                                                                                                                                        // ShowMessage(txtRecvMssg, string.Format("{0}[{1}]", remoteIpep, message));
+
                 }
                 catch (Exception ex)
                 {
@@ -559,7 +559,7 @@ namespace DTscope_dome1._0
                 rev_msg = Regex.Split(rev_msg, "#RM-DT=", RegexOptions.IgnoreCase)[1];   //#RM-DT=将原字符串分为null 和 REP_DCY……
                 string[] temp_string_split = rev_msg.Split(':');
 
-                if(temp_string_split.Length==2) //防止数组越界，数组越界在线程中不会产生错误，会直接终止线程
+                if (temp_string_split.Length == 2) //防止数组越界，数组越界在线程中不会产生错误，会直接终止线程
                 {
                     temp_type = temp_string_split[0];//分割字符串 不包含该字符
                     temp_data = temp_string_split[1];//分割字符串 不包含该字符
@@ -568,12 +568,12 @@ namespace DTscope_dome1._0
                 {
                     return;
                 }
-                
+
                 switch (temp_type)   //广播信息的分发，下面的处理函数将只关注数据内容，不关注帧头或校验
                 {
                     case "DCY_ROBOT":   //其他设备的问询
                         {
-                            if(LocalIP.Equals(revipep.Address.ToString()))  //如果来源于本机IP，就丢弃
+                            if (LocalIP.Equals(revipep.Address.ToString()))  //如果来源于本机IP，就丢弃
                             {
 
                             }
@@ -593,8 +593,8 @@ namespace DTscope_dome1._0
                         }
                     case "REP_DCY": //设备的回复
                         {
-                            if(!LocalIPEndPoint_Broadcast.Equals(revipep))  //不处理自己发的报文
-                            Discover_Message_Deal(temp_data, revipep);  //传递IP进去记录
+                            if (!LocalIPEndPoint_Broadcast.Equals(revipep))  //不处理自己发的报文
+                                Discover_Message_Deal(temp_data, revipep);  //传递IP进去记录
                             break;
                         }
                     case "TEST":
@@ -619,24 +619,24 @@ namespace DTscope_dome1._0
             string[] temp_robot_data = rev_msg.Split(new char[2] { '=', ';' }); //分割字符串 不包含该字符
             im_index = temp_robot_data.ToList().IndexOf("IM") + 1;
             sta_index = temp_robot_data.ToList().IndexOf("STA") + 1;
-            type_index= temp_robot_data.ToList().IndexOf("TYPE") + 1;
+            type_index = temp_robot_data.ToList().IndexOf("TYPE") + 1;
             //temp_type = temp1[1].Split(':');
-            if(im_index==0||sta_index==0)   //没有状态标识或名称标识，丢弃
+            if (im_index == 0 || sta_index == 0)   //没有状态标识或名称标识，丢弃
             {
                 return;
             }
             else
             {
-                if(type_index==0)   //若设备没有描述自己IS_RM?，则默认IS RM
+                if (type_index == 0)   //若设备没有描述自己IS_RM?，则默认IS RM
                 {////////////////////////////////////RobotName_index_Dic
                     ROBOT_Type temp_robot_Typeindex;    //获取该设备命名描述对应的结构体ID存入的变量
                     if (RobotName_index_Dic.TryGetValue(temp_robot_data[im_index], out temp_robot_Typeindex))   //尝试获取该设备命名描述对应的结构体ID，若有则进if
                     {
                         //int temp_robot_index = (int)(RobotName_index_Dic[]);   //获取该设备命名描述对应的结构体ID
                         int temp_on_line_state = 0;
-                        if (int.TryParse(temp_robot_data[sta_index], out temp_on_line_state)&& temp_on_line_state!=3)    //将在线状态<string>转换为一个整形值并检查是否成功 //限制3，不允许设备通过广播连接成功
+                        if (int.TryParse(temp_robot_data[sta_index], out temp_on_line_state) && temp_on_line_state != 3)    //将在线状态<string>转换为一个整形值并检查是否成功 //限制3，不允许设备通过广播连接成功
                         {//！！！！！！！！！！！！！！！！！！这里有个问题，当对方传递STA超过限定值，会发生意想不到的情况2019.3.22，应该加上安全限定//该问题无需解决，因为枚举值允许放入定义范围外的int值，且后面都是当作int的，swicth会直接丢弃3.22
-                            if(temp_on_line_state==(int)ROBOT_State.On_line_free)   //仅当on-line-free才记录机器IP，因为机器只会发送这个状态
+                            if (temp_on_line_state == (int)ROBOT_State.On_line_free)   //仅当on-line-free才记录机器IP，因为机器只会发送这个状态
                             {
                                 RobotInfo[(int)temp_robot_Typeindex].TarIpep = revipep;
                             }
@@ -654,7 +654,7 @@ namespace DTscope_dome1._0
                 {
 
                 }
-                
+
             }
         }
         /// <summary>
@@ -663,18 +663,18 @@ namespace DTscope_dome1._0
         /// <param name="rev_msg"></param>
         void Othor_host_discover_Message_Deal()
         {
-            if(Currently_connected_Device!=null)    //不为空，即已经与某个设备正在或已经建立连接
+            if (Currently_connected_Device != null)    //不为空，即已经与某个设备正在或已经建立连接
             {
-                SendMessage_Broadcast("#RM-DT=REP_DCY:IM="+Currently_connected_Device+ ";STA=2;#END");
+                SendMessage_Broadcast("#RM-DT=REP_DCY:IM=" + Currently_connected_Device + ";STA=2;#END");
             }
         }
 
         /// <summary>
         /// 按钮状态刷新函数：传入参数为对应按钮结构体，按钮在结构体中对应ID
         /// </summary>
-        void Update_buttons_callback(ROBOT_Info robotinfo,ROBOT_Type robot_index)
+        void Update_buttons_callback(ROBOT_Info robotinfo, ROBOT_Type robot_index)
         {
-            switch(robot_index)
+            switch (robot_index)
             {
                 case ROBOT_Type.Sentry1:
                     {
@@ -746,7 +746,7 @@ namespace DTscope_dome1._0
         /// <summary>
         /// 按钮使能状态刷新函数：传入参数为对应按钮结构体，按钮在结构体中对应ID，该函数可以在值刷新时才调用
         /// </summary>
-        private void Update_buttonsEnabled_andText(ROBOT_Info robotinfo, ROBOT_Type robot_index) 
+        private void Update_buttonsEnabled_andText(ROBOT_Info robotinfo, ROBOT_Type robot_index)
         {
             switch (robot_index)
             {
@@ -839,7 +839,7 @@ namespace DTscope_dome1._0
         //        IsUdpcRecvStart_Broadcast = false;
         //        test_rev.Text = "已关闭";
         //    }
-            
+
         //}
 
         /// <summary>
@@ -849,8 +849,10 @@ namespace DTscope_dome1._0
         /// <param name="e"></param>
         private void timer_UI_Tick(object sender, EventArgs e)
         {
+            if (Host_Connect_State == HOST_Connect_State.ConnectOK && RobotDataFomatInfo.data_rev_state == ROBOT_DATA_FOMAT_DATA_STATE.All_Ok)
+                label_test_count.Text = RobotDataFomatInfo.ch[0].datalist.Count().ToString();
             //rev_text.Text = All_recvMsg_Broadcast;
-            for(int i=0;i<(int)ROBOT_Type.ROBOT_Type_num;i++)
+            for (int i = 0; i < (int)ROBOT_Type.ROBOT_Type_num; i++)
             {
                 Update_buttonsEnabled_andText(RobotInfo[i], (ROBOT_Type)i);
             }
@@ -859,7 +861,7 @@ namespace DTscope_dome1._0
             {
                 refresh_online_or_break_button.Text = "刷新";
             }
-            else 
+            else
             {
                 refresh_online_or_break_button.Text = "断开\r\n连接";
             }
@@ -867,14 +869,14 @@ namespace DTscope_dome1._0
             Broadcast_communication_textBox.Text = All_recvMsg_Broadcast;   //放入对话框缓存
             Unicast_communication_textBox.Text = All_recvMsg_Unicast;   //放入对话框缓存
 
-            if(ReDrawdataGridView_Flag==true)
+            if (ReDrawdataGridView_Flag == true)
             {
                 ReDrawdataGridView_Flag = false;//不能在线程中更改窗体控件，除非使用委托，否则要在timer_UI中修改
                 DrawdataGridView_Form_robotDataFomatInfo(RobotDataFomatInfo, dataGridView_channel);
             }
 
-            if(Host_Connect_State==HOST_Connect_State.ConnectOK)
-            updataGridView_chvalue_Form_robotDataFomatInfo(RobotDataFomatInfo, dataGridView_channel);   //更新value
+            if (Host_Connect_State == HOST_Connect_State.ConnectOK)
+                updataGridView_chvalue_Form_robotDataFomatInfo(RobotDataFomatInfo, dataGridView_channel);   //更新value
 
         }
 
@@ -1038,7 +1040,7 @@ namespace DTscope_dome1._0
         private void Broadcast_communication_textBox_MouseDown(object sender, MouseEventArgs e)
         {
             Broadcast_communication_textBox.Select(Debug_SendMsg_textBox.Text.Length, 0);
-            
+
         }
         /// <summary>
         /// 禁止选中textBox文字
@@ -1052,7 +1054,7 @@ namespace DTscope_dome1._0
 
         private void sentry1_connect_Click(object sender, EventArgs e)
         {
-            if(Host_Connect_State==HOST_Connect_State.Unconnected)
+            if (Host_Connect_State == HOST_Connect_State.Unconnected)
             {
                 Start_Connect_unicast(ROBOT_Type.Sentry1);
             }
@@ -1161,7 +1163,7 @@ namespace DTscope_dome1._0
             Host_Connect_State = HOST_Connect_State.Wait_Reply_connect;
 
             Thread thrSend = new Thread(SendMessage_unicast);    //单播发送握手请求
-            string[] sendmeg = new string[] { "#RM-DT=CNET:TAR="+ Currently_connected_Device+ ";TIP="+ RobotInfo[robot_typeindex].TarIpep.Address.ToString()+ ";CIP="+LocalIP+ ";CPT="+"1815"+";#END", RobotInfo[robot_typeindex].TarIpep.Address.ToString() };
+            string[] sendmeg = new string[] { "#RM-DT=CNET:TAR=" + Currently_connected_Device + ";TIP=" + RobotInfo[robot_typeindex].TarIpep.Address.ToString() + ";CIP=" + LocalIP + ";CPT=" + "1815" + ";#END", RobotInfo[robot_typeindex].TarIpep.Address.ToString() };
             thrSend.Start(sendmeg);
 
             //thrRecv_Unicast = new Thread();
@@ -1187,7 +1189,7 @@ namespace DTscope_dome1._0
             try
             {
                 //string message = "#RM-DT=DCY_ROBOT#END";
-                byte[] sendbytes = Encoding.Default.GetBytes(sendmsg[0]);
+                byte[] sendbytes = Encoding.ASCII.GetBytes(sendmsg[0]);
                 IPEndPoint tarIpep = new IPEndPoint(IPAddress.Parse(sendmsg[1]), ROBOT_UNICAST_PORT); // 发送到的IP地址和端口号
                 UdpUnicastSend.Send(sendbytes, sendbytes.Length, tarIpep);
                 //UdpUnicastSend.Close();
@@ -1211,10 +1213,11 @@ namespace DTscope_dome1._0
                 try
                 {
                     byte[] bytRecv = UdpUnicastRev.Receive(ref revIpep);
-                    string strRecv = Encoding.Default.GetString(bytRecv, 0, bytRecv.Length);
-                    Unicast_Message_Deal(strRecv,bytRecv, revIpep, tarIpep);
+                    string strRecv = Encoding.ASCII.GetString(bytRecv, 0, bytRecv.Length);
+                    Unicast_Message_Deal(strRecv, bytRecv, revIpep, tarIpep);
                     //byte[] temtt = revIpep.Address.GetAddressBytes(); //以字节数组
-                    All_recvMsg_Unicast = All_recvMsg_Unicast.Insert(All_recvMsg_Unicast.LastIndexOf('.'), string.Format("[{0}]{1}", revIpep, strRecv) + "\r\n"); //放在这里可以达到不管什么单播信息都会显示的目的
+                    if (Host_Connect_State != HOST_Connect_State.ConnectOK && RobotDataFomatInfo.data_rev_state != ROBOT_DATA_FOMAT_DATA_STATE.All_Ok)
+                        All_recvMsg_Unicast = All_recvMsg_Unicast.Insert(All_recvMsg_Unicast.LastIndexOf('.'), string.Format("[{0}]{1}", revIpep, strRecv) + "\r\n"); //放在这里可以达到不管什么单播信息都会显示的目的
 
                 }
                 catch (Exception ex)
@@ -1231,10 +1234,10 @@ namespace DTscope_dome1._0
         /// <param name="bytrecv"></param>
         /// <param name="revipep"></param>
         /// <param name="taripep"></param>
-        void Unicast_Message_Deal(string strrecv,byte[] bytrecv, IPEndPoint revipep, IPEndPoint taripep)
+        void Unicast_Message_Deal(string strrecv, byte[] bytrecv, IPEndPoint revipep, IPEndPoint taripep)
         {//后期多连接肯定要对发送方IP判断兵种再实现多连接通用函数，现在先用curr
             //这里需要考虑到回传数据data中段含有多个与‘:’相同的值！！！！！！！否则会出现BUG
-            if (strrecv.IndexOf("#RM-DT=") != -1 && strrecv.IndexOf("#END") != -1)   //该函数会从0开始索引，第一个元素位置是0//如果属于DT-scope数据包
+            if (strrecv.IndexOf("#RM-DT=") != -1 && strrecv.IndexOf(";#END") != -1)   //该函数会从0开始索引，第一个元素位置是0//如果属于DT-scope数据包
             {   //进入到该if说明#RM-DT=存在
                 string temp_datatype;
                 string temp_data;
@@ -1248,14 +1251,23 @@ namespace DTscope_dome1._0
 
                     int first_indexOfcolon = strrecv.IndexOf(':');
                     temp_datatype = strrecv.Substring(0, first_indexOfcolon);
+                    // try
+                    //{
+                    int temp_end_index = strrecv.Length - 6;    //这里字符串处理很沙雕，遇到0 129 59就不识别分号了！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！1
                     temp_data = strrecv.Substring(first_indexOfcolon + 1, strrecv.IndexOf(";#END") - first_indexOfcolon - 1);
+                    //}
+                    //catch
+                    //{
+
+                    //}
+
                 }
-                else if(temp_string_split.Length > 2)   //数据存在与:相同值，需要重新分割
+                else if (temp_string_split.Length > 2)   //数据存在与:相同值，需要重新分割
                 {
                     int first_indexOfcolon = strrecv.IndexOf(':');
                     temp_datatype = strrecv.Substring(0, first_indexOfcolon);
                     temp_data = strrecv.Substring(first_indexOfcolon + 1, strrecv.IndexOf(";#END") - first_indexOfcolon - 1);
-                    
+
                 }
                 else
                 {
@@ -1273,7 +1285,7 @@ namespace DTscope_dome1._0
                             Connection_rate.Value = 30;
                             if (temp_datatype.Equals("RCNET"))
                             {
-                                if(Unicast_Handshake_Reply_Check(temp_data, taripep)) //若握手回复协议正确，则进入等待透传阶段
+                                if (Unicast_Handshake_Reply_Check(temp_data, taripep)) //若握手回复协议正确，则进入等待透传阶段
                                 {
                                     Host_Connect_State = HOST_Connect_State.Wait_OSPF;
                                     Connection_rate.Value = 60;
@@ -1289,7 +1301,7 @@ namespace DTscope_dome1._0
                                 if (temp_data.Equals("OK"))    //即回复 #RM-DT=RCNET:OK;#END
                                 {
                                     Host_Connect_State = HOST_Connect_State.ConnectOK;
-                                    
+
                                     ROBOT_Type temp_robot_Typeindex = 0;
                                     if (RobotName_index_Dic.TryGetValue(Currently_connected_Device, out temp_robot_Typeindex))   //尝试获取该设备命名描述对应的结构体ID，若有则进if
                                     {
@@ -1311,7 +1323,7 @@ namespace DTscope_dome1._0
                     case HOST_Connect_State.ConnectOK:
                         {
                             //这里放数据接收、缓存、显示相关
-                            RobotData_Receive_Main(temp_datatype, temp_data);   //connectOK后数据处理总函数
+                            RobotData_Receive_Main(temp_datatype, temp_data, bytrecv);  //connectOK后数据处理总函数
                             break;
                         }
                     default:
@@ -1330,12 +1342,12 @@ namespace DTscope_dome1._0
         bool Unicast_Handshake_Reply_Check(string strrecv, IPEndPoint taripep)
         {
             int tip_index, cip_index, cpt_index = 0;
-            string[] temp_robot_data = strrecv.Split(new char[3] { '=', ';',':' }); //分割字符串 加上：原因是防止调用出错
+            string[] temp_robot_data = strrecv.Split(new char[3] { '=', ';', ':' }); //分割字符串 加上：原因是防止调用出错
             tip_index = temp_robot_data.ToList().IndexOf("TIP") + 1; //机器的目标IP，即本机IP
             cip_index = temp_robot_data.ToList().IndexOf("CIP") + 1;    //机器的当前IP，即HOST的目标IP
             cpt_index = temp_robot_data.ToList().IndexOf("CPT") + 1;   //机器的当前端口，即HOST的目标端口
             //temp_type = temp1[1].Split(':');
-            if (tip_index == 0 || cip_index == 0 || cpt_index==0)   //没有状态标识或名称标识，丢弃
+            if (tip_index == 0 || cip_index == 0 || cpt_index == 0)   //没有状态标识或名称标识，丢弃
             {
                 return false;
             }
@@ -1345,7 +1357,7 @@ namespace DTscope_dome1._0
                 {
                     return true;    //回应正确
                 }
-           
+
             }
             return false;
         }
@@ -1357,7 +1369,7 @@ namespace DTscope_dome1._0
         /// <param name="e"></param>
         private void refresh_online_or_break_button_Click(object sender, EventArgs e)   //在非连接状态时刷新用，在连接状态复用为断开连接
         {
-            switch(Host_Connect_State)
+            switch (Host_Connect_State)
             {
                 case HOST_Connect_State.Unconnected:    //未连接时刷新使用
                     {
@@ -1415,7 +1427,7 @@ namespace DTscope_dome1._0
         /// <param name="e"></param>
         private void dataGridView_channel_Layout(object sender, LayoutEventArgs e)
         {
-            if(!IsLoadInit_DataGridView)
+            if (!IsLoadInit_DataGridView)
             {
                 robotDataFomatInfo_DataInit(out RobotDataFomatInfo);    //数据格式信息初始化
 
@@ -1441,7 +1453,7 @@ namespace DTscope_dome1._0
         /// </summary>
         /// <param name="datagridview"></param>
         /// <param name="ch_name"></param>
-        private void dataGridView_AddNewRow(DataGridView datagridview,string ch_name)
+        private void dataGridView_AddNewRow(DataGridView datagridview, string ch_name)
         {
             DataGridViewRow row = new DataGridViewRow();
             DataGridViewCheckBoxCell checkboxcell = new DataGridViewCheckBoxCell();
@@ -1469,18 +1481,18 @@ namespace DTscope_dome1._0
             data.package_number_last = 0;   //上一包序号
             data.nomal_num = 1000 / ((2 * 5 * 20) / (2 * 5) * data.inter_frame_time);//公式：1000/(packet_bytes/frame_bytes*inter_frame_time)
             data.loss_num = 0;  //丢包数
-            data.loss_rate = 100*data.loss_num / data.nomal_num;    //丢包率
+            data.loss_rate = 100 * data.loss_num / data.nomal_num;    //丢包率
 
             data.data_rev_state = ROBOT_DATA_FOMAT_DATA_STATE.Info_notset;
 
-            for (int i=0;i< data.ch_num;i++)
-            { 
+            for (int i = 0; i < data.ch_num; i++)
+            {
                 data.ch[i].type = ROBOT_DATA_FOMAT_TYPE.s16;
                 data.ch[i].index = i * 2;
                 data.ch[i].bytes = 10;
                 data.ch[i].datalist = new List<float>();  //不加这句话会有BUG "未将对象引用设置到对象的实例"
             }
-            
+
         }
         /// <summary>
         /// 根据数据格式信息生成DataGridView表格部分信息
@@ -1498,9 +1510,9 @@ namespace DTscope_dome1._0
                 i--; //这句是关键。。
             }
 
-            for (int i = 0; i < fomat_data.ch_num; i++) 
+            for (int i = 0; i < fomat_data.ch_num; i++)
             {
-                dataGridView_AddNewRow(data_gridview, "ch"+i.ToString());
+                dataGridView_AddNewRow(data_gridview, "ch" + i.ToString());
             }
             //data_gridview = temp_dataGridView;
             dataGridView_channel.ClearSelection();
@@ -1508,7 +1520,7 @@ namespace DTscope_dome1._0
 
         public void updataGridView_chvalue_Form_robotDataFomatInfo(ROBOT_DATA_FOMAT_INFO fomat_data, DataGridView data_gridview)
         {
-            if(fomat_data.data_rev_state == ROBOT_DATA_FOMAT_DATA_STATE.All_Ok)
+            if (fomat_data.data_rev_state == ROBOT_DATA_FOMAT_DATA_STATE.All_Ok)
             {
                 for (int i = 0; i < fomat_data.ch_num; i++)
                 {
@@ -1527,18 +1539,18 @@ namespace DTscope_dome1._0
         /// </summary>
         /// <param name="strtype"></param>
         /// <param name="strdata"></param>
-        private void RobotData_Receive_Main(string strtype, string strdata)
+        private void RobotData_Receive_Main(string strtype, string strdata, byte[] bytedata)
         {//strdata数据格式：TIM=<tim_interavl>;ABYTES=<byte_numbers>;TYPE=<s2.s2.s2.s2>;#END
             switch (strtype)
             {
                 case "DATA_INFO":
                     {
-                        RobotData_InfoSet(strdata,ref RobotDataFomatInfo);
+                        RobotData_InfoSet(strdata, ref RobotDataFomatInfo);
                         break;
                     }
                 case "DATA":
                     {
-                        RobotData_DataDeal(strdata, ref RobotDataFomatInfo);
+                        RobotData_DataDeal(strdata, bytedata, ref RobotDataFomatInfo);
                         break;
                     }
                 case "CMD":
@@ -1556,7 +1568,7 @@ namespace DTscope_dome1._0
         /// 根据info配置包设置数据接受信息
         /// </summary>
         /// <param name="strset"></param>
-        private void RobotData_InfoSet(string strset,ref ROBOT_DATA_FOMAT_INFO fomat_data)
+        private void RobotData_InfoSet(string strset, ref ROBOT_DATA_FOMAT_INFO fomat_data)
         {//strdata数据格式：TIM=<tim_interavl>;ABYTES=<byte_numbers>;TYPE=<s2.s2.s2.s2>;#END
 
             int tim_index, abytes_index, type_index = 0;
@@ -1574,9 +1586,9 @@ namespace DTscope_dome1._0
                 if (int.TryParse(temp_fomatinfo_data[tim_index], out fomat_data.inter_frame_time) &&
                     int.TryParse(temp_fomatinfo_data[abytes_index], out fomat_data.frame_bytes))
                 {   //到此处该处理s2.s2.s2.s2.s2
-                            robot_data_fomat_temp = temp_fomatinfo_data[type_index];//临时加的显示data fomat
+                    robot_data_fomat_temp = temp_fomatinfo_data[type_index];//临时加的显示data fomat
                     string[] temp_type_data = temp_fomatinfo_data[type_index].Split('.');
-                    if(robotDataFomatInfo_ChannelType_TrySet(temp_type_data, ref fomat_data))   //如果通道信息正常
+                    if (robotDataFomatInfo_ChannelType_TrySet(temp_type_data, ref fomat_data))   //如果通道信息正常
                     {
                         //刷新datagrid
                         ReDrawdataGridView_Flag = true;//不能在线程中更改窗体控件，除非使用委托，否则要在timer_UI中修改
@@ -1607,8 +1619,8 @@ namespace DTscope_dome1._0
                 //}
 
             }
-            
-                
+
+
         }
         /// <summary>
         /// 机器回传格式信息中对所有通道变量信息的设置，传入格式为s2.s2.s2.s2.s2
@@ -1620,7 +1632,7 @@ namespace DTscope_dome1._0
         {//目前只支持：s8,u8,s16,u16,s32,u32,float  2019.3.25//data.ch = new ROBOT_DATA_FOMAT_CHANNEL[data.ch_num];
             fomat_data.ch_num = strtype.Length; //先获取分成了几个块、即几个通道
             fomat_data.ch = new ROBOT_DATA_FOMAT_CHANNEL[fomat_data.ch_num];    //刷新信息，刷新之前的信息
-            
+
             for (int i = 0; i < strtype.Length; i++)
             {
                 fomat_data.ch[i].datalist = new List<float>();  //不加这句话会有BUG "未将对象引用设置到对象的实例"
@@ -1631,7 +1643,7 @@ namespace DTscope_dome1._0
                         {
                             fomat_data.ch[i].type = ROBOT_DATA_FOMAT_TYPE.s8;   //设置当前通道类型
                             fomat_data.ch[i].bytes = 1; //设置当前通道所占字节
-                            if(i==0)    //如果是第一个通道直接索引=0
+                            if (i == 0)    //如果是第一个通道直接索引=0
                             {
                                 fomat_data.ch[i].index = 0;
                             }
@@ -1730,13 +1742,13 @@ namespace DTscope_dome1._0
                             return false;
                         }
                 }//switch结束
-                fomat_data.ch_num = i+1;  //再更新ch_num值，以免执行到某一步后面的解析失败了
+                fomat_data.ch_num = i + 1;  //再更新ch_num值，以免执行到某一步后面的解析失败了
             }//for结束
 
             fomat_data.data_rev_state = ROBOT_DATA_FOMAT_DATA_STATE.InfoSet_DatanotRev;
 
             //下面该检查frame_bytes是否和types计算出来的是否相等
-            if (fomat_data.ch[fomat_data.ch_num-1].index+ fomat_data.ch[fomat_data.ch_num - 1].bytes== fomat_data.frame_bytes)
+            if (fomat_data.ch[fomat_data.ch_num - 1].index + fomat_data.ch[fomat_data.ch_num - 1].bytes == fomat_data.frame_bytes)
             {
                 return true;    //符合一系列条件
             }
@@ -1747,27 +1759,30 @@ namespace DTscope_dome1._0
         /// 机器数据的接收、存入ch等等
         /// </summary>
         /// <param name="strdata"></param>
-        private void RobotData_DataDeal(string strdata, ref ROBOT_DATA_FOMAT_INFO fomat_data) //需要考虑到数据中可能存在和ascii同值的数据，可能会被字符串误分割
+        private void RobotData_DataDeal(string strdata, byte[] bytedata, ref ROBOT_DATA_FOMAT_INFO fomat_data) //需要考虑到数据中可能存在和ascii同值的数据，可能会被字符串误分割
         {//传进来的参数形式：Sn=<XX****160****XX>
             int temp_package_number_now = 0;
             string temp_chs_data = strdata.Substring(3);
+            int data_byte_len = bytedata.Length - 20;// "#RM-DT=DATA:SN=;#END".Length;  //-20
+            byte[] data_bytes = new byte[data_byte_len];    //这个应该是标准的只有数据的数组
+            Array.ConstrainedCopy(bytedata, 15, data_bytes, 0, data_byte_len);
             if (strdata.Substring(0, 1).Equals("S") && //第一位为S
                 int.TryParse(strdata.Substring(1, 1), out temp_package_number_now) && //第二位为数字0-9
                 strdata.Substring(2, 1).Equals("="))    //第三位为=
             {
-                if (temp_chs_data.Length % fomat_data.frame_bytes == 0) //当前字节数为单包字节数整倍数
+                if (data_bytes.Length % fomat_data.frame_bytes == 0) //当前字节数为单包字节数整倍数
                 {
 
                     int temp_package_number_diff = temp_package_number_now - fomat_data.package_number_last;
                     fomat_data.loss_num += (temp_package_number_diff > 0 ? temp_package_number_diff : (temp_package_number_diff + 10)) - 1; //在1s定时器中清零
-                    
+
                     fomat_data.nomal_num = (int)(1000 / (temp_chs_data.Length / fomat_data.frame_bytes * fomat_data.inter_frame_time));//公式：1000/(packet_bytes/frame_bytes*inter_frame_time)
                     //fomat_data.loss_rate = 100 * data.loss_num / data.nomal_num;    //丢包率放在单独定时器中使用
                     fomat_data.package_number_last = temp_package_number_now;   //上一包序号
 
                     int temp_frame_numbers = temp_chs_data.Length / fomat_data.frame_bytes;
 
-                    byte[] bytes_chs_data = System.Text.Encoding.Default.GetBytes(temp_chs_data);   //转换为byte[]
+                    byte[] bytes_chs_data = data_bytes; //System.Text.Encoding.Default.GetBytes(temp_chs_data);   //转换为byte[]
                     //到这里数据已经成为了<XX****160****XX>的byte[]形式
                     for (int i = 0; i < temp_frame_numbers; i++)    //一包中若干帧数据的遍历
                     {
@@ -1844,11 +1859,11 @@ namespace DTscope_dome1._0
                 label_FPS.Text = "FPS:" + 1000 / RobotDataFomatInfo.inter_frame_time;
                 label_Frame_Loss_Rate.Text = "Frame Loss Rate: " + RobotDataFomatInfo.loss_rate.ToString() + "%";
                 label_Frame_Loss_number.Text = "Frame Loss number: " + frame_loss_num_all.ToString();
-                switch(RobotDataFomatInfo.data_rev_state)
+                switch (RobotDataFomatInfo.data_rev_state)
                 {
                     case ROBOT_DATA_FOMAT_DATA_STATE.Info_notset:
                         {
-                            label_Data_Info_State.Text= "Data Info State: Info_notset";
+                            label_Data_Info_State.Text = "Data Info State: Info_notset";
                             break;
                         }
                     case ROBOT_DATA_FOMAT_DATA_STATE.InfoSet_DatanotRev:
@@ -1897,23 +1912,31 @@ namespace DTscope_dome1._0
         {
             time_1ms_count++;
             if (fomat_data.data_rev_state == ROBOT_DATA_FOMAT_DATA_STATE.All_Ok &&
-                Host_Connect_State == HOST_Connect_State.ConnectOK) 
+                Host_Connect_State == HOST_Connect_State.ConnectOK)
             {
-                
-                if(time_1ms_count % fomat_data.inter_frame_time==0)//timer_1ms_updataCurve.Interval
+
+                if (time_1ms_count % fomat_data.inter_frame_time == 0)//timer_1ms_updataCurve.Interval
                 {
                     //目前最多支持6条曲线
-                    if(fomat_data.ch[0].datalist.Count()>= fomat_data.inter_frame_time*25)
+                    if (fomat_data.ch[0].datalist.Count() >= fomat_data.inter_frame_time * 25)
                     {
                         if (temp_curve_index < fomat_data.ch[0].datalist.Count()) temp_curve_index++;   //索引增加
-                        for (int i=0;i< fomat_data.ch_num;i++)
+                        for (int i = 0; i < fomat_data.ch_num; i++)
                         {
                             Curve1.SetCurveVisible("ch" + i.ToString(), true);
-                            Curve1.AddCurveData("ch"+i.ToString(), fomat_data.ch[i].datalist[fomat_data.ch[i].datalist.Count() - 1]);
+                            Curve1.AddCurveData("ch" + i.ToString(), fomat_data.ch[i].datalist[fomat_data.ch[i].datalist.Count() - 1]);
                         }
                     }
                     //for()Curve1.SetCurveVisible("ch0", true);
-                   
+
+                }
+                else if (fomat_data.ch[0].datalist.Count() >= fomat_data.inter_frame_time * 25)
+                {
+                    for (int i = 0; i < fomat_data.ch_num; i++)
+                    {
+                        Curve1.SetCurveVisible("ch" + i.ToString(), true);
+                        Curve1.AddCurveData("ch" + i.ToString(), fomat_data.ch[i].datalist[fomat_data.ch[i].datalist.Count() - 1]);
+                    }
                 }
             }
             else
@@ -1929,18 +1952,29 @@ namespace DTscope_dome1._0
 
         private void Curve1_Load(object sender, EventArgs e)
         {
-            Curve1.SetLeftCurve("ch0",new float[] {5000,10000,0,0 }, Color.FromArgb(85, 180, 155));    //, Color.DeepSkyBlue
+            Curve1.SetLeftCurve("ch0", new float[] { 5000, 10000, 0, 0 }, Color.FromArgb(85, 180, 155));    //, Color.DeepSkyBlue
             Curve1.SetLeftCurve("ch1", new float[] { 10000, 10000, 0, 0 }, Color.FromArgb(35, 177, 77));    //, Color.DeepSkyBlue
             Curve1.SetLeftCurve("ch2", new float[] { 15000, 10000, 0, 0 }, Color.FromArgb(254, 242, 0));    //, Color.DeepSkyBlue
             Curve1.SetLeftCurve("ch3", new float[] { 20000, 10000, 0, 0 }, Color.FromArgb(237, 27, 36));    //, Color.DeepSkyBlue
             Curve1.SetLeftCurve("ch4", new float[] { 25000, 10000, 0, 0 }, Color.FromArgb(20, 20, 254));    //, Color.DeepSkyBlue
             Curve1.SetLeftCurve("ch5", new float[] { 25000, 10000, 0, 0 }, Color.FromArgb(255, 255, 255));
-            Curve1.SetCurveVisible("ch0",false);
+            Curve1.SetCurveVisible("ch0", false);
             Curve1.SetCurveVisible("ch1", false);
             Curve1.SetCurveVisible("ch2", false);
             Curve1.SetCurveVisible("ch3", false);
             Curve1.SetCurveVisible("ch4", false);
             Curve1.SetCurveVisible("ch5", false);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            //thrRecv_Unicast = new Thread();
+            ///////////////
+            //UdpUnicastRev = new UdpClient(1815);
+            //thrRecv_Unicast = new Thread(ReceiveMessage_Unicast);
+            thrRecv_Unicast.Start(RobotInfo[1].TarIpep);    //11111111111111111111111111111111111111111111111111111111
+            IsUdpcRecvStart_Unicast = true;
+            ////////////////////////
         }
 
         //////////////////////////////////////////////////////////////////////////////////
